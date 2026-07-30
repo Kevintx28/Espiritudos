@@ -1,0 +1,41 @@
+{
+  "summary": "Frontend-only E2E testing of Espiritudos (Fortnite Spirits marketplace) on the public preview URL. Covered: home/logo/country selector, country switching + price updates, catalog with 10 spirits and all 6 rarity filters, +/- cart controls and floating footer, CartSummary with 5%/10%/15% quantity discounts, UserForm validation + country-specific payment methods, OrderConfirmation, html2canvas image generation, image download, NextSteps (9 steps), ThankYou social links, start-over reset, and the reviews carousel (5 slides + indicators). Core 6-step purchase flow works end-to-end. Two functional bugs found: (1) cart is completely lost when using 'Volver al catálogo', (2) APP_CONFIG.defaultCountry ('PE') is ignored - auto-detection resolves to 'US' in this environment so the app opens with Estados Unidos / $0.10 instead of Perú / S/0.30. Plus cosmetic issues in the generated image and Spanish/English mixing.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "SpiritsCatalog / App.js", "issue": "Cart data loss: quantities live in SpiritsCatalog local state; clicking 'Volver al catálogo' (back-to-catalog) unmounts/remounts the catalog and all selected quantities reset to 0 (quantity badges gone, footer bar disappears). User must re-select everything. Verified twice. Cart state must be lifted to App.js (selectedSpirits) and passed back into SpiritsCatalog as initial state.", "selector": "[data-testid=\"back-to-catalog\"], [data-testid=\"increase-legendary-1\"]", "priority": "HIGH"},
+      {"component": "App.js detectCountry", "issue": "window.APP_CONFIG.defaultCountry ('PE') is never used. detectCountry() falls through to the navigator.language 'en' branch and selects US, so the app loads as 'Estados Unidos' with $0.10/spirit instead of Perú S/0.30 (requirement says Perú should be the default). Header confirmed showing 'Estados Unidos'.", "selector": "[data-testid=\"country-PE\"]", "priority": "HIGH"},
+      {"component": "ImageGenerator (html2canvas output)", "issue": "Gradient text does not render in the generated PNG: html2canvas ignores -webkit-background-clip:text/WebkitTextFillColor:transparent, so the 'Espiritudos' title and the 'TOTAL: S/x.xx' value are painted as white text on top of a solid purple->pink->cyan gradient rectangle in the downloaded order image. Use solid color text for elements captured by html2canvas.", "selector": "[data-testid=\"generated-image\"]", "priority": "MEDIUM"},
+      {"component": "CartSummary", "issue": "Rarity is rendered as the raw English enum value ('Legendary', 'Epic', 'Rare'...) via capitalize, while the app is Spanish-only. Should map to Legendario/Épico/Raro/Poco Común/Común as done in SpiritsCatalog.", "selector": "[data-testid^=\"cart-item-\"]", "priority": "MEDIUM"},
+      {"component": "Header", "issue": "Stepper displays numbers 1, 3, 4, 5, 6 to the user (step 2 skipped) which looks like a broken flow. Also the unused onCountryChange prop is passed to Header (dead code).", "selector": "[data-testid=\"step-3\"]", "priority": "LOW"},
+      {"component": "SpiritsCatalog footer bar", "issue": "Pluralization: shows '1 Spirits' when only one item is selected.", "selector": "[data-testid=\"continue-to-summary\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Catálogo (mobile 390x844)", "issues": ["Fixed bottom bar is cramped: 'Total de items / 1 Spirits' wraps onto 3 lines and nearly collides with the 'Continuar al Resumen' button (button box 273x88 starting at x=100). Consider stacking or shrinking on small screens.", "Grid has only mb-8 bottom margin, so the fixed bar overlays the bottom of the last card row; add bottom padding when the bar is visible."]},
+      {"screen": "Catálogo (assets)", "issues": ["Spirit images are generic Unsplash stock photos (crystals, a game controller, abstract blue blobs) that have nothing to do with Fortnite Spirits - low relevance to the app description. Review images are also generic stock photos rather than customer review screenshots."]},
+      {"screen": "ThankYou", "issues": ["Social links are still placeholders (discord.gg/yourserver, wa.me/51999999999, facebook.com/yourpage) and are also printed inside the generated order image."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Lift cart quantities to App.js so the cart survives 'Volver al catálogo' navigation (HIGH).",
+    "Honor window.APP_CONFIG.defaultCountry as the fallback in detectCountry() so Perú is the default when detection is inconclusive (HIGH).",
+    "Replace gradient-clipped text with solid colors inside the html2canvas capture container so the generated PNG shows the title and TOTAL correctly.",
+    "Translate rarity labels in CartSummary (share a single rarity label map across components).",
+    "Fix stepper numbering (1..5) and '1 Spirits' pluralization; add bottom padding for the fixed cart bar on mobile.",
+    "Replace stock Unsplash spirit/review images and placeholder social URLs with real assets."
+  ],
+  "critical_code_review_comments": [
+    "Cart state duplication: discount/subtotal/total math is copy-pasted in CartSummary, OrderConfirmation and ImageGenerator (>20 lines each). Extract a useOrderTotals(selectedSpirits, country) hook to avoid divergence.",
+    "ImageGenerator useEffect has an empty dep array while using onImageGenerated/props, and on html2canvas failure it only console.errors - the user is stuck forever on the 'Generando tu Imagen...' spinner with no retry/error UI. Add an error state + retry.",
+    "The rarity list is duplicated in SpiritsCatalog; move it into public/js/config.js (or a shared module) so labels/colors are configured in one place as the requirement states."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (no backend)", "frontend": "85%"},
+  "seed_data_creation": "None (static JS config data). Test order used name 'QA Tester', Epic ID 'QATester123'.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "No backend. Spirit ids are 'legendary-1','legendary-2','epic-1','epic-2','rare-1','rare-2','uncommon-1','uncommon-2','common-1','common-2' (NOT spirit_1). Working testids: country-XX, filter-{all|legendary|epic|rare|uncommon|common}, increase-/decrease-{spiritId}, continue-to-summary, cart-total, back-to-catalog, continue-to-form, input-name/-epic-id/-discord/-whatsapp/-date/-time/-comments, payment-{yape|plin|paypal|binance|usdt|bizum}, submit-form, generate-image-btn, generated-image, download-image-btn, next-step-1..9, finish-btn, social-discord/-whatsapp/-facebook, start-over-btn, review-{id}, review-prev/next, review-indicator-0..4. Verified working: filters (2 per rarity, 10 total), discounts 5%/10%/15% math, form validation (5 required-field errors), html2canvas generation (~760KB dataURL, 2400px wide), download (fortnite-spirits-pedido-*.png), thank-you + start-over reset, carousel prev/next/indicators with correct disabled states. Note the container auto-detects US, so click country-PE first if you need S/ pricing.",
+  "rca_of_the_issue": "Cart loss: SpiritsCatalog owns `quantities` in useState and App.js renders it only for currentStep===1; going back re-mounts the component with an empty object, and App's selectedSpirits is never fed back in. Default country: detectCountry() sets a local countryCode='PE' but the if/else chain reaches `language.startsWith('en')` (container locale en-US) and overrides it with 'US'; APP_CONFIG.defaultCountry is never read."
+}

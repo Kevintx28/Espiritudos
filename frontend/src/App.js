@@ -1,54 +1,191 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import Header from './components/Header';
+import CountrySelector from './components/CountrySelector';
+import SpiritsCatalog from './components/SpiritsCatalog';
+import CartSummary from './components/CartSummary';
+import UserForm from './components/UserForm';
+import OrderConfirmation from './components/OrderConfirmation';
+import ImageGenerator from './components/ImageGenerator';
+import NextSteps from './components/NextSteps';
+import ThankYou from './components/ThankYou';
+import ReviewsSection from './components/ReviewsSection';
 
 function App() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedSpirits, setSelectedSpirits] = useState({});
+  const [userInfo, setUserInfo] = useState(null);
+  const [generatedImage, setGeneratedImage] = useState(null);
+
+  // Auto-detectar país al cargar
+  useEffect(() => {
+    detectCountry();
+  }, []);
+
+  const detectCountry = () => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const language = navigator.language || navigator.userLanguage;
+    
+    let countryCode = 'PE'; // Por defecto Perú
+    
+    // Detectar por zona horaria
+    if (timezone.includes('America/Lima')) countryCode = 'PE';
+    else if (timezone.includes('America/New_York') || timezone.includes('America/Los_Angeles')) countryCode = 'US';
+    else if (timezone.includes('America/Argentina')) countryCode = 'AR';
+    else if (timezone.includes('America/Mexico_City')) countryCode = 'MX';
+    else if (timezone.includes('Europe/Madrid')) countryCode = 'ES';
+    else if (timezone.includes('America/Santiago')) countryCode = 'CL';
+    // Detectar por idioma
+    else if (language.startsWith('es-PE')) countryCode = 'PE';
+    else if (language.startsWith('es-AR')) countryCode = 'AR';
+    else if (language.startsWith('es-MX')) countryCode = 'MX';
+    else if (language.startsWith('es-ES')) countryCode = 'ES';
+    else if (language.startsWith('es-CL')) countryCode = 'CL';
+    else if (language.startsWith('en')) countryCode = 'US';
+
+    const country = window.COUNTRIES?.find(c => c.code === countryCode);
+    setSelectedCountry(country || window.COUNTRIES?.[0]);
+  };
+
+  const handleCountryChange = (country) => {
+    setSelectedCountry(country);
+  };
+
+  const handleSpiritsSelection = (spirits) => {
+    setSelectedSpirits(spirits);
+    setCurrentStep(3);
+  };
+
+  const handleContinueToForm = () => {
+    setCurrentStep(4);
+  };
+
+  const handleUserInfoSubmit = (info) => {
+    setUserInfo(info);
+    setCurrentStep(5);
+  };
+
+  const handleGenerateImage = () => {
+    setCurrentStep(6);
+  };
+
+  const handleImageGenerated = (imageUrl) => {
+    setGeneratedImage(imageUrl);
+    setCurrentStep(7);
+  };
+
+  const handleFinish = () => {
+    setCurrentStep(8);
+  };
+
+  const handleStartOver = () => {
+    setCurrentStep(1);
+    setSelectedSpirits({});
+    setUserInfo(null);
+    setGeneratedImage(null);
+  };
+
+  if (!selectedCountry) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#09090b]">
+        <div className="text-white text-xl">Cargando...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <Header 
+        currentStep={currentStep}
+        country={selectedCountry}
+        onCountryChange={handleCountryChange}
+      />
+
+      <main className="relative z-10">
+        {currentStep === 1 && (
+          <>
+            <section className="container mx-auto px-4 py-12">
+              <div className="text-center mb-12">
+                {window.APP_CONFIG?.logo && (
+                  <img
+                    src={window.APP_CONFIG.logo}
+                    alt="Espiritudos"
+                    className="w-48 h-48 md:w-64 md:h-64 mx-auto mb-8 rounded-full animate-pulse-glow"
+                    data-testid="hero-logo"
+                  />
+                )}
+                <h1 className="text-5xl lg:text-7xl font-bold tracking-tight mb-6 text-gradient" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+                  {window.APP_CONFIG?.name || 'Espiritudos'}
+                </h1>
+                <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+                  {window.APP_CONFIG?.tagline || 'Compra los mejores Spirits de Fortnite de forma rápida y segura'}
+                </p>
+              </div>
+
+              <CountrySelector 
+                selectedCountry={selectedCountry}
+                onCountryChange={handleCountryChange}
+              />
+            </section>
+
+            <SpiritsCatalog 
+              country={selectedCountry}
+              onContinue={handleSpiritsSelection}
+            />
+
+            <ReviewsSection />
+          </>
+        )}
+
+        {currentStep === 3 && (
+          <CartSummary 
+            selectedSpirits={selectedSpirits}
+            country={selectedCountry}
+            onBack={() => setCurrentStep(1)}
+            onContinue={handleContinueToForm}
+          />
+        )}
+
+        {currentStep === 4 && (
+          <UserForm 
+            country={selectedCountry}
+            onBack={() => setCurrentStep(3)}
+            onSubmit={handleUserInfoSubmit}
+          />
+        )}
+
+        {currentStep === 5 && (
+          <OrderConfirmation 
+            selectedSpirits={selectedSpirits}
+            userInfo={userInfo}
+            country={selectedCountry}
+            onBack={() => setCurrentStep(4)}
+            onGenerateImage={handleGenerateImage}
+          />
+        )}
+
+        {currentStep === 6 && (
+          <ImageGenerator 
+            selectedSpirits={selectedSpirits}
+            userInfo={userInfo}
+            country={selectedCountry}
+            onImageGenerated={handleImageGenerated}
+          />
+        )}
+
+        {currentStep === 7 && (
+          <NextSteps 
+            imageUrl={generatedImage}
+            country={selectedCountry}
+            onFinish={handleFinish}
+          />
+        )}
+
+        {currentStep === 8 && (
+          <ThankYou onStartOver={handleStartOver} />
+        )}
+      </main>
     </div>
   );
 }
