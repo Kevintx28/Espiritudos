@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Download, CreditCard, Send, FileCheck, MessageCircle, UserPlus, RefreshCcw, CheckCircle2, ArrowRight } from 'lucide-react';
+import PaymentModal from './PaymentModal';
 
 const NextSteps = ({ imageUrl, country, onFinish }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = imageUrl;
@@ -9,6 +12,13 @@ const NextSteps = ({ imageUrl, country, onFinish }) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    // Abrir modal automáticamente tras descargar
+    setModalOpen(true);
+  };
+
+  const handleModalFinish = () => {
+    setModalOpen(false);
+    onFinish();
   };
 
   const steps = [
@@ -140,6 +150,14 @@ const NextSteps = ({ imageUrl, country, onFinish }) => {
           <ArrowRight className="w-6 h-6" />
         </button>
       </div>
+
+      {/* Modal de pago que se abre automáticamente al descargar */}
+      <PaymentModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onFinish={handleModalFinish}
+        country={country}
+      />
     </section>
   );
 };

@@ -5,8 +5,8 @@ const APP_CONFIG = {
   logo: 'https://customer-assets-7cd3h4nn.emergentagent.net/job_spirit-marketplace-6/artifacts/iqm2w1sd_8945742a-0bf2-48e0-9e30-f0a269e3f347.png',
   defaultCountry: 'PE',
   social: {
-    discord: 'https://discord.gg/yourserver',
-    whatsapp: 'https://wa.me/51999999999',
+    discord: 'https://discord.gg/ASRjmbTFDb',
+    whatsapp: 'https://chat.whatsapp.com/BZL3ousKoX7IkSi86mdDfM',
     facebook: 'https://facebook.com/yourpage',
     website: 'https://espiritudos.com'
   },
