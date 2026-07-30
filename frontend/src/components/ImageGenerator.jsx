@@ -2,6 +2,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
+const RARITY_LABELS = {
+  legendary: 'Legendario',
+  epic: 'Épico',
+  rare: 'Raro',
+  uncommon: 'Poco Común',
+  common: 'Común'
+};
+
+const RARITY_COLORS = {
+  legendary: '#f59e0b',
+  epic: '#a855f7',
+  rare: '#3b82f6',
+  uncommon: '#22c55e',
+  common: '#94a3b8'
+};
+
 const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }) => {
   const imageRef = useRef(null);
   const [error, setError] = useState(false);
@@ -151,6 +167,28 @@ const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }
             </div>
           </div>
 
+          {/* Comentarios del Cliente - Solo si hay comentario */}
+          {userInfo.comments && userInfo.comments.trim() && (
+            <div style={{
+              backgroundColor: '#18181b',
+              padding: '30px',
+              borderRadius: '20px',
+              marginBottom: '30px',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+              <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '20px' }}>Comentarios del Cliente</h2>
+              <div style={{
+                fontSize: '16px',
+                color: '#f8fafc',
+                lineHeight: '1.6',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word'
+              }}>
+                {userInfo.comments}
+              </div>
+            </div>
+          )}
+
           {/* Lista de Spirits */}
           <div style={{ 
             backgroundColor: '#18181b', 
@@ -160,10 +198,11 @@ const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }
             border: '1px solid rgba(255,255,255,0.1)'
           }}>
             <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '20px' }}>Spirits Seleccionados</h2>
-            <table style={{ width: '100%', fontSize: '16px' }}>
+            <table style={{ width: '100%', fontSize: '16px', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
-                  <th style={{ textAlign: 'left', padding: '10px', color: '#94a3b8' }}>Spirit</th>
+                  <th style={{ textAlign: 'left', padding: '10px', color: '#94a3b8' }} colSpan={2}>Spirit</th>
+                  <th style={{ textAlign: 'left', padding: '10px', color: '#94a3b8' }}>Rareza</th>
                   <th style={{ textAlign: 'center', padding: '10px', color: '#94a3b8' }}>Cantidad</th>
                   <th style={{ textAlign: 'right', padding: '10px', color: '#94a3b8' }}>Precio Unit.</th>
                   <th style={{ textAlign: 'right', padding: '10px', color: '#94a3b8' }}>Subtotal</th>
@@ -172,7 +211,27 @@ const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }
               <tbody>
                 {items.map((item, idx) => (
                   <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ padding: '15px', width: '60px' }}>
+                      {item.image && (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          crossOrigin="anonymous"
+                          style={{
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '8px',
+                            objectFit: 'cover',
+                            border: `2px solid ${RARITY_COLORS[item.rarity] || '#94a3b8'}`,
+                            display: 'block'
+                          }}
+                        />
+                      )}
+                    </td>
                     <td style={{ padding: '15px', fontWeight: '600' }}>{item.name}</td>
+                    <td style={{ padding: '15px', color: RARITY_COLORS[item.rarity] || '#94a3b8', fontWeight: '600' }}>
+                      {RARITY_LABELS[item.rarity] || item.rarity}
+                    </td>
                     <td style={{ padding: '15px', textAlign: 'center' }}>{item.quantity}</td>
                     <td style={{ padding: '15px', textAlign: 'right' }}>{country.symbol}{item.unitPrice.toFixed(2)}</td>
                     <td style={{ padding: '15px', textAlign: 'right', fontWeight: '600' }}>{country.symbol}{item.subtotal.toFixed(2)}</td>
