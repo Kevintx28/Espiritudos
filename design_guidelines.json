@@ -1,0 +1,100 @@
+{
+  "theme": "Dark Mode E-commerce Marketplace (Gaming/Fortnite style)",
+  "emotional_tone": "Electric & Neon (Archetype 7), high-energy, premium gaming.",
+  "language": "es",
+  "typography": {
+    "heading": "Unbounded or Outfit (Neon/Gaming aesthetic)",
+    "body": "Inter or DM Sans (Legibility)",
+    "rules": [
+      "Use tracking-tight for H1-H2.",
+      "Uppercase with tracking-[0.2em] for overlines and rarity labels.",
+      "Never center-align body text."
+    ]
+  },
+  "colors": {
+    "background": "#09090b",
+    "surface": "#18181b",
+    "primary": "#8b5cf6",
+    "secondary": "#ec4899",
+    "accent": "#00f6ff",
+    "text_main": "#f8fafc",
+    "text_muted": "#94a3b8",
+    "rarity": {
+      "legendary": "#f59e0b",
+      "epic": "#a855f7",
+      "rare": "#3b82f6",
+      "uncommon": "#22c55e",
+      "common": "#94a3b8"
+    }
+  },
+  "visual_enhancers": {
+    "surfaces": "Use 1px borders (border-white/10) to separate grid items. Glassmorphism with saturation boost (backdrop-saturate-150 backdrop-blur-xl bg-black/60) for sticky header. NO fully transparent headers.",
+    "effects": "Neon glows via drop-shadow-[0_0_15px_rgba(139,92,246,0.5)] on active elements. Subtle grain texture overlay to reduce digital flatness."
+  },
+  "grids_and_layouts": {
+    "general": "Bento Grid Protocol. Asymmetrical layouts. Mobile-first grid-cols-1, scaling to md:grid-cols-8 or lg:grid-cols-12 for hero.",
+    "catalog": "Dense grid for catalog, strict hierarchy. Apply generous spacing inside cards.",
+    "checkout_flow": "Step-by-step layout (6 pasos) with generous spacing (p-8 to p-12)."
+  },
+  "components": {
+    "cards": "Flat background with 1px border. Hover: translate-y-1, neon drop shadow.",
+    "buttons": "Pill-shaped or slightly angled (skew-x) for a gaming feel. Vibrant gradients for 'Comprar' or 'Siguiente'.",
+    "checkout_steps": "Progress bar or stepped vertical/horizontal nodes.",
+    "html2canvas_target": "A specific DOM element with solid background (NOT glass) so html2canvas renders correctly."
+  },
+  "motion": {
+    "hover": "Scale up 1.02, brighten border.",
+    "transitions": "Use specific properties (transition: transform 0.2s ease, box-shadow 0.2s ease). NO transition-all.",
+    "carousel": "Smooth horizontal slide for reviews."
+  },
+  "accessibility": {
+    "contrast": "Ensure text over neon elements meets 4.5:1. Use dark text on neon backgrounds.",
+    "testing": "All interactive elements MUST include data-testid attribute."
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1763021225760-1f9101fd3b38?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwxfHxnbG93aW5nJTIwbWFnaWNhbCUyMGNyeXN0YWwlMjBnYW1pbmd8ZW58MHx8fHwxNzg1MzcxOTE3fDA&ixlib=rb-4.1.0&q=85",
+        "category": "spirits_catalog",
+        "description": "Epic Spirit Crystal"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1668987523075-24cf28946d05?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwyfHxnbG93aW5nJTIwbWFnaWNhbCUyMGNyeXN0YWwlMjBnYW1pbmd8ZW58MHx8fHwxNzg1MzcxOTE3fDA&ixlib=rb-4.1.0&q=85",
+        "category": "spirits_catalog",
+        "description": "Legendary Purple Crystal"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1573383104533-84fbfd3c10d0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwzfHxnYW1pbmclMjBhdmF0YXIlMjBwb3J0cmFpdCUyMG5lb258ZW58MHx8fHwxNzg1MzcxOTE3fDA&ixlib=rb-4.1.0&q=85",
+        "category": "reviews",
+        "description": "Gamer Avatar Mask"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1644353224392-7e532d7b8f4b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwyfHxnYW1pbmclMjBhdmF0YXIlMjBwbGF5aW5nfGVufDB8fHx8MTc4NTM3MTkxN3ww&ixlib=rb-4.1.0&q=85",
+        "category": "reviews",
+        "description": "Esports Reviewer"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1542751371-adc38448a05e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwxfHxlc3BvcnRzJTIwZ2FtZXIlMjBwbGF5aW5nfGVufDB8fHx8MTc4NTM3MTkxN3ww&ixlib=rb-4.1.0&q=85",
+        "category": "hero_background",
+        "description": "Gamer setup background (Use with heavy dark overlay bg-black/70)"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the 6-step purchase flow state management.",
+    "The 6 steps are: 1. Catálogo -> 2. Selección de cantidades -> 3. Resumen -> 4. Datos de usuario -> 5. Confirmación -> 6. Generación de imagen.",
+    "Implement the spirit selection with country/currency state overriding prices dynamically.",
+    "For HTML2Canvas, ensure the receipt/image container has NO cross-origin un-proxied images or handle them gracefully, and use solid backgrounds.",
+    "Ensure logic is split into separate JS files: config.js, prices.js, spirits.js, payments.js, reviews.js to act as mock databases.",
+    "Use Phosphor icons or Lucide for UI elements.",
+    "All text MUST be in Spanish as per user choice.",
+    "Implement quantity discounts logic explicitly in the cart step."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Do not use generic centered layouts. Prioritize visual tension and alignment.",
+    "Do not apply `transition: all`.",
+    "Do not use transparent header backgrounds, always use glassmorphism.",
+    "Ensure dark mode is NOT just black and white, but layered charcoals with neon accents.",
+    "All interactive elements must include `data-testid` attribute."
+  ]
+}
