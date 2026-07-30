@@ -15,7 +15,42 @@ const APP_CONFIG = {
     { min: 5, max: 9, percentage: 5 },
     { min: 10, max: 14, percentage: 10 },
     { min: 15, max: 999, percentage: 15 }
-  ]
+  ],
+  pavos: {
+    image: 'https://i.imgur.com/YIH99ww.png'
+  },
+  clubFortnite: {
+    plans: [
+      {
+        id: 'club-1m',
+        title: '1 mes de Club',
+        oldPrice: 'S/ 30.00',
+        price: 'S/ 24.99',
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+      },
+      {
+        id: 'club-3m',
+        title: '3 meses de Club',
+        oldPrice: null,
+        price: 'S/ 49.99',
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+      },
+      {
+        id: 'club-4m',
+        title: '4 meses de Club',
+        oldPrice: null,
+        price: 'S/ 56.99',
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+      },
+      {
+        id: 'club-6m',
+        title: '6 meses de Club',
+        oldPrice: 'S/ 80.00',
+        price: 'S/ 69.99',
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+      }
+    ]
+  }
 };
 
 // Exponer al window para acceso desde React

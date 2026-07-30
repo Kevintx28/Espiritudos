@@ -1,8 +1,13 @@
-import React from 'react';
-import { ShoppingCart } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingCart, Coins, Crown } from 'lucide-react';
+import PavosModal from './PavosModal';
+import ClubFortniteModal from './ClubFortniteModal';
 
 const Header = ({ currentStep, country }) => {
   const config = window.APP_CONFIG || {};
+  const [pavosOpen, setPavosOpen] = useState(false);
+  const [clubOpen, setClubOpen] = useState(false);
+
   // Mapea el paso real de la app al índice mostrado en el stepper (1..5)
   const stepMap = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 };
   const displayStep = stepMap[currentStep] || 0;
@@ -17,8 +22,34 @@ const Header = ({ currentStep, country }) => {
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-white/10">
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Botones nuevos a la izquierda del logo */}
+            <div className="flex items-center gap-2">
+              <button
+                data-testid="btn-open-pavos"
+                onClick={() => setPavosOpen(true)}
+                className="btn-gaming inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-bold text-sm hover:scale-105 transition-transform"
+                title="Venta de Pavos"
+              >
+                <Coins className="w-4 h-4" />
+                <span className="hidden sm:inline">Venta de Pavos</span>
+                <span className="sm:hidden">Pavos</span>
+              </button>
+
+              <button
+                data-testid="btn-open-club"
+                onClick={() => setClubOpen(true)}
+                className="btn-gaming inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-sm hover:scale-105 transition-transform"
+                title="Club Fortnite"
+              >
+                <Crown className="w-4 h-4" />
+                <span className="hidden sm:inline">Club Fortnite</span>
+                <span className="sm:hidden">Club</span>
+              </button>
+            </div>
+
+            {/* Logo + nombre */}
             {config.logo ? (
               <img
                 src={config.logo}
@@ -69,6 +100,10 @@ const Header = ({ currentStep, country }) => {
           )}
         </div>
       </div>
+
+      {/* Modales */}
+      <PavosModal isOpen={pavosOpen} onClose={() => setPavosOpen(false)} />
+      <ClubFortniteModal isOpen={clubOpen} onClose={() => setClubOpen(false)} />
     </header>
   );
 };
