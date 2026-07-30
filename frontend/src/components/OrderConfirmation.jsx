@@ -5,14 +5,16 @@ const OrderConfirmation = ({ selectedSpirits, userInfo, country, onBack, onGener
   const spirits = window.SPIRITS || [];
   const discounts = window.APP_CONFIG?.discounts || [];
   const paymentMethods = window.PAYMENT_METHODS?.[country.code] || [];
+  const getPrice = window.getSpiritPrice || ((s, c) => c?.pricePerSpirit || 0);
 
   const items = Object.entries(selectedSpirits).map(([id, quantity]) => {
     const spirit = spirits.find(s => s.id === id);
+    const unitPrice = getPrice(spirit, country);
     return {
       ...spirit,
       quantity,
-      unitPrice: country.pricePerSpirit,
-      subtotal: quantity * country.pricePerSpirit
+      unitPrice,
+      subtotal: quantity * unitPrice
     };
   });
 

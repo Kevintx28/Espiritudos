@@ -12,14 +12,16 @@ const RARITY_LABELS = {
 const CartSummary = ({ selectedSpirits, country, onBack, onContinue }) => {
   const spirits = window.SPIRITS || [];
   const discounts = window.APP_CONFIG?.discounts || [];
+  const getPrice = window.getSpiritPrice || ((s, c) => c?.pricePerSpirit || 0);
 
   const items = Object.entries(selectedSpirits).map(([id, quantity]) => {
     const spirit = spirits.find(s => s.id === id);
+    const unitPrice = getPrice(spirit, country);
     return {
       ...spirit,
       quantity,
-      unitPrice: country.pricePerSpirit,
-      subtotal: quantity * country.pricePerSpirit
+      unitPrice,
+      subtotal: quantity * unitPrice
     };
   });
 
