@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Plus, Minus, ShoppingBag } from 'lucide-react';
 
-const SpiritsCatalog = ({ country, onContinue }) => {
+const SpiritsCatalog = ({ country, initialQuantities = {}, onUpdate, onContinue }) => {
   const spirits = window.SPIRITS || [];
-  const [quantities, setQuantities] = useState({});
+  const [quantities, setQuantities] = useState(initialQuantities);
   const [selectedRarity, setSelectedRarity] = useState('all');
 
   const rarities = [
@@ -23,11 +23,15 @@ const SpiritsCatalog = ({ country, onContinue }) => {
     setQuantities(prev => {
       const current = prev[spiritId] || 0;
       const newValue = Math.max(0, current + change);
+      let next;
       if (newValue === 0) {
         const { [spiritId]: _, ...rest } = prev;
-        return rest;
+        next = rest;
+      } else {
+        next = { ...prev, [spiritId]: newValue };
       }
-      return { ...prev, [spiritId]: newValue };
+      if (onUpdate) onUpdate(next);
+      return next;
     });
   };
 
@@ -70,7 +74,7 @@ const SpiritsCatalog = ({ country, onContinue }) => {
       </div>
 
       {/* Grid de Spirits */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8 ${totalItems > 0 ? 'pb-32 md:pb-24' : ''}`}>
         {filteredSpirits.map((spirit) => {
           const quantity = quantities[spirit.id] || 0;
           return (
@@ -145,18 +149,18 @@ const SpiritsCatalog = ({ country, onContinue }) => {
       {/* Botón Continuar */}
       {totalItems > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-40 p-4 glass-effect border-t border-white/10">
-          <div className="container mx-auto flex items-center justify-between">
-            <div className="text-white">
-              <div className="text-sm text-slate-400">Total de items</div>
-              <div className="text-2xl font-bold">{totalItems} Spirits</div>
+          <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-white text-center sm:text-left">
+              <div className="text-xs sm:text-sm text-slate-400">Total de items</div>
+              <div className="text-xl sm:text-2xl font-bold">{totalItems} {totalItems === 1 ? 'Spirit' : 'Spirits'}</div>
             </div>
             
             <button
               data-testid="continue-to-summary"
               onClick={handleContinue}
-              className="btn-gaming px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white font-bold text-lg flex items-center gap-3 hover:scale-105 transition-transform"
+              className="btn-gaming w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white font-bold text-base sm:text-lg flex items-center justify-center gap-3 hover:scale-105 transition-transform"
             >
-              <ShoppingBag className="w-6 h-6" />
+              <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
               Continuar al Resumen
             </button>
           </div>

@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 
 const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }) => {
   const imageRef = useRef(null);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const spirits = window.SPIRITS || [];
   const discounts = window.APP_CONFIG?.discounts || [];
   const paymentMethods = window.PAYMENT_METHODS?.[country.code] || [];
@@ -30,6 +32,7 @@ const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }
   useEffect(() => {
     const generateImage = async () => {
       try {
+        setError(false);
         await new Promise(resolve => setTimeout(resolve, 500));
 
         const canvas = await html2canvas(imageRef.current, {
@@ -42,13 +45,35 @@ const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }
 
         const imageUrl = canvas.toDataURL('image/png');
         onImageGenerated(imageUrl);
-      } catch (error) {
-        console.error('Error generando imagen:', error);
+      } catch (err) {
+        console.error('Error generando imagen:', err);
+        setError(true);
       }
     };
 
     generateImage();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attempt]);
+
+  if (error) {
+    return (
+      <section className="container mx-auto px-4 py-12">
+        <div className="max-w-md mx-auto text-center bg-[#18181b] border border-red-500/30 rounded-2xl p-8">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">Error al generar la imagen</h2>
+          <p className="text-slate-400 mb-6">Hubo un problema generando tu imagen. Por favor intenta de nuevo.</p>
+          <button
+            data-testid="retry-image-btn"
+            onClick={() => setAttempt(a => a + 1)}
+            className="btn-gaming px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold flex items-center gap-2 mx-auto"
+          >
+            <RefreshCw className="w-5 h-5" />
+            Reintentar
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -84,9 +109,7 @@ const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }
               fontSize: '48px', 
               fontWeight: 'bold', 
               marginBottom: '10px',
-              background: 'linear-gradient(to right, #a78bfa, #ec4899, #06b6d4)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: '#a78bfa'
             }}>
               {config.name || 'Espiritudos'}
             </h1>
@@ -179,11 +202,7 @@ const ImageGenerator = ({ selectedSpirits, userInfo, country, onImageGenerated }
                 borderTop: '2px solid rgba(255,255,255,0.1)'
               }}>
                 <span>TOTAL:</span>
-                <span style={{ 
-                  background: 'linear-gradient(to right, #a78bfa, #ec4899, #06b6d4)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>
+                <span style={{ color: '#ec4899' }}>
                   {country.symbol}{total.toFixed(2)}
                 </span>
               </div>

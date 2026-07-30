@@ -1,14 +1,17 @@
 import React from 'react';
 import { ShoppingCart } from 'lucide-react';
 
-const Header = ({ currentStep, country, onCountryChange }) => {
+const Header = ({ currentStep, country }) => {
   const config = window.APP_CONFIG || {};
+  // Mapea el paso real de la app al índice mostrado en el stepper (1..5)
+  const stepMap = { 1: 1, 3: 2, 4: 3, 5: 4, 6: 5 };
+  const displayStep = stepMap[currentStep] || 0;
   const steps = [
-    { number: 1, name: 'Catálogo' },
-    { number: 3, name: 'Resumen' },
-    { number: 4, name: 'Datos' },
-    { number: 5, name: 'Confirmación' },
-    { number: 6, name: 'Imagen' }
+    { display: 1, name: 'Catálogo' },
+    { display: 2, name: 'Resumen' },
+    { display: 3, name: 'Datos' },
+    { display: 4, name: 'Confirmación' },
+    { display: 5, name: 'Imagen' }
   ];
 
   return (
@@ -43,21 +46,21 @@ const Header = ({ currentStep, country, onCountryChange }) => {
           {currentStep <= 6 && currentStep !== 7 && currentStep !== 8 && (
             <div className="hidden md:flex items-center gap-2">
               {steps.map((step, idx) => (
-                <React.Fragment key={step.number}>
+                <React.Fragment key={step.display}>
                   <div
-                    data-testid={`step-${step.number}`}
+                    data-testid={`step-${step.display}`}
                     className={`step-node flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
-                      currentStep >= step.number
+                      displayStep >= step.display
                         ? 'bg-purple-500/20 border border-purple-500 text-white'
                         : 'bg-gray-800 border border-gray-700 text-gray-500'
-                    } ${currentStep === step.number ? 'active' : ''}`}
+                    } ${displayStep === step.display ? 'active' : ''}`}
                   >
-                    <span className="font-bold">{step.number}</span>
+                    <span className="font-bold">{step.display}</span>
                     <span className="text-sm">{step.name}</span>
                   </div>
                   {idx < steps.length - 1 && (
                     <div className={`w-8 h-0.5 ${
-                      currentStep > step.number ? 'bg-purple-500' : 'bg-gray-700'
+                      displayStep > step.display ? 'bg-purple-500' : 'bg-gray-700'
                     }`} />
                   )}
                 </React.Fragment>

@@ -26,26 +26,31 @@ function App() {
   const detectCountry = () => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const language = navigator.language || navigator.userLanguage;
+    const defaultCode = window.APP_CONFIG?.defaultCountry || 'PE';
     
-    let countryCode = 'PE'; // Por defecto Perú
+    let countryCode = null;
     
-    // Detectar por zona horaria
+    // Detectar por zona horaria (más confiable)
     if (timezone.includes('America/Lima')) countryCode = 'PE';
-    else if (timezone.includes('America/New_York') || timezone.includes('America/Los_Angeles')) countryCode = 'US';
     else if (timezone.includes('America/Argentina')) countryCode = 'AR';
     else if (timezone.includes('America/Mexico_City')) countryCode = 'MX';
     else if (timezone.includes('Europe/Madrid')) countryCode = 'ES';
     else if (timezone.includes('America/Santiago')) countryCode = 'CL';
-    // Detectar por idioma
+    else if (timezone.includes('America/New_York') || timezone.includes('America/Los_Angeles') || timezone.includes('America/Chicago')) countryCode = 'US';
+    // Solo detectar por idioma si es español específico
     else if (language.startsWith('es-PE')) countryCode = 'PE';
     else if (language.startsWith('es-AR')) countryCode = 'AR';
     else if (language.startsWith('es-MX')) countryCode = 'MX';
     else if (language.startsWith('es-ES')) countryCode = 'ES';
     else if (language.startsWith('es-CL')) countryCode = 'CL';
-    else if (language.startsWith('en')) countryCode = 'US';
+
+    // Si no se detectó nada, usar el default de config
+    if (!countryCode) {
+      countryCode = defaultCode;
+    }
 
     const country = window.COUNTRIES?.find(c => c.code === countryCode);
-    setSelectedCountry(country || window.COUNTRIES?.[0]);
+    setSelectedCountry(country || window.COUNTRIES?.find(c => c.code === defaultCode) || window.COUNTRIES?.[0]);
   };
 
   const handleCountryChange = (country) => {
@@ -55,6 +60,10 @@ function App() {
   const handleSpiritsSelection = (spirits) => {
     setSelectedSpirits(spirits);
     setCurrentStep(3);
+  };
+
+  const handleUpdateSpirits = (spirits) => {
+    setSelectedSpirits(spirits);
   };
 
   const handleContinueToForm = () => {
@@ -99,7 +108,6 @@ function App() {
       <Header 
         currentStep={currentStep}
         country={selectedCountry}
-        onCountryChange={handleCountryChange}
       />
 
       <main className="relative z-10">
@@ -131,6 +139,8 @@ function App() {
 
             <SpiritsCatalog 
               country={selectedCountry}
+              initialQuantities={selectedSpirits}
+              onUpdate={handleUpdateSpirits}
               onContinue={handleSpiritsSelection}
             />
 

@@ -1,6 +1,14 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight, Tag } from 'lucide-react';
 
+const RARITY_LABELS = {
+  legendary: 'Legendario',
+  epic: 'Épico',
+  rare: 'Raro',
+  uncommon: 'Poco Común',
+  common: 'Común'
+};
+
 const CartSummary = ({ selectedSpirits, country, onBack, onContinue }) => {
   const spirits = window.SPIRITS || [];
   const discounts = window.APP_CONFIG?.discounts || [];
@@ -60,7 +68,7 @@ const CartSummary = ({ selectedSpirits, country, onBack, onContinue }) => {
                 
                 <div className="flex-1">
                   <h4 className="text-white font-bold">{item.name}</h4>
-                  <p className="text-slate-400 text-sm capitalize">{item.rarity}</p>
+                  <p className="text-slate-400 text-sm">{RARITY_LABELS[item.rarity] || item.rarity}</p>
                 </div>
                 
                 <div className="text-right">
