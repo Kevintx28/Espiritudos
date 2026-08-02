@@ -71,11 +71,11 @@ const CLASSIC_SPIRITS = [
   { id: 'clasico-22', name: 'ESPÍRITU DE LOS SIETE GALACTICO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/T6ubDe3.png' },
   { id: 'clasico-23', name: 'ESPÍRITU DE LOS SIETE HOLOGRAFICO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/QsJW72U.png' },
 
-  { id: 'clasico-24', name: 'Spirit Clásico 24', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+14' },
-  { id: 'clasico-25', name: 'Spirit Clásico 25', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+15' },
-  { id: 'clasico-26', name: 'Spirit Clásico 26', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+16' },
-  { id: 'clasico-27', name: 'Spirit Clásico 27', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+17' },
-  { id: 'clasico-28', name: 'Spirit Clásico 28', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+18' },
+  { id: 'clasico-24', name: 'ESPÍRITU JEFE', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/RTLeVrO.png' },
+  { id: 'clasico-25', name: 'ESPÍRITU JEFE DORADO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/U5ZRCvl.png' },
+  { id: 'clasico-26', name: 'ESPÍRITU JEFE GOLOSINA', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/dgpEhpH.png' },
+  { id: 'clasico-27', name: 'ESPÍRITU JEFE GALACTICO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/9RFQjJ4.png' },
+  { id: 'clasico-28', name: 'ESPÍRITU JEFE CUBO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/nPu5pTR.png' },
   // Raros (25)
   { id: 'clasico-29', name: 'Spirit Clásico 29', rarity: 'rare', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/3b82f6?text=Raro+1'  },
   { id: 'clasico-30', name: 'Spirit Clásico 30', rarity: 'rare', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/3b82f6?text=Raro+2'  },
