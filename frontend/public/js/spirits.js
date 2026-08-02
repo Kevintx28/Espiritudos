@@ -65,11 +65,12 @@ const CLASSIC_SPIRITS = [
   { id: 'clasico-17', name: 'ESPÍRITU DE BATMAN CUBICO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/AsI3xkE.png'  },
   { id: 'clasico-18', name: 'ESPÍRITU DE BATMAN HOLOGRAFICO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/8Kcqzhh.png'  },
 
-  { id: 'clasico-19', name: 'Spirit Clásico 19', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+9'  },
-  { id: 'clasico-20', name: 'Spirit Clásico 20', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+10' },
-  { id: 'clasico-21', name: 'Spirit Clásico 21', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+11' },
-  { id: 'clasico-22', name: 'Spirit Clásico 22', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+12' },
-  { id: 'clasico-23', name: 'Spirit Clásico 23', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+13' },
+  { id: 'clasico-19', name: 'ESPÍRITU DE LOS SIETE', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/jFJfO2H.png'  },
+  { id: 'clasico-20', name: 'ESPÍRITU DE LOS SIETE DORADO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/iM7lZfy.png' },
+  { id: 'clasico-21', name: 'ESPÍRITU DE LOS SIETE GOLOSINA', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/chBD8Jg.png' },
+  { id: 'clasico-22', name: 'ESPÍRITU DE LOS SIETE GALACTICO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/T6ubDe3.png' },
+  { id: 'clasico-23', name: 'ESPÍRITU DE LOS SIETE HOLOGRAFICO', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/QsJW72U.png' },
+
   { id: 'clasico-24', name: 'Spirit Clásico 24', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+14' },
   { id: 'clasico-25', name: 'Spirit Clásico 25', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+15' },
   { id: 'clasico-26', name: 'Spirit Clásico 26', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+16' },
