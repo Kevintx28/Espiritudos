@@ -47,10 +47,10 @@ const CLASSIC_SPIRITS = [
   { id: 'clasico-3',  name: 'ESPÍRITU DEL PUNTO CERO GOLOSINA',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/ax0Xl5b.png'  },
   { id: 'clasico-4',  name: 'ESPÍRITU DEL PUNTO CERO GALACTICO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/MwNoA1I.png'  },
 
-  { id: 'clasico-5',  name: 'Spirit Clásico 5',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+5'  },
-  { id: 'clasico-6',  name: 'Spirit Clásico 6',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+6'  },
-  { id: 'clasico-7',  name: 'Spirit Clásico 7',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+7'  },
-  { id: 'clasico-8',  name: 'Spirit Clásico 8',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+8'  },
+  { id: 'clasico-5',  name: 'ESPÍRITU SINIESTRO DORADO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/GrGEeh4.png'  },
+  { id: 'clasico-6',  name: 'ESPÍRITU SINIESTRO DE GOLOSINA',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/5Xbxreh.png'  },
+  { id: 'clasico-7',  name: 'ESPÍRITU SINIESTRO GALACTICO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/7LrLJou.png'  },
+  { id: 'clasico-8',  name: 'ESPÍRITU SINIESTRO CUBICO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/LoduojK.png'  },
 
   { id: 'clasico-9',  name: 'Spirit Clásico 9',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+9'  },
   { id: 'clasico-10', name: 'Spirit Clásico 10', rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+10' },
