@@ -2,12 +2,12 @@
 const REVIEWS = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1573383104533-84fbfd3c10d0?w=600&h=400&fit=crop',
+    image: 'https://i.imgur.com/VNKpOJ5.png',
     alt: 'Reseña de cliente satisfecho 1'
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1644353224392-7e532d7b8f4b?w=600&h=400&fit=crop',
+    image: 'https://i.imgur.com/oeHhrxP.png',
     alt: 'Reseña de cliente satisfecho 2'
   },
   {
