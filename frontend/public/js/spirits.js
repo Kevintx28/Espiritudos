@@ -42,14 +42,16 @@ const NEW_SPIRITS = [
 // Estos usan el precio por defecto del país (definido en prices.js)
 const CLASSIC_SPIRITS = [
   // Legendarios (10)
-  { id: 'clasico-1',  name: 'Spirit Clásico 1',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+1'  },
-  { id: 'clasico-2',  name: 'Spirit Clásico 2',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+2'  },
-  { id: 'clasico-3',  name: 'Spirit Clásico 3',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+3'  },
-  { id: 'clasico-4',  name: 'Spirit Clásico 4',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+4'  },
+  { id: 'clasico-1',  name: 'ESPÍRITU DEL PUNTO CERO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/o2U5tiN.png'  },
+  { id: 'clasico-2',  name: 'ESPÍRITU DEL PUNTO CERO DORADO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/VGBoin4.png'  },
+  { id: 'clasico-3',  name: 'ESPÍRITU DEL PUNTO CERO GOLOSINA',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/ax0Xl5b.png'  },
+  { id: 'clasico-4',  name: 'ESPÍRITU DEL PUNTO CERO GALACTICO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/MwNoA1I.png'  },
+
   { id: 'clasico-5',  name: 'Spirit Clásico 5',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+5'  },
   { id: 'clasico-6',  name: 'Spirit Clásico 6',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+6'  },
   { id: 'clasico-7',  name: 'Spirit Clásico 7',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+7'  },
   { id: 'clasico-8',  name: 'Spirit Clásico 8',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+8'  },
+
   { id: 'clasico-9',  name: 'Spirit Clásico 9',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+9'  },
   { id: 'clasico-10', name: 'Spirit Clásico 10', rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+10' },
   // Épicos (18)
