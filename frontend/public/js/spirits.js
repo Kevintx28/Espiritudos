@@ -18,19 +18,24 @@ const NEW_SPIRITS = [
   { id: 'nuevo-2',  name: 'ESPÍRITU DEL PUNTO CERO CUBO',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/kGfqeCI.png',  specialPrice: { PE: 0.50, US: 0.18, AR: 160, MX: 2.50, ES: 0.15, CL: 140 } },
   { id: 'nuevo-3',  name: 'ESPÍRITU DEL PUNTO CERO HOLOGRAFICO',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/7JQDGiU.png',  specialPrice: { PE: 0.50, US: 0.18, AR: 160, MX: 2.50, ES: 0.15, CL: 140 } },
   { id: 'nuevo-4',  name: 'ESPÍRITU DE PARCA HOLOGRAFICO',  rarity: 'legendary',      category: 'nuevos', image: 'https://i.imgur.com/bY5YOmS.png',  specialPrice: { PE: 0.50, US: 0.18, AR: 160, MX: 2.50, ES: 0.15, CL: 140 } },
+
   { id: 'nuevo-5',  name: 'ESPÍRITU DE TIERRA DE PATITO',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/WIuUWWj.png',  specialPrice: { PE: 0.45, US: 0.16, AR: 140, MX: 2.20, ES: 0.13, CL: 120 } },
   { id: 'nuevo-6',  name: 'ESPÍRITU DE FUEGO DE PATITO',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/4HI303x.png',  specialPrice: { PE: 0.45, US: 0.16, AR: 140, MX: 2.20, ES: 0.13, CL: 120 } },
   { id: 'nuevo-7',  name: 'ESPÍRITU DE AGUA DE PATITO',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/l5YEqOC.png',  specialPrice: { PE: 0.45, US: 0.16, AR: 140, MX: 2.20, ES: 0.13, CL: 120 } },
-  { id: 'nuevo-8',  name: 'ESPÍRITU DE PUNTO CERO PATITO',  rarity: 'rare',      category: 'nuevos', image: 'https://i.imgur.com/uw6bbXT.png',  specialPrice: { PE: 0.40, US: 0.14, AR: 120, MX: 1.90, ES: 0.11, CL: 100 } },
-  { id: 'nuevo-9',  name: 'Nuevo Spirit 9',  rarity: 'rare',      category: 'nuevos', image: 'https://placehold.co/400x400/09090b/3b82f6?text=Nuevo+9',  specialPrice: { PE: 0.40, US: 0.14, AR: 120, MX: 1.90, ES: 0.11, CL: 100 } },
-  { id: 'nuevo-10', name: 'Nuevo Spirit 10', rarity: 'rare',      category: 'nuevos', image: 'https://placehold.co/400x400/09090b/3b82f6?text=Nuevo+10', specialPrice: { PE: 0.40, US: 0.14, AR: 120, MX: 1.90, ES: 0.11, CL: 100 } },
-  { id: 'nuevo-11', name: 'Nuevo Spirit 11', rarity: 'rare',      category: 'nuevos', image: 'https://placehold.co/400x400/09090b/3b82f6?text=Nuevo+11', specialPrice: { PE: 0.40, US: 0.14, AR: 120, MX: 1.90, ES: 0.11, CL: 100 } },
-  { id: 'nuevo-12', name: 'Nuevo Spirit 12', rarity: 'uncommon',  category: 'nuevos', image: 'https://placehold.co/400x400/09090b/22c55e?text=Nuevo+12', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
-  { id: 'nuevo-13', name: 'Nuevo Spirit 13', rarity: 'uncommon',  category: 'nuevos', image: 'https://placehold.co/400x400/09090b/22c55e?text=Nuevo+13', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
-  { id: 'nuevo-14', name: 'Nuevo Spirit 14', rarity: 'uncommon',  category: 'nuevos', image: 'https://placehold.co/400x400/09090b/22c55e?text=Nuevo+14', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
-  { id: 'nuevo-15', name: 'Nuevo Spirit 15', rarity: 'common',    category: 'nuevos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Nuevo+15', specialPrice: { PE: 0.32, US: 0.11, AR: 105, MX: 1.60, ES: 0.09, CL: 90 } },
-  { id: 'nuevo-16', name: 'Nuevo Spirit 16', rarity: 'common',    category: 'nuevos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Nuevo+16', specialPrice: { PE: 0.32, US: 0.11, AR: 105, MX: 1.60, ES: 0.09, CL: 90 } },
-  { id: 'nuevo-17', name: 'Nuevo Spirit 17', rarity: 'common',    category: 'nuevos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Nuevo+17', specialPrice: { PE: 0.32, US: 0.11, AR: 105, MX: 1.60, ES: 0.09, CL: 90 } },
+  { id: 'nuevo-8',  name: 'ESPÍRITU DE PUNTO CERO PATITO',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/uw6bbXT.png',  specialPrice: { PE: 0.45, US: 0.16, AR: 140, MX: 2.20, ES: 0.13, CL: 120 } },
+
+  { id: 'nuevo-9',  name: 'ESPÍRITU DE LLAMA BOTIN DORADO',  rarity: 'rare',      category: 'nuevos', image: 'https://i.imgur.com/DUys8Gm.png',  specialPrice: { PE: 0.40, US: 0.14, AR: 120, MX: 1.90, ES: 0.11, CL: 100 } },
+  { id: 'nuevo-10', name: 'ESPIRITU DE LLAMA BOTIN DE GOLOSINA', rarity: 'rare',      category: 'nuevos', image: 'https://i.imgur.com/b1Y3a3c.png', specialPrice: { PE: 0.40, US: 0.14, AR: 120, MX: 1.90, ES: 0.11, CL: 100 } },
+  { id: 'nuevo-11', name: 'ESPÍRITU DE LLAMA BOTIN GALACTICO', rarity: 'rare',      category: 'nuevos', image: 'https://i.imgur.com/me64sjT.png', specialPrice: { PE: 0.40, US: 0.14, AR: 120, MX: 1.90, ES: 0.11, CL: 100 } },
+  { id: 'nuevo-12', name: 'ESPÍRITU DE LLAMA BOTIN DE GEMA', rarity: 'rare',  category: 'nuevos', image: 'https://i.imgur.com/fsAG8PU.png', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
+
+  { id: 'nuevo-13', name: 'ESPÍRITU DE BANANIN RADAR DORADO', rarity: 'rare',  category: 'nuevos', image: 'https://i.imgur.com/OHLx9Cd.png', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
+  { id: 'nuevo-14', name: 'ESPÍRITU DE BANANIN RADAR DE GOLOSINA', rarity: 'rare',  category: 'nuevos', image: 'https://i.imgur.com/yezApiX.png', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
+  { id: 'nuevo-15', name: 'ESPÍRITU DE BANANIN RADAR GALACTICO', rarity: 'rare',    category: 'nuevos', image: 'https://i.imgur.com/hiVvRlU.png', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
+  { id: 'nuevo-16', name: 'ESPÍRITU DE BANANIN RADAR HOLOGRAFICO', rarity: 'rare',    category: 'nuevos', image: 'https://i.imgur.com/41ParY2.png', specialPrice: { PE: 0.35, US: 0.12, AR: 110, MX: 1.70, ES: 0.10, CL: 95 } },
+
+  { id: 'nuevo-17', name: 'ESPÍRITU DE LLAMA BOTIN', rarity: 'common',    category: 'nuevos', image: 'https://i.imgur.com/YRkFNR2.png', specialPrice: { PE: 0.32, US: 0.11, AR: 105, MX: 1.60, ES: 0.09, CL: 90 } },
+  { id: 'nuevo-18', name: 'ESPÍRITU DE BANANIN RADAR ', rarity: 'common',    category: 'nuevos', image: 'https://i.imgur.com/FL8Sho8.png', specialPrice: { PE: 0.32, US: 0.11, AR: 105, MX: 1.60, ES: 0.09, CL: 90 } },
 ];
 
 // ---------- CATEGORÍA: CLÁSICOS (93 casillas) ----------
