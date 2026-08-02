@@ -14,7 +14,7 @@
 // ---------- CATEGORÍA: NUEVOS ESPIRITUS! (17 casillas) ----------
 // Precio especial por Spirit por país. Editar manualmente.
 const NEW_SPIRITS = [
-  { id: 'nuevo-1',  name: 'John Wick',  rarity: 'Mythical', category: 'nuevos', image: 'https://i.imgur.com/upiKEUW.png',  specialPrice: { PE: 0.50, US: 0.18, AR: 160, MX: 2.50, ES: 0.15, CL: 140 } },
+  { id: 'nuevo-1',  name: 'John Wick',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/upiKEUW.png',  specialPrice: { PE: 0.50, US: 0.18, AR: 160, MX: 2.50, ES: 0.15, CL: 140 } },
   { id: 'nuevo-2',  name: 'Nuevo Spirit 2',  rarity: 'legendary', category: 'nuevos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Nuevo+2',  specialPrice: { PE: 0.50, US: 0.18, AR: 160, MX: 2.50, ES: 0.15, CL: 140 } },
   { id: 'nuevo-3',  name: 'Nuevo Spirit 3',  rarity: 'legendary', category: 'nuevos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Nuevo+3',  specialPrice: { PE: 0.50, US: 0.18, AR: 160, MX: 2.50, ES: 0.15, CL: 140 } },
   { id: 'nuevo-4',  name: 'Nuevo Spirit 4',  rarity: 'epic',      category: 'nuevos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Nuevo+4',  specialPrice: { PE: 0.45, US: 0.16, AR: 140, MX: 2.20, ES: 0.13, CL: 120 } },
