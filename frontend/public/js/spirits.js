@@ -141,17 +141,17 @@ const CLASSIC_SPIRITS = [
   { id: 'clasico-81', name: 'ESPÍRITU DE FUEGO CUBICO', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/zWf7m4n.png'  },
   { id: 'clasico-82', name: 'ESPÍRITU DE FUEGO HOLOFOIL', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/5V0dCxi.png'  },
 
-  { id: 'clasico-83', name: 'ESPÍRITU DE TIERRA', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+5'  },
-  { id: 'clasico-84', name: 'ESPÍRITU DE TIERRA DORADO', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+6'  },
-  { id: 'clasico-85', name: 'ESPÍRITU DE TIERRA DE GOLOSINA', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+7'  },
-  { id: 'clasico-86', name: 'ESPÍRITU DE TIERRA GALACTICO', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+8'  },
-  { id: 'clasico-87', name: 'ESPÍRITU DE TIERRA CUBICO', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+9'  },
+  { id: 'clasico-83', name: 'ESPÍRITU DE TIERRA', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/1gkDCT7.png'  },
+  { id: 'clasico-84', name: 'ESPÍRITU DE TIERRA DORADO', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/lS8ZEv7.png'  },
+  { id: 'clasico-85', name: 'ESPÍRITU DE TIERRA DE GOLOSINA', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/UVYzqy2.png'  },
+  { id: 'clasico-86', name: 'ESPÍRITU DE TIERRA GALACTICO', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/sSGMdad.png'  },
+  { id: 'clasico-87', name: 'ESPÍRITU DE TIERRA CUBICO', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/0ph34M2.png'  },
 
-  { id: 'clasico-88', name: 'ESPÍRITU DE AGUA ', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+10' },
-  { id: 'clasico-89', name: 'ESPÍRITU DE AGUA DORADO', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+11' },
-  { id: 'clasico-90', name: 'ESPÍRITU DE AGUA DE GOLOSINA', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+12' },
-  { id: 'clasico-91', name: 'ESPÍRITU DE AGUA GALACTICO', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+13' },
-  { id: 'clasico-92', name: 'ESPÍRITU DE HOLOFOIL', rarity: 'common', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/94a3b8?text=Comun+14' },
+  { id: 'clasico-88', name: 'ESPÍRITU DE AGUA ', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/hL6Z8nL.png' },
+  { id: 'clasico-89', name: 'ESPÍRITU DE AGUA DORADO', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/QnQlVmQ.png' },
+  { id: 'clasico-90', name: 'ESPÍRITU DE AGUA DE GOLOSINA', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/3fmMNij.png' },
+  { id: 'clasico-91', name: 'ESPÍRITU DE AGUA GALACTICO', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/lVRguBD.png' },
+  { id: 'clasico-92', name: 'ESPÍRITU DE HOLOFOIL', rarity: 'common', category: 'clasicos', image: 'https://i.imgur.com/HltlV7h.png' },
 
 ];
 
