@@ -52,23 +52,27 @@ const CLASSIC_SPIRITS = [
   { id: 'clasico-7',  name: 'ESPÍRITU SINIESTRO GALACTICO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/7LrLJou.png'  },
   { id: 'clasico-8',  name: 'ESPÍRITU SINIESTRO CUBICO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/LoduojK.png'  },
 
-  { id: 'clasico-9',  name: 'Spirit Clásico 9',  rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+9'  },
-  { id: 'clasico-10', name: 'Spirit Clásico 10', rarity: 'legendary', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/f59e0b?text=Legendario+10' },
+  { id: 'clasico-9',  name: 'ESPÍRITU SINIESTRO',  rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/Y7J99Sx.png'  },
+  { id: 'clasico-10', name: 'ESPÍRITU DE POLLO', rarity: 'legendary', category: 'clasicos', image: 'https://i.imgur.com/ptWFqgS.png' },
   // Épicos (18)
-  { id: 'clasico-11', name: 'Spirit Clásico 11', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+1'  },
-  { id: 'clasico-12', name: 'Spirit Clásico 12', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+2'  },
+  { id: 'clasico-11', name: 'ESPÍRITU DE VINI JR.', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/x7HoCZN.png'  },
+  { id: 'clasico-12', name: 'ESPÍRITU THEBURNTPEAUT', rarity: 'epic', category: 'clasicos', image: 'https://i.imgur.com/po5d5Fx.png'  },
+
   { id: 'clasico-13', name: 'Spirit Clásico 13', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+3'  },
   { id: 'clasico-14', name: 'Spirit Clásico 14', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+4'  },
   { id: 'clasico-15', name: 'Spirit Clásico 15', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+5'  },
   { id: 'clasico-16', name: 'Spirit Clásico 16', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+6'  },
+
   { id: 'clasico-17', name: 'Spirit Clásico 17', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+7'  },
   { id: 'clasico-18', name: 'Spirit Clásico 18', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+8'  },
   { id: 'clasico-19', name: 'Spirit Clásico 19', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+9'  },
   { id: 'clasico-20', name: 'Spirit Clásico 20', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+10' },
+
   { id: 'clasico-21', name: 'Spirit Clásico 21', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+11' },
   { id: 'clasico-22', name: 'Spirit Clásico 22', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+12' },
   { id: 'clasico-23', name: 'Spirit Clásico 23', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+13' },
   { id: 'clasico-24', name: 'Spirit Clásico 24', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+14' },
+  
   { id: 'clasico-25', name: 'Spirit Clásico 25', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+15' },
   { id: 'clasico-26', name: 'Spirit Clásico 26', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+16' },
   { id: 'clasico-27', name: 'Spirit Clásico 27', rarity: 'epic', category: 'clasicos', image: 'https://placehold.co/400x400/09090b/a855f7?text=Epico+17' },
