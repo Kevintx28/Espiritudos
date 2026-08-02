@@ -2,27 +2,27 @@
 const REVIEWS = [
   {
     id: 1,
-    image: 'https://i.imgur.com/VNKpOJ5.png',
+    image: 'https://i.imgur.com/kYS4PTi.png',
     alt: 'Reseña de cliente satisfecho 1'
   },
   {
     id: 2,
-    image: 'https://i.imgur.com/oeHhrxP.png',
+    image: 'https://i.imgur.com/ppsWqr8.png',
     alt: 'Reseña de cliente satisfecho 2'
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop',
+    image: 'https://i.imgur.com/04umMaz.png',
     alt: 'Reseña de cliente satisfecho 3'
   },
   {
     id: 4,
-    image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop',
+    image: 'https://i.imgur.com/8s4k1uE.png',
     alt: 'Reseña de cliente satisfecho 4'
   },
   {
     id: 5,
-    image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=400&fit=crop',
+    image: 'https://i.imgur.com/xP6stPH.png',
     alt: 'Reseña de cliente satisfecho 5'
   }
 ];
