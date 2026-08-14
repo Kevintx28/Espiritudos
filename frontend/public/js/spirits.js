@@ -11,19 +11,19 @@
 //                   se usa el precio por defecto del país.
 // ============================================================
 
-// ---------- CATEGORÍA: NUEVOS ESPIRITUS! (17 casillas) ----------
+// ---------- CATEGORÍA: NUEVOS ESPIRITUS! (17 casillas) ---------- 
 // Precio especial por Spirit por país. Editar manualmente.
 const NEW_SPIRITS = [
 
-{ id: 'nuevo',  name: 'ESPIRITU IRONMOUSE',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/5UL5rJx.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE PARCA GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/LIemhdr.png ',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE PUNTO CERO GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/bXq48Z0.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE AURA GEMA',  rarity: 'legendary',      category: 'nuevos', image: 'https://i.imgur.com/T9ymYQM.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+{ id: 'nuevoe1',  name: 'ESPIRITU IRONMOUSE',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/5UL5rJx.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevoe2',  name: 'ESPÍRITU DE PARCA GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/LIemhdr.png ',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevoe3',  name: 'ESPÍRITU DE PUNTO CERO GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/bXq48Z0.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevoe4',  name: 'ESPÍRITU DE AURA GEMA',  rarity: 'legendary',      category: 'nuevos', image: 'https://i.imgur.com/T9ymYQM.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
 
-  { id: 'nuevo',  name: 'ESPÍRITU DE TIERRA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/Ea0xISZ.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE PATITO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/7TJjaUW.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DEMONIO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/nzjyi9l.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE AGUA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/H1AelxK.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevoe5',  name: 'ESPÍRITU DE TIERRA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/Ea0xISZ.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevoe6',  name: 'ESPÍRITU DE PATITO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/7TJjaUW.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevoe7',  name: 'ESPÍRITU DEMONIO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/nzjyi9l.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevoe8',  name: 'ESPÍRITU DE AGUA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/H1AelxK.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
 
   { id: 'nuevo-1',  name: 'ESPÍRITU DE JOHN WICK',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/upiKEUW.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
   { id: 'nuevo-2',  name: 'ESPÍRITU DEL PUNTO CERO CUBO',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/kGfqeCI.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
