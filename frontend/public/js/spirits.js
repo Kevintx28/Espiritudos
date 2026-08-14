@@ -21,9 +21,9 @@ const NEW_SPIRITS = [
   { id: 'nuevo',  name: 'ESPÍRITU DE AURA GEMA',  rarity: 'legendary',      category: 'nuevos', image: 'https://i.imgur.com/T9ymYQM.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
 
   { id: 'nuevo',  name: 'ESPÍRITU DE TIERRA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/Ea0xISZ.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE PATITO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DEMONIO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE AGUA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevo',  name: 'ESPÍRITU DE PATITO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/7TJjaUW.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevo',  name: 'ESPÍRITU DEMONIO GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/nzjyi9l.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevo',  name: 'ESPÍRITU DE AGUA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://i.imgur.com/H1AelxK.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
 
   { id: 'nuevo-1',  name: 'ESPÍRITU DE JOHN WICK',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/upiKEUW.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
   { id: 'nuevo-2',  name: 'ESPÍRITU DEL PUNTO CERO CUBO',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/kGfqeCI.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
