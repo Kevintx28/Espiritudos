@@ -26,28 +26,28 @@ const APP_CONFIG = {
         title: '1 mes de Club',
         oldPrice: 'S/ 30.00',
         price: 'S/ 24.99',
-        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-30_August_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-911e7061d0aa458aa67d4e5897fcb473&w=512&q=90&output=webp'
       },
       {
         id: 'club-3m',
         title: '3 meses de Club',
         oldPrice: null,
         price: 'S/ 49.99',
-        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-30_August_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-911e7061d0aa458aa67d4e5897fcb473&w=512&q=90&output=webp'
       },
       {
         id: 'club-4m',
         title: '4 meses de Club',
         oldPrice: null,
         price: 'S/ 56.99',
-        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-30_August_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-911e7061d0aa458aa67d4e5897fcb473&w=512&q=90&output=webp'
       },
       {
         id: 'club-6m',
         title: '6 meses de Club',
         oldPrice: 'S/ 80.00',
         price: 'S/ 69.99',
-        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-10_July_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-5949baa92bdf4080bc576b11ff67e264&w=512&q=90&output=webp'
+        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-30_August_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-911e7061d0aa458aa67d4e5897fcb473&w=512&q=90&output=webp'
       }
     ]
   }
