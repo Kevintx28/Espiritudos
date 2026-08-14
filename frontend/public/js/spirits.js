@@ -15,9 +15,9 @@
 // Precio especial por Spirit por país. Editar manualmente.
 const NEW_SPIRITS = [
 
-{ id: 'nuevo',  name: 'ESPIRITU IRONMOUSE',  rarity: 'legendary', category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE PARCA GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
-  { id: 'nuevo',  name: 'ESPÍRITU DE PUNTO CERO GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+{ id: 'nuevo',  name: 'ESPIRITU IRONMOUSE',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/5UL5rJx.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevo',  name: 'ESPÍRITU DE PARCA GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/LIemhdr.png ',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
+  { id: 'nuevo',  name: 'ESPÍRITU DE PUNTO CERO GEMA',  rarity: 'legendary', category: 'nuevos', image: 'https://i.imgur.com/bXq48Z0.png',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
   { id: 'nuevo',  name: 'ESPÍRITU DE AURA GEMA',  rarity: 'legendary',      category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
 
   { id: 'nuevo',  name: 'ESPÍRITU DE TIERRA GEMA',  rarity: 'epic',      category: 'nuevos', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFmxlmwUiB0j-8HLwX8s8A6H37MeOZFUOUzoijqXk5SCJ-zORoKWa5O3lN&s=10',  specialPrice: { PE: 0.30, US: 0.10, AR: 100, MX: 1.55, ES: 0.08, CL: 85 } },
