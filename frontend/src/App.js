@@ -11,50 +11,110 @@ import NextSteps from './components/NextSteps';
 import ThankYou from './components/ThankYou';
 import ReviewsSection from './components/ReviewsSection';
 
+const STORAGE_KEY = 'currency';
+
 function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [currencyDraft, setCurrencyDraft] = useState(null);
+  const [currencyModalOpen, setCurrencyModalOpen] = useState(false);
   const [selectedSpirits, setSelectedSpirits] = useState({});
   const [userInfo, setUserInfo] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
 
-  // Auto-detectar país al cargar
-  useEffect(() => {
-    detectCountry();
-  }, []);
+  const readSavedCountry = () => {
+    try {
+      const savedCode = localStorage.getItem(STORAGE_KEY);
+      if (!savedCode) return null;
+      return window.COUNTRIES?.find((country) => country.code === savedCode) || null;
+    } catch (error) {
+      return null;
+    }
+  };
 
   const detectCountry = () => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const language = navigator.language || navigator.userLanguage;
     const defaultCode = window.APP_CONFIG?.defaultCountry || 'PE';
-    
+
     let countryCode = null;
-    
-    // Detectar por zona horaria (más confiable)
+
     if (timezone.includes('America/Lima')) countryCode = 'PE';
     else if (timezone.includes('America/Argentina')) countryCode = 'AR';
     else if (timezone.includes('America/Mexico_City')) countryCode = 'MX';
     else if (timezone.includes('Europe/Madrid')) countryCode = 'ES';
     else if (timezone.includes('America/Santiago')) countryCode = 'CL';
     else if (timezone.includes('America/New_York') || timezone.includes('America/Los_Angeles') || timezone.includes('America/Chicago')) countryCode = 'US';
-    // Solo detectar por idioma si es español específico
     else if (language.startsWith('es-PE')) countryCode = 'PE';
     else if (language.startsWith('es-AR')) countryCode = 'AR';
     else if (language.startsWith('es-MX')) countryCode = 'MX';
     else if (language.startsWith('es-ES')) countryCode = 'ES';
     else if (language.startsWith('es-CL')) countryCode = 'CL';
 
-    // Si no se detectó nada, usar el default de config
     if (!countryCode) {
       countryCode = defaultCode;
     }
 
-    const country = window.COUNTRIES?.find(c => c.code === countryCode);
-    setSelectedCountry(country || window.COUNTRIES?.find(c => c.code === defaultCode) || window.COUNTRIES?.[0]);
+    return window.COUNTRIES?.find((country) => country.code === countryCode)
+      || window.COUNTRIES?.find((country) => country.code === defaultCode)
+      || window.COUNTRIES?.[0]
+      || null;
+  };
+
+  useEffect(() => {
+    const savedCountry = readSavedCountry();
+
+    if (savedCountry) {
+      setSelectedCountry(savedCountry);
+      setCurrencyDraft(savedCountry);
+      setCurrencyModalOpen(false);
+      return;
+    }
+
+    const fallbackCountry = detectCountry();
+    setCurrencyDraft(null);
+    setSelectedCountry(null);
+    setCurrencyModalOpen(true);
+    if (fallbackCountry) {
+      window.__DEFAULT_CURRENCY_CANDIDATE__ = fallbackCountry;
+    }
+  }, []);
+
+  const persistCountry = (country) => {
+    setSelectedCountry(country);
+    setCurrencyDraft(country);
+    try {
+      localStorage.setItem(STORAGE_KEY, country.code);
+    } catch (error) {
+      // Ignorar si localStorage no está disponible
+    }
   };
 
   const handleCountryChange = (country) => {
-    setSelectedCountry(country);
+    setCurrencyDraft(country);
+  };
+
+  const handleCurrencyConfirm = () => {
+    if (!currencyDraft) return;
+    persistCountry(currencyDraft);
+    setCurrencyModalOpen(false);
+  };
+
+  const openCurrencyModal = () => {
+    setCurrencyDraft(selectedCountry || window.__DEFAULT_CURRENCY_CANDIDATE__ || detectCountry());
+    setCurrencyModalOpen(true);
+  };
+
+  const closeCurrencyModal = () => {
+    if (selectedCountry) {
+      setCurrencyDraft(selectedCountry);
+      setCurrencyModalOpen(false);
+      return;
+    }
+
+    if (window.__DEFAULT_CURRENCY_CANDIDATE__) {
+      setCurrencyDraft(window.__DEFAULT_CURRENCY_CANDIDATE__);
+    }
   };
 
   const handleSpiritsSelection = (spirits) => {
@@ -97,8 +157,22 @@ function App() {
 
   if (!selectedCountry) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#09090b]">
-        <div className="text-white text-xl">Cargando...</div>
+      <div className="App">
+        <CountrySelector
+          selectedCountry={currencyDraft}
+          onCountryChange={handleCountryChange}
+          isModal
+          isRequired
+          title="¿En qué moneda deseas ver los precios?"
+          description="Selecciona tu moneda para mostrar los precios de EspiriTudos."
+          confirmLabel="Confirmar moneda"
+          isOpen={currencyModalOpen}
+          onConfirm={handleCurrencyConfirm}
+          onClose={null}
+        />
+        <div className="flex items-center justify-center min-h-screen bg-[#09090b]">
+          <div className="text-white text-xl">Cargando...</div>
+        </div>
       </div>
     );
   }
@@ -108,7 +182,23 @@ function App() {
       <Header 
         currentStep={currentStep}
         country={selectedCountry}
+        onOpenCurrencySelector={openCurrencyModal}
       />
+
+      {currencyModalOpen && (
+        <CountrySelector
+          selectedCountry={currencyDraft}
+          onCountryChange={handleCountryChange}
+          isModal
+          isRequired={false}
+          title="¿En qué moneda deseas ver los precios?"
+          description="Selecciona tu moneda para mostrar los precios de EspiriTudos."
+          confirmLabel="Confirmar moneda"
+          isOpen={currencyModalOpen}
+          onConfirm={handleCurrencyConfirm}
+          onClose={closeCurrencyModal}
+        />
+      )}
 
       <main className="relative z-10">
         {currentStep === 1 && (

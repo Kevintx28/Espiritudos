@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Coins, Crown } from 'lucide-react';
+import { ShoppingCart, Coins, Crown, Globe2 } from 'lucide-react';
 import PavosModal from './PavosModal';
 import ClubFortniteModal from './ClubFortniteModal';
 
-const Header = ({ currentStep, country }) => {
+const Header = ({ currentStep, country, onOpenCurrencySelector }) => {
   const config = window.APP_CONFIG || {};
   const [pavosOpen, setPavosOpen] = useState(false);
   const [clubOpen, setClubOpen] = useState(false);
@@ -74,30 +74,43 @@ const Header = ({ currentStep, country }) => {
             </div>
           </div>
 
-          {currentStep <= 6 && currentStep !== 7 && currentStep !== 8 && (
-            <div className="hidden md:flex items-center gap-2">
-              {steps.map((step, idx) => (
-                <React.Fragment key={step.display}>
-                  <div
-                    data-testid={`step-${step.display}`}
-                    className={`step-node flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
-                      displayStep >= step.display
-                        ? 'bg-purple-500/20 border border-purple-500 text-white'
-                        : 'bg-gray-800 border border-gray-700 text-gray-500'
-                    } ${displayStep === step.display ? 'active' : ''}`}
-                  >
-                    <span className="font-bold">{step.display}</span>
-                    <span className="text-sm">{step.name}</span>
-                  </div>
-                  {idx < steps.length - 1 && (
-                    <div className={`w-8 h-0.5 ${
-                      displayStep > step.display ? 'bg-purple-500' : 'bg-gray-700'
-                    }`} />
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onOpenCurrencySelector}
+              className="inline-flex items-center gap-2 rounded-full border border-purple-500/40 bg-purple-500/10 px-3 py-2 text-sm font-semibold text-purple-100 transition hover:border-purple-400 hover:bg-purple-500/20"
+              data-testid="btn-change-currency"
+              title="Cambiar moneda"
+            >
+              <Globe2 className="w-4 h-4" />
+              <span>{country?.currency || 'PEN'}</span>
+            </button>
+
+            {currentStep <= 6 && currentStep !== 7 && currentStep !== 8 && (
+              <div className="hidden md:flex items-center gap-2">
+                {steps.map((step, idx) => (
+                  <React.Fragment key={step.display}>
+                    <div
+                      data-testid={`step-${step.display}`}
+                      className={`step-node flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
+                        displayStep >= step.display
+                          ? 'bg-purple-500/20 border border-purple-500 text-white'
+                          : 'bg-gray-800 border border-gray-700 text-gray-500'
+                      } ${displayStep === step.display ? 'active' : ''}`}
+                    >
+                      <span className="font-bold">{step.display}</span>
+                      <span className="text-sm">{step.name}</span>
+                    </div>
+                    {idx < steps.length - 1 && (
+                      <div className={`w-8 h-0.5 ${
+                        displayStep > step.display ? 'bg-purple-500' : 'bg-gray-700'
+                      }`} />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

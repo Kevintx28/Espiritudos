@@ -125,3 +125,7 @@
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+.currency-modal-content {
+  backdrop-filter: blur(12px);
+}
