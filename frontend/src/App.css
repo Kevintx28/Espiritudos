@@ -1,7 +1,9 @@
 .App {
   min-height: 100vh;
-  background: #09090b;
+  background: var(--ktx-black);
   position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
 }
 
 .App::before {
@@ -11,9 +13,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  background-image: repeating-linear-gradient(135deg, transparent 0, transparent 74px, rgba(161, 98, 7, 0.08) 75px, transparent 76px, transparent 150px);
   pointer-events: none;
-  z-index: 1;
+  z-index: -2;
+}
+
+.App::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 12%, rgba(250, 204, 21, 0.09), transparent 34rem);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .spirit-card {
@@ -128,4 +139,101 @@
 
 .currency-modal-content {
   backdrop-filter: blur(12px);
+}
+
+:root {
+  --ktx-black: #070707;
+  --ktx-surface: #111111;
+  --ktx-surface-raised: #181818;
+  --ktx-yellow: #facc15;
+  --ktx-yellow-bright: #ffe45c;
+  --ktx-yellow-dark: #a16207;
+  --ktx-warm-white: #fffdf5;
+  --ktx-muted: #a1a1aa;
+}
+
+body {
+  background: var(--ktx-black);
+}
+
+.App .text-purple-100,
+.App .text-purple-200,
+.App .text-purple-300,
+.App .text-purple-400,
+.App .text-pink-300,
+.App .text-cyan-200,
+.App .text-cyan-300,
+.App .text-cyan-400,
+.App .text-indigo-200 {
+  color: var(--ktx-yellow) !important;
+}
+
+.App .border-purple-500,
+.App .border-cyan-300,
+.App .border-cyan-400,
+.App .border-cyan-400\/20,
+.App .border-cyan-300\/40,
+.App .border-pink-400\/60,
+.App .border-indigo-300\/50 {
+  border-color: var(--ktx-yellow-dark) !important;
+}
+
+.App .bg-purple-500,
+.App .bg-cyan-400,
+.App .bg-cyan-300,
+.App .bg-pink-500 {
+  background-color: var(--ktx-yellow) !important;
+  color: var(--ktx-black) !important;
+}
+
+.App .bg-purple-500\/10,
+.App .bg-purple-500\/15,
+.App .bg-cyan-400\/10,
+.App .bg-cyan-400\/15,
+.App .bg-pink-400\/5 {
+  background-color: rgba(250, 204, 21, 0.08) !important;
+}
+
+.App .from-purple-500,
+.App .from-purple-600,
+.App .from-purple-400,
+.App .via-pink-500,
+.App .via-pink-400,
+.App .to-pink-600,
+.App .to-pink-500,
+.App .to-cyan-500,
+.App .to-cyan-400 {
+  --tw-gradient-from: #a16207 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: #ffe45c var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #facc15, var(--tw-gradient-to) !important;
+}
+
+.App .text-gradient {
+  background-image: linear-gradient(110deg, #fffdf5 0%, #facc15 58%, #a16207 100%) !important;
+}
+
+.App [class*="bg-[#11101a]"],
+.App [class*="bg-[#15131f]"],
+.App [class*="bg-[#171222]"],
+.App [class*="bg-[#0b0812]"] {
+  background-color: var(--ktx-surface) !important;
+}
+
+.App input:focus,
+.App textarea:focus,
+.App select:focus,
+.App button:focus-visible {
+  outline: 2px solid var(--ktx-yellow) !important;
+  outline-offset: 2px;
+}
+
+.App .btn-gaming:hover {
+  box-shadow: 0 8px 22px rgba(250, 204, 21, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .App *, .App *::before, .App *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -2,7 +2,7 @@ const KTX_STORE_CONFIG = {
   identity: {
     name: 'KTXStore',
     tagline: 'Recargas, códigos y entregas manuales para tus juegos favoritos.',
-    accent: '#a855f7'
+    accent: '#FACC15'
   },
   dlocalGo: { enabled: false },
   countries: [
