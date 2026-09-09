@@ -26,7 +26,7 @@ const APP_CONFIG = {
         title: '1 mes de Club',
         oldPrice: 'S/ 30.00',
         price: 'S/ 24.99',
-        image: 'https://wsrv.nl/?url=https%3A%2F%2Fcdn1.epicgames.com%2Foffer%2Ffn%2FFNECO_41-30_August_Crew_Lineup_EGS_Launcher_Blade_1200x1600_1200x1600-911e7061d0aa458aa67d4e5897fcb473&w=512&q=90&output=webp'
+        image: 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmta90m862b3q07o59871tn6k'
       },
       {
         id: 'club-3m',
