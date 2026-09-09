@@ -5,6 +5,7 @@ const KTX_STORE_CONFIG = {
     accent: '#FACC15'
   },
   dlocalGo: { enabled: false },
+  featuredFortniteProductIds: ['GodzillaxKong.98', 'Revolver.99', 'Unvaulted.98'],
   countries: [
     { code: 'PE', name: 'Perú', currency: 'PEN', symbol: 'S/', flag: '🇵🇪' },
     { code: 'MX', name: 'México', currency: 'MXN', symbol: '$', flag: '🇲🇽' },
