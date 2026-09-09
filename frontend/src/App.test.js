@@ -11,7 +11,8 @@ const storeConfig = {
     { id: 'free-fire', name: 'Free Fire', shortName: 'Free Fire', icon: 'Flame', deliveryType: 'player_id' }
   ],
   products: [
-    { id: 'RBX-100', gameId: 'roblox', name: '100 Robux', price: 3.55, currency: 'PEN' },
+    { id: 'RBX-100', gameId: 'roblox', name: '100 Robux', price: 3.55, currency: 'PEN', fulfillmentAmount: 100, fulfillmentLabel: 'Robux' },
+    { id: 'RBX-150', gameId: 'roblox', name: '150 Robux', price: 5.5, currency: 'PEN', fulfillmentAmount: 150, fulfillmentLabel: 'Robux' },
     { id: 'MR-TEST', gameId: 'marvel-rivals', name: 'Lattice Marvel Rivals — precio por definir', price: null, currency: 'PEN', testOnly: true },
     { id: 'FF-TEST', gameId: 'free-fire', name: 'Diamantes Free Fire — precio por definir', price: null, currency: 'PEN', testOnly: true }
   ],
@@ -47,6 +48,15 @@ describe('KTXStore flow', () => {
     act(() => container.querySelector('[data-testid="add-RBX-100"]').click());
     expect(JSON.parse(localStorage.getItem('ktxstore:cartByGame')).roblox[0].product.id).toBe('RBX-100');
     expect(container.textContent).toContain('Carrito del juego');
+  });
+
+  it('shows 300 Robux and S/ 11.00 in the cart summary and floating cart', () => {
+    act(() => root.render(<App />));
+    act(() => container.querySelector('[data-testid="add-RBX-150"]').click());
+    act(() => container.querySelector('[data-testid="add-RBX-150"]').click());
+    expect(container.textContent).toContain('Entrega: 300 Robux');
+    expect(container.textContent.replace(/\s+/g, ' ')).toContain('Total a pagar:S/ 11.00');
+    expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('300 Robux · S/ 11.00');
   });
 
   it('navigates to Marvel Rivals checkout instructions', () => {
