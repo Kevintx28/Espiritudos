@@ -8,13 +8,13 @@ export function resolveFortniteImage(item) {
     : null;
   const displayAsset = Array.isArray(item?.displayAssets) ? item.displayAssets[0] : item?.displayAssets;
   const candidates = [
-    item?.image,
-    item?.bundle?.image,
     renderImage,
     item?.images?.featured,
+    item?.bundle?.image,
     item?.images?.icon,
     item?.brItems?.[0]?.images?.featured,
     item?.brItems?.[0]?.images?.icon,
+    item?.image,
     displayAsset?.full_background,
     displayAsset?.background,
     displayAsset?.url
@@ -39,8 +39,10 @@ export default function FortniteItemImage({ item, category, className = '', test
   const fallbackId = item?.id || 'unknown';
 
   if (!image || failed) {
-    return <div data-testid={`${testIdPrefix}-${fallbackId}`} className={`aspect-[4/3] w-full ${className}`}><div data-testid={`fortnite-image-fallback-${fallbackId}`} className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-yellow-900/40 bg-[#111111] px-3 text-center text-slate-400"><Icon className="mb-2 h-8 w-8 text-yellow-600" aria-hidden="true" /><span className="line-clamp-2 text-sm font-semibold text-white">{item?.name || 'Artículo Fortnite'}</span><span className="mt-1 text-xs">Imagen no disponible</span></div></div>;
+    return <div data-testid={`${testIdPrefix}-${fallbackId}`} className={`aspect-square w-full ${className}`}><div data-testid={`fortnite-image-fallback-${fallbackId}`} className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-yellow-900/40 bg-[#111111] px-3 text-center text-slate-400"><Icon className="mb-2 h-8 w-8 text-yellow-600" aria-hidden="true" /><span className="line-clamp-2 text-sm font-semibold text-white">{item?.name || 'Artículo Fortnite'}</span><span className="mt-1 text-xs">Imagen no disponible</span></div></div>;
   }
 
-  return <div className={`relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-yellow-900/40 bg-[#111111] ${className}`}><div className={`absolute inset-0 animate-pulse bg-white/5 ${loaded ? 'hidden' : 'block'}`} aria-hidden="true" /><img data-testid={`${testIdPrefix}-${fallbackId}`} src={image} alt={item?.name || 'Artículo Fortnite'} crossOrigin={forCanvas ? 'anonymous' : undefined} onLoad={() => setLoaded(true)} onError={() => setFailed(true)} className={`h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`} loading="lazy" /></div>;
+  const imageScale = item?.imageScale || 1;
+  const imagePosition = item?.imagePosition || 'center';
+  return <div className={`relative aspect-square w-full overflow-hidden rounded-xl border border-yellow-900/40 bg-[#111111] ${className}`}><div className={`absolute inset-0 animate-pulse bg-white/5 ${loaded ? 'hidden' : 'block'}`} aria-hidden="true" /><img data-testid={`${testIdPrefix}-${fallbackId}`} src={image} alt={item?.name || 'Artículo Fortnite'} crossOrigin="anonymous" onLoad={() => setLoaded(true)} onError={() => setFailed(true)} className={`h-full w-full object-contain transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`} style={{ objectPosition: imagePosition, transform: `scale(${imageScale})` }} loading={forCanvas ? undefined : 'lazy'} /></div>;
 }

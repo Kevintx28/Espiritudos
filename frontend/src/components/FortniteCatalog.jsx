@@ -36,11 +36,11 @@ function selectDailyDeals(products) {
 }
 
 function DynamicGrid({ products, onAdd, isFeatured = false }) {
-  return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={product} isFortnite isFeatured={isFeatured} isBundle={product.isBundle} onAdd={onAdd} />)}</div>;
+  return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={product} isFortnite isFeatured={isFeatured} isBundle={product.isBundle} onAdd={onAdd} />)}</div>;
 }
 
 function ManualGrid({ products, onAdd }) {
-  return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{products.map((product) => <ProductCard key={product.id} product={product} onAdd={onAdd} />)}</div>;
+  return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">{products.map((product) => <ProductCard key={product.id} product={product} onAdd={onAdd} />)}</div>;
 }
 
 function SectionHeading({ eyebrow, title, id }) {

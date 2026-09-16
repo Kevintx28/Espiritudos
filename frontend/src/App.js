@@ -52,7 +52,7 @@ function App() {
   const clearCart = () => setCarts((current) => ({ ...current, [gameId]: [] }));
   const saveDraft = (nextForm, nextPayment) => write(keys.draft, { gameId, form: nextForm, payment: nextPayment });
   const finish = () => { setCarts((current) => ({ ...current, [gameId]: [] })); remove(keys.pending); remove(keys.draft); setOrder(null); setForm(null); setPayment(null); setImageUrl(null); setStep('catalog'); };
-  const makeOrder = (nextPayment) => { const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items, calculations, total, form, paymentMethod: nextPayment.paymentMethod, testOnly: items.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
+  const makeOrder = (nextPayment) => { const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items, calculations, total, form, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, testOnly: items.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
   const continueCheckout = () => { setCartOpen(false); setStep('tutorial'); };
   const fortniteTabs = [{ id: 'passes', label: 'Pases de Fortnite' }, { id: 'account-topups', label: 'Vía cuenta' }];
 
