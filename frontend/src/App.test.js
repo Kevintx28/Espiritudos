@@ -64,7 +64,9 @@ describe('KTXStore flow', () => {
     act(() => container.querySelector('[data-testid="game-marvel-rivals"]').click());
     act(() => container.querySelector('[data-testid="add-MR-TEST"]').click());
     act(() => container.querySelector('[data-testid="cart-continue"]').click());
-    expect(container.textContent).toContain('UID');
+    expect(container.textContent).not.toContain('UID');
+    expect(container.textContent).toContain('Atrás');
+    expect(container.textContent).toContain('Datos');
   });
 
   it('restores a persisted cart on mount', () => {

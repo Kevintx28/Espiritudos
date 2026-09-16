@@ -5,7 +5,7 @@ import { formatCompactCountdown, formatLimaDate, getFortniteItemCountdown } from
 
 export default function ProductCard({ product, isFortnite = false, isFeatured = false, isBundle = false, shopNow, nextReset, onAdd }) {
   const testOnly = product.testOnly;
-  const isClubFortnite = product.gameId === 'club-fortnite';
+  const isClubFortnite = product.gameId === 'club-fortnite' || product.subcategory === 'club';
   const itemCountdown = isFortnite ? getFortniteItemCountdown(product, shopNow, nextReset) : null;
   const countdownLabel = itemCountdown ? (itemCountdown.hasIndividualEnd ? `Disponible hasta: ${formatLimaDate(itemCountdown.endDate)}` : `Próx. cambio: ${formatCompactCountdown(itemCountdown.remaining)}`) : '';
   return <article className={`flex flex-col justify-between rounded-2xl border border-white/10 bg-[#15131f] p-5 shadow-lg shadow-purple-950/20 ${isFortnite ? 'h-full' : ''}`} data-testid={`product-card-${product.id}`}>
@@ -16,6 +16,7 @@ export default function ProductCard({ product, isFortnite = false, isFeatured = 
       {!isFortnite && <div className="mb-4 flex items-start justify-between gap-3"><span className="rounded-lg bg-purple-500/15 px-2 py-1 text-xs font-bold text-purple-200">{product.id}</span>{testOnly && <span className="text-xs font-bold text-amber-300">PRUEBA</span>}</div>}
       <h3 className="text-lg font-bold text-white">{product.name}</h3>
       {isClubFortnite && <><p className="mt-2 text-sm font-bold text-cyan-200">Duración: {product.duration}</p><p className="mt-2 text-sm leading-6 text-slate-300">{product.description}</p></>}
+      {product.deliveryLabel && <p className="mt-2 text-sm font-bold text-cyan-200">Método: {product.deliveryLabel}</p>}
       {product.originalVbucks !== undefined && <p className="mt-2 text-sm font-bold text-white">{product.originalVbucks} V-Bucks{product.type ? ` · ${product.type}` : ''}</p>}
       {isFortnite && product.type && <p className="mt-2 text-sm text-slate-300">{product.type}</p>}
       {!isFortnite && product.rarity && <p className="mt-1 text-xs text-slate-400">Rareza: {product.rarity}</p>}
