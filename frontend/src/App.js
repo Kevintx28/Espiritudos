@@ -12,6 +12,7 @@ import OrderCompletion from './components/OrderCompletion';
 import FloatingCart from './components/FloatingCart';
 import CartDrawer from './components/CartDrawer';
 import { calculateCartTotals } from './lib/cart-calculations';
+import { fortniteManualProducts } from './data/fortniteCatalog';
 
 const keys = { country: 'ktxstore:selectedCountry', carts: 'ktxstore:cartByGame', draft: 'ktxstore:checkoutDraft', pending: 'ktxstore:pendingOrder' };
 const config = () => window.KTX_STORE_CONFIG || { identity: { name: 'KTXStore', tagline: '' }, games: [], products: [], countries: [] };
@@ -36,7 +37,9 @@ function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const game = store.games.find((item) => item.id === gameId) || store.games[0];
   const items = useMemo(() => carts[gameId] || [], [carts, gameId]);
-  const products = store.products.filter((product) => product.gameId === gameId);
+  const products = gameId === 'fortnite'
+    ? [...store.products.filter((product) => product.gameId === gameId), ...fortniteManualProducts]
+    : store.products.filter((product) => product.gameId === gameId);
   const calculations = useMemo(() => calculateCartTotals(items), [items]);
   const { totalMoney: total, totalUnits: itemCount } = calculations;
 
@@ -51,7 +54,7 @@ function App() {
   const finish = () => { setCarts((current) => ({ ...current, [gameId]: [] })); remove(keys.pending); remove(keys.draft); setOrder(null); setForm(null); setPayment(null); setImageUrl(null); setStep('catalog'); };
   const makeOrder = (nextPayment) => { const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items, calculations, total, form, paymentMethod: nextPayment.paymentMethod, testOnly: items.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
   const continueCheckout = () => { setCartOpen(false); setStep('tutorial'); };
-  const fortniteTabs = [{ id: 'passes', label: 'Pases de Fortnite' }, { id: 'account-topups', label: 'Recargas dentro de la cuenta' }, { id: 'club', label: 'Club de Fortnite' }, { id: 'packs', label: 'Packs de Fortnite' }];
+  const fortniteTabs = [{ id: 'passes', label: 'Pases de Fortnite' }, { id: 'account-topups', label: 'Vía cuenta' }];
 
   return <div className="App min-h-screen text-slate-100">
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[#09090b]/90 px-4 py-4 backdrop-blur-xl"><div className="mx-auto flex max-w-7xl flex-col gap-4"><div className="flex items-center justify-between gap-4"><div><div className="text-2xl font-black tracking-tight text-gradient">{store.identity.name}</div><p className="text-xs text-slate-400">{store.identity.tagline}</p></div><button type="button" onClick={() => setCountryOpen(true)} className="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-sm text-slate-200"><Globe className="h-4 w-4 text-cyan-300" />{country?.flag} {country?.name}</button></div><GameNavigation games={store.games} activeGame={gameId} onSelect={(next) => { setGameId(next); setFortniteSubcategory('gift-shop'); setStep('catalog'); setCartOpen(false); }} />{gameId === 'fortnite' && <nav aria-label="Subcategorías de Fortnite" className="flex gap-2 overflow-x-auto pb-2"><button type="button" onClick={() => setFortniteSubcategory('gift-shop')} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === 'gift-shop' ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>Vía regalo</button>{fortniteTabs.map((tab) => <button key={tab.id} type="button" onClick={() => setFortniteSubcategory(tab.id)} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === tab.id ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>{tab.label}</button>)}</nav>}</div></header>

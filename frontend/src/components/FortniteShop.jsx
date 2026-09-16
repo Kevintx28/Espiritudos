@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import { resolveFortniteImage } from './FortniteItemImage';
 import { formatCountdown, getFortniteItemCountdown, useFortniteShopClock } from '../lib/shopTimeUtils';
+import { fortniteCatalog } from '../data/fortniteCatalog';
 
 const SHOP_URL = 'https://fortnite-api.com/v2/shop?language=es-419';
 
@@ -86,10 +87,9 @@ export function isExcludedEntry(entry) {
   return categoryText.includes('lego') || categoryText.includes('juno');
 }
 
-export default function FortniteShop({ onAdd }) {
+export function useFortniteShopProducts() {
   const [products, setProducts] = useState([]);
   const [status, setStatus] = useState('loading');
-  const { now, nextReset, remaining, justReset } = useFortniteShopClock();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -101,11 +101,7 @@ export default function FortniteShop({ onAdd }) {
       })
       .then((payload) => {
         const entries = payload?.data?.shop?.entries || payload?.data?.entries || payload?.shop?.entries || [];
-        const dynamicProducts = entries
-          .filter((entry) => !isExcludedEntry(entry))
-          .map(normalizeEntry)
-          .filter(Boolean);
-        setProducts(dynamicProducts);
+        setProducts(entries.filter((entry) => !isExcludedEntry(entry)).map(normalizeEntry).filter(Boolean));
         setStatus('ready');
       })
       .catch((error) => {
@@ -114,11 +110,18 @@ export default function FortniteShop({ onAdd }) {
     return () => controller.abort();
   }, []);
 
+  return { products, status };
+}
+
+export default function FortniteShop({ onAdd }) {
+  const { products, status } = useFortniteShopProducts();
+  const { now, nextReset, remaining, justReset } = useFortniteShopClock();
+
   if (status === 'loading') return <div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">Cargando tienda actual de Fortnite...</div>;
   if (status === 'error') return <div role="alert" className="rounded-2xl border border-red-500/40 bg-red-950/20 p-8 text-center text-red-200">No se pudo cargar la tienda de Fortnite. Intenta más tarde.</div>;
   if (!products.length) return <div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">La tienda de Fortnite no tiene ofertas disponibles ahora.</div>;
 
-  const featuredIds = window.KTX_STORE_CONFIG?.featuredFortniteProductIds || [];
+  const featuredIds = fortniteCatalog.featuredApiIds;
   const featuredProducts = products.filter((product) => featuredIds.includes(product.id) || featuredIds.includes(product.sourceId) || featuredIds.includes(product.layoutId)).slice(0, 6);
   const categoryOrder = ['Lotes', 'Trajes', 'Mochilas retro', 'Picos', 'Planeadores', 'Gestos', 'Envoltorios', 'Vehículos', 'Destacados / Otros'];
   const productsBySection = products.reduce((groups, product) => {
