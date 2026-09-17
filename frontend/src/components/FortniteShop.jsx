@@ -1,10 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import { resolveFortniteImage } from './FortniteItemImage';
-import { formatCountdown, getFortniteItemCountdown, useFortniteShopClock } from '../lib/shopTimeUtils';
+import { formatCountdown, getFortniteItemCountdown, getTimeRemaining, useFortniteShopClock } from '../lib/shopTimeUtils';
 import { fortniteCatalog } from '../data/fortniteCatalog';
 
 const SHOP_URL = 'https://fortnite-api.com/v2/shop?language=es-419';
+const SHOP_CACHE_KEY = 'ktxstore:fortnite:shop-cache';
+
+function shopHash(entries) {
+  let hash = 2166136261;
+  const value = JSON.stringify(entries);
+  for (let index = 0; index < value.length; index += 1) hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
+  return (hash >>> 0).toString(16);
+}
+
+function readShopCache() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(SHOP_CACHE_KEY) || 'null');
+    if (cached?.products?.length) return cached;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function nextExpiration(products) {
+  const dates = products.map((product) => new Date(product.endDate).getTime()).filter((date) => Number.isFinite(date) && date > Date.now());
+  return dates.length ? Math.min(...dates) : null;
+}
 
 function displayValue(value) {
   if (typeof value === 'string') return value;
@@ -88,29 +111,35 @@ export function isExcludedEntry(entry) {
 }
 
 export function useFortniteShopProducts() {
-  const [products, setProducts] = useState([]);
-  const [status, setStatus] = useState('loading');
-
-  useEffect(() => {
-    const controller = new AbortController();
-    setStatus('loading');
-    fetch(SHOP_URL, { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error(`Fortnite shop request failed: ${response.status}`);
-        return response.json();
-      })
-      .then((payload) => {
-        const entries = payload?.data?.shop?.entries || payload?.data?.entries || payload?.shop?.entries || [];
-        setProducts(entries.filter((entry) => !isExcludedEntry(entry)).map(normalizeEntry).filter(Boolean));
-        setStatus('ready');
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') setStatus('error');
-      });
-    return () => controller.abort();
+  const [state, setState] = useState(() => readShopCache() || { products: [], status: 'loading', shopHash: null, nextExpiration: null });
+  const fetchShop = useCallback(async () => {
+    setState((current) => ({ ...current, status: 'loading' }));
+    try {
+      const response = await fetch(SHOP_URL);
+      if (!response.ok) throw new Error(`Fortnite shop request failed: ${response.status}`);
+      const payload = await response.json();
+      const entries = payload?.data?.shop?.entries || payload?.data?.entries || payload?.shop?.entries || [];
+      const products = entries.filter((entry) => !isExcludedEntry(entry)).map(normalizeEntry).filter(Boolean);
+      const nextState = { products, status: 'ready', shopHash: shopHash(entries), nextExpiration: nextExpiration(products) };
+      localStorage.setItem(SHOP_CACHE_KEY, JSON.stringify(nextState));
+      setState(nextState);
+    } catch {
+      setState((current) => ({ ...current, status: current.products.length ? 'stale' : 'error', nextExpiration: null }));
+    }
   }, []);
 
-  return { products, status };
+  useEffect(() => {
+    fetchShop();
+  }, [fetchShop]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      if (state.status !== 'loading' && state.nextExpiration && Date.now() >= state.nextExpiration) fetchShop();
+    }, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [fetchShop, state.nextExpiration, state.status]);
+
+  return { ...state, refresh: fetchShop };
 }
 
 export default function FortniteShop({ onAdd }) {

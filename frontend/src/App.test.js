@@ -45,6 +45,7 @@ describe('KTXStore flow', () => {
 
   it('selects Roblox and adds RBX-100 to its independent cart', () => {
     act(() => root.render(<App />));
+    act(() => container.querySelector('[data-testid="game-roblox"]').click());
     act(() => container.querySelector('[data-testid="add-RBX-100"]').click());
     expect(JSON.parse(localStorage.getItem('ktxstore:cartByGame')).roblox[0].product.id).toBe('RBX-100');
     expect(container.textContent).toContain('Carrito del juego');
@@ -52,6 +53,7 @@ describe('KTXStore flow', () => {
 
   it('shows 300 Robux and S/ 11.00 in the cart summary and floating cart', () => {
     act(() => root.render(<App />));
+    act(() => container.querySelector('[data-testid="game-roblox"]').click());
     act(() => container.querySelector('[data-testid="add-RBX-150"]').click());
     act(() => container.querySelector('[data-testid="add-RBX-150"]').click());
     expect(container.textContent).toContain('Entrega: 300 Robux');
@@ -72,6 +74,7 @@ describe('KTXStore flow', () => {
   it('restores a persisted cart on mount', () => {
     localStorage.setItem('ktxstore:cartByGame', JSON.stringify({ roblox: [{ product: storeConfig.products[0], quantity: 2 }] }));
     act(() => root.render(<App />));
+    act(() => container.querySelector('[data-testid="game-roblox"]').click());
     expect(container.textContent).toContain('100 Robux');
     expect(container.textContent).toContain('S/ 7.10');
   });
