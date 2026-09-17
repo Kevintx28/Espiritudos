@@ -11,6 +11,8 @@ import OrderReceiptGenerator from './components/OrderReceiptGenerator';
 import OrderCompletion from './components/OrderCompletion';
 import FloatingCart from './components/FloatingCart';
 import CartDrawer from './components/CartDrawer';
+import ContactFloaters from './components/ContactFloaters';
+import StoreFooter from './components/StoreFooter';
 import { calculateCartTotals } from './lib/cart-calculations';
 import { fortniteManualProducts } from './data/fortniteCatalog';
 import StoreHome from './components/StoreHome';
@@ -70,6 +72,8 @@ function App() {
       {step === 'receipt' && order && <><OrderReceiptGenerator order={order} onGenerated={setImageUrl} /><div className="mx-auto max-w-2xl"><p className="mb-4 text-center text-sm text-slate-400">Generando comprobante local...</p>{imageUrl && <OrderCompletion order={order} imageUrl={imageUrl} onFinish={finish} />}</div></>}
       {step === 'cart' && <GameCart items={items} calculations={calculations} onChange={changeQuantity} onClear={clearCart} onContinue={continueCheckout} />}
     </main>
+    <StoreFooter social={store.social} />
+    <ContactFloaters social={store.social} hasCart={itemCount > 0} />
     {itemCount > 0 && <FloatingCart calculations={calculations} onOpen={() => setCartOpen(true)} />}
     {cartOpen && <CartDrawer items={items} calculations={calculations} onChange={changeQuantity} onClear={clearCart} onContinue={continueCheckout} onClose={() => setCartOpen(false)} />}
     {countryOpen && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"><div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#15131f] p-6"><h2 className="text-2xl font-bold text-white">Selecciona tu país</h2><p className="mt-2 text-sm text-slate-400">Los precios se muestran en PEN/S/. Para otros países de LatAm, consulta métodos disponibles por WhatsApp.</p><div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">{store.countries.map((item) => <button key={item.code} type="button" data-testid={`country-${item.code}`} onClick={() => selectCountry(item)} className={`rounded-xl border p-4 text-left ${country?.code === item.code ? 'border-cyan-400 bg-cyan-400/10' : 'border-white/10'}`}><span className="text-2xl">{item.flag}</span><span className="mt-2 block text-sm font-bold text-white">{item.name}</span></button>)}</div><button type="button" onClick={() => setCountryOpen(false)} className="mt-5 text-sm text-slate-400 underline">Cerrar</button></div></div>}

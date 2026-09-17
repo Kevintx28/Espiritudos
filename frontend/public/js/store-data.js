@@ -5,6 +5,14 @@ const KTX_STORE_CONFIG = {
     accent: '#FACC15'
   },
   dlocalGo: { enabled: false },
+  social: {
+    whatsapp: 'https://wa.me/51968788328',
+    discord: 'https://discord.gg/We2N7EADfY',
+    discordTag: 'naiyel82',
+    instagram: 'https://www.instagram.com/ktxstore28/?hl=es',
+    facebook: 'https://www.facebook.com/profile.php?id=61594085235401',
+    whatsappGroup: 'https://chat.whatsapp.com/KjZYZV5EFqRCzeJITCRBrT'
+  },
   countries: [
     { code: 'PE', name: 'Perú', currency: 'PEN', symbol: 'S/', flag: '🇵🇪' },
     { code: 'MX', name: 'México', currency: 'MXN', symbol: '$', flag: '🇲🇽' },
