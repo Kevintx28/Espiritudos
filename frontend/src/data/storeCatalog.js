@@ -5,7 +5,7 @@ export const storeFeaturedGames = [
 ];
 
 export const storeMoreGames = [
-  { id: 'blood-strike', name: 'Blood Strike', status: 'available', featured: false },
-  { id: 'marvel-rivals', name: 'Marvel Rivals', status: 'available', featured: false },
-  { id: 'lol-rp', name: 'League of Legends RP', status: 'coming-soon', featured: false }
+  { id: 'blood-strike', name: 'Blood Strike', image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3199170/eeab00314314192f57bbdf91b91f8b871f890ce5/capsule_616x353.jpg?t=1788924245', status: 'available', featured: false },
+  { id: 'marvel-rivals', name: 'Marvel Rivals',image: 'https://nosdicengamers.com/wp-content/uploads/2024/12/marvel-rivals-1ywtf-1024x576.jpg', status: 'available', featured: false },
+  { id: 'lol-rp', name: 'League of Legends RP', image: 'https://larepublica.cronosmedia.glr.pe/original/2025/05/02/68154076836c72ee9901b87d.jpg', status: 'coming-soon', featured: false }
 ];
