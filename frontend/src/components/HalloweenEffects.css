@@ -1,0 +1,224 @@
+.ktx-halloween-effects {
+  display: none;
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+html.ktx-halloween-active .ktx-halloween-effects {
+  display: block;
+}
+
+html.ktx-halloween-active .App::after {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(250, 204, 21, 0.08), transparent 34rem),
+    radial-gradient(circle at 12% 8%, rgba(249, 115, 22, 0.1), transparent 25rem),
+    radial-gradient(circle at 88% 18%, rgba(91, 33, 182, 0.12), transparent 28rem);
+}
+
+html.ktx-halloween-active .App > header {
+  border-bottom-color: rgba(249, 115, 22, 0.36);
+  background-color: rgba(9, 9, 11, 0.72);
+  box-shadow: 0 8px 28px rgba(76, 29, 149, 0.12);
+}
+
+html.ktx-halloween-active .App > main,
+html.ktx-halloween-active .App > footer {
+  position: relative;
+  z-index: 1;
+}
+
+html.ktx-halloween-active .App > footer {
+  border-top-color: rgba(249, 115, 22, 0.3);
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+html.ktx-halloween-active .App article {
+  border-color: rgba(249, 115, 22, 0.22);
+  box-shadow: 0 12px 38px rgba(76, 29, 149, 0.12);
+}
+
+html.ktx-halloween-active .App button[data-testid^='add-'] {
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.16);
+}
+
+html.ktx-halloween-active .App section[aria-labelledby] > h2::before,
+html.ktx-halloween-active .App section[aria-labelledby] > h3::before,
+html.ktx-halloween-active .App section[aria-labelledby] > div > h3::before {
+  content: '🎃';
+  display: inline-block;
+  margin-right: 0.4em;
+  font-size: 0.72em;
+  filter: drop-shadow(0 0 7px rgba(249, 115, 22, 0.5));
+  vertical-align: 0.08em;
+}
+
+.ktx-halloween-pumpkin {
+  position: absolute;
+  top: -12vh;
+  opacity: 0;
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.52));
+  will-change: transform, opacity;
+  animation: ktx-halloween-fall 14s linear infinite;
+}
+
+.ktx-halloween-pumpkin--one {
+  left: 14%;
+  animation-delay: -8s;
+}
+
+.ktx-halloween-pumpkin--two {
+  left: 39%;
+  font-size: 1rem;
+  animation-duration: 21s;
+  animation-delay: -15s;
+}
+
+.ktx-halloween-pumpkin--three {
+  left: 68%;
+  animation-duration: 19s;
+  animation-delay: -5s;
+}
+
+.ktx-halloween-pumpkin--four {
+  left: 88%;
+  font-size: 1.1rem;
+  animation-duration: 23s;
+  animation-delay: -18s;
+}
+
+.ktx-halloween-pumpkin--five {
+  left: 5%;
+  animation-duration: 12s;
+  animation-delay: -3s;
+}
+
+.ktx-halloween-pumpkin--six {
+  left: 30%;
+  font-size: 1.15rem;
+  animation-duration: 16s;
+  animation-delay: -11s;
+}
+
+.ktx-halloween-pumpkin--seven {
+  left: 56%;
+  animation-duration: 11s;
+  animation-delay: -6s;
+}
+
+.ktx-halloween-pumpkin--eight {
+  left: 78%;
+  font-size: 1.2rem;
+  animation-duration: 15s;
+  animation-delay: -13s;
+}
+
+.ktx-halloween-web {
+  position: fixed;
+  top: 0;
+  width: clamp(5rem, 13vw, 12rem);
+  aspect-ratio: 1;
+  opacity: 0.19;
+  background-image:
+    radial-gradient(ellipse at top left, transparent 52%, rgba(196, 181, 253, 0.9) 53%, transparent 54%),
+    repeating-conic-gradient(from 0deg at top left, transparent 0deg 14deg, rgba(196, 181, 253, 0.8) 14.5deg 15deg, transparent 15.5deg 45deg);
+  mask-image: radial-gradient(ellipse at top left, #000 16%, transparent 74%);
+}
+
+.ktx-halloween-web--left {
+  left: 0;
+}
+
+.ktx-halloween-web--right {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.creator-code-celebration {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.creator-code-celebration span {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  opacity: 0;
+  font-size: 1.25rem;
+  animation: creator-code-pop 1.6s ease-out both;
+}
+
+.creator-code-celebration span:nth-child(1) {
+  --creator-code-x: -4rem;
+  --creator-code-rotation: -28deg;
+}
+
+.creator-code-celebration span:nth-child(2) {
+  --creator-code-x: 3.5rem;
+  --creator-code-rotation: 24deg;
+  animation-delay: 0.08s;
+}
+
+.creator-code-celebration span:nth-child(3) {
+  --creator-code-x: 0;
+  --creator-code-rotation: 0deg;
+  animation-delay: 0.04s;
+}
+
+.creator-code-celebration span:nth-child(4) {
+  --creator-code-x: 6rem;
+  --creator-code-rotation: 38deg;
+  animation-delay: 0.12s;
+}
+
+@keyframes ktx-halloween-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  12%, 82% {
+    opacity: 0.48;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(2rem, 120vh, 0) rotate(210deg);
+  }
+}
+
+@keyframes creator-code-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, 0, 0) scale(0.55) rotate(0deg);
+  }
+
+  24% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(-50% + var(--creator-code-x)), -3.5rem, 0) scale(1.15) rotate(var(--creator-code-rotation));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ktx-halloween-pumpkin,
+  .creator-code-celebration span {
+    animation: none;
+  }
+
+  .ktx-halloween-pumpkin {
+    display: none;
+  }
+
+  .creator-code-celebration span {
+    opacity: 0;
+  }
+}

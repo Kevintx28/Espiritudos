@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { Globe } from 'lucide-react';
+import HalloweenEffects from './components/HalloweenEffects';
 import GameNavigation from './components/GameNavigation';
 import StoreCatalog from './components/StoreCatalog';
 import GameCart from './components/GameCart';
@@ -64,7 +65,7 @@ function App() {
   const clearCart = () => { setCreatorCodeApplied(false); setCarts((current) => ({ ...current, [gameId]: [] })); };
   const saveDraft = (nextForm, nextPayment) => write(keys.draft, { gameId, form: nextForm, payment: nextPayment });
   const finish = () => { setCreatorCodeApplied(false); setCarts((current) => ({ ...current, [gameId]: [] })); remove(keys.pending); remove(keys.draft); setOrder(null); setForm(null); setPayment(null); setImageUrl(null); setStep('catalog'); };
-  const makeOrder = (nextPayment) => { const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items: checkoutItems, calculations, total, form, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, testOnly: checkoutItems.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
+  const makeOrder = (nextPayment) => { const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items: checkoutItems, calculations, total, form, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, creatorCodeApplied: creatorCodeActive, testOnly: checkoutItems.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
   const continueCheckout = () => { setCartOpen(false); setStep('tutorial'); };
   const applyCreatorCode = (code) => { const isValid = creatorCodeAvailable && code.trim().toUpperCase() === 'KRIS08'; setCreatorCodeApplied(isValid); return isValid; };
   const selectFortniteSubcategory = (subcategory) => { setFortniteSubcategory(subcategory); setCreatorCodeApplied(false); };
@@ -73,6 +74,7 @@ function App() {
   const fortniteTabs = [{ id: 'passes', label: 'Pases de Fortnite' }, { id: 'account-topups', label: 'Vía cuenta' }];
 
   return <div className="App min-h-screen text-slate-100">
+    <HalloweenEffects />
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[#09090b]/90 px-4 py-4 backdrop-blur-xl"><div className="mx-auto flex max-w-7xl flex-col gap-4"><div className="flex items-center justify-between gap-4"><div><div className="text-2xl font-black tracking-tight text-gradient">{store.identity.name}</div><p className="text-xs text-slate-400">{store.identity.tagline}</p></div><button type="button" onClick={() => setCountryOpen(true)} className="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-sm text-slate-200"><Globe className="h-4 w-4 text-cyan-300" />{country?.flag} {country?.name}</button></div><GameNavigation games={store.games} activeGame={gameId} homeActive={step === 'home'} onHome={goHome} onSelect={selectGame} />{step === 'catalog' && gameId === 'fortnite' && <nav aria-label="Subcategorías de Fortnite" className="flex gap-2 overflow-x-auto pb-2"><button type="button" onClick={() => selectFortniteSubcategory('gift-shop')} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === 'gift-shop' ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>Vía regalo</button>{fortniteTabs.map((tab) => <button key={tab.id} type="button" onClick={() => selectFortniteSubcategory(tab.id)} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === tab.id ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>{tab.label}</button>)}</nav>}</div></header>
     <main className={`mx-auto max-w-7xl px-4 py-8 ${itemCount ? 'pb-28 sm:pb-8' : ''}`}>
       {step === 'home' && <StoreHome onSelect={selectGame} />}
