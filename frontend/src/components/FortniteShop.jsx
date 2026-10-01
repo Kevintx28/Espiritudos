@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import { resolveFortniteImage } from './FortniteItemImage';
 import { formatCountdown, getFortniteItemCountdown, getTimeRemaining, useFortniteShopClock } from '../lib/shopTimeUtils';
-import { fortniteCatalog } from '../data/fortniteCatalog';
+import { FORTNITE_VBUCKS_RATE, fortniteCatalog } from '../data/fortniteCatalog';
 
 const SHOP_URL = 'https://fortnite-api.com/v2/shop?language=es-419';
 const SHOP_CACHE_KEY = 'ktxstore:fortnite:shop-cache';
@@ -67,7 +67,7 @@ export function normalizeEntry(entry, index) {
     id: `FN-${offerId}`,
     gameId: 'fortnite',
     name: uniqueName,
-    price: Number(((vbucks / 100) * 2).toFixed(2)),
+    price: Number(((vbucks / 100) * FORTNITE_VBUCKS_RATE).toFixed(2)),
     currency: 'PEN',
     fulfillmentAmount: vbucks,
     fulfillmentLabel: 'V-Bucks',

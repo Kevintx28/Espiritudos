@@ -19,7 +19,7 @@ describe('Fortnite dynamic shop', () => {
       id: 'FN-offer-123',
       gameId: 'fortnite',
       name: 'Traje de prueba',
-      price: 30,
+      price: 27,
       currency: 'PEN',
       fulfillmentAmount: 1500,
       fulfillmentLabel: 'V-Bucks',
@@ -53,6 +53,7 @@ describe('Fortnite dynamic shop', () => {
 
     expect(product.name).toBe('Lote Mechagodzilla y Kong');
     expect(product.type).toBe('Lote');
+    expect(product.price).toBe(50.4);
     expect(product.image).toBe('https://cdn.test/bundle.png');
     expect(product.name).not.toContain('Hacha de batalla');
   });
