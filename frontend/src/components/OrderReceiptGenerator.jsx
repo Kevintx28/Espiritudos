@@ -53,7 +53,7 @@ export default function OrderReceiptGenerator({ order, onGenerated }) {
   return <>
     {generating && <p className="mb-4 text-center text-sm text-slate-400">Generando imagen…</p>}
     {error && <p role="alert" className="text-red-200">{error}</p>}
-    <div ref={ref} className="fixed -left-[9999px] top-0 w-[900px] bg-[#0b0812] p-12 font-sans text-white">
+    <div ref={ref} className="ktx-halloween-receipt fixed -left-[9999px] top-0 w-[900px] bg-[#0b0812] p-12 font-sans text-white">
       <h1 className="text-5xl font-black text-purple-300">KTXStore</h1>
       <p className="mt-2 text-xl text-cyan-300">Pedido {order.id}</p>
       <p className="text-slate-400">{order.date} · {order.country.name}</p>

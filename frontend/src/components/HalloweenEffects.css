@@ -40,6 +40,52 @@ html.ktx-halloween-active .App article {
   box-shadow: 0 12px 38px rgba(76, 29, 149, 0.12);
 }
 
+html.ktx-halloween-active .ktx-halloween-receipt {
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(249, 115, 22, 0.42);
+  background-image:
+    radial-gradient(circle at 96% 4%, rgba(91, 33, 182, 0.16), transparent 12rem),
+    radial-gradient(circle at 4% 100%, rgba(249, 115, 22, 0.07), transparent 18rem);
+  box-shadow: 0 0 28px rgba(76, 29, 149, 0.16);
+}
+
+html.ktx-halloween-active .ktx-halloween-receipt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 140px;
+  height: 140px;
+  background-image:
+    radial-gradient(ellipse at top right, transparent 51%, rgba(196, 181, 253, 0.72) 52%, transparent 53%),
+    repeating-conic-gradient(from 0deg at 100% 0%, transparent 0deg 14deg, rgba(196, 181, 253, 0.68) 14.5deg 15deg, transparent 15.5deg 30deg);
+  mask-image: radial-gradient(ellipse at top right, #000 12%, transparent 76%);
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+html.ktx-halloween-active .ktx-halloween-receipt::after {
+  content: '🎃';
+  position: absolute;
+  top: 2.5rem;
+  right: 3rem;
+  font-size: 1.5rem;
+  opacity: 0.58;
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.5));
+  pointer-events: none;
+}
+
+html.ktx-halloween-active .ktx-halloween-receipt > div {
+  border: 1px solid rgba(249, 115, 22, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(91, 33, 182, 0.08);
+}
+
+html.ktx-halloween-active .ktx-halloween-receipt > h1 {
+  color: #facc15;
+  text-shadow: 0 0 16px rgba(249, 115, 22, 0.24);
+}
+
 html.ktx-halloween-active .App button[data-testid^='add-'] {
   box-shadow: 0 0 16px rgba(249, 115, 22, 0.16);
 }
