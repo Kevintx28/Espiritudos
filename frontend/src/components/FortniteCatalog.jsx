@@ -48,7 +48,7 @@ function ShopRefreshCounter({ nextExpiration, status }) {
 }
 
 function DynamicGrid({ products, onAdd, isFeatured = false }) {
-  const addGiftProduct = (product) => onAdd({ ...product, creatorCodeEligible: true });
+  const addGiftProduct = (product) => onAdd({ ...product, creatorCodeEligible: true, creatorCodeScope: 'gift-shop' });
   return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={product} isFortnite isFeatured={isFeatured} isBundle={product.isBundle} onAdd={addGiftProduct} />)}</div>;
 }
 
@@ -98,5 +98,5 @@ export default function FortniteCatalog({ products, subcategory, onAdd }) {
   const club = products.filter((product) => product.subcategory === 'club');
   if (subcategory === 'gift-shop') return <GiftShop products={apiProducts} status={status} shopHash={shopHash} nextExpiration={nextExpiration} onAdd={onAdd} />;
   if (subcategory === 'passes') return <section aria-labelledby="fortnite-passes-title"><SectionHeading eyebrow="Fortnite" title="Pases de Fortnite" id="fortnite-passes-title" /><ManualGrid products={passes} onAdd={onAdd} /></section>;
-  return <div className="space-y-10"><section aria-labelledby="fortnite-account-title"><SectionHeading eyebrow="Fortnite" title="Vía cuenta" id="fortnite-account-title" /><h4 className="mb-4 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Recargas de pavos</h4><ManualGrid products={accountTopups} onAdd={onAdd} /><h4 className="mb-4 mt-10 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Club de Fortnite</h4><ManualGrid products={club} onAdd={onAdd} /><h4 className="mb-4 mt-10 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Packs de Fortnite</h4><EmptyPackSlots /></section></div>;
+  return <div className="space-y-10"><section aria-labelledby="fortnite-account-title"><SectionHeading eyebrow="Fortnite" title="Vía cuenta" id="fortnite-account-title" /><h4 className="mb-4 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Recargas de pavos</h4><ManualGrid products={accountTopups} onAdd={onAdd} /><h4 className="mb-4 mt-10 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Club de Fortnite</h4><ManualGrid products={club} onAdd={(product) => onAdd({ ...product, creatorCodeEligible: true, creatorCodeScope: 'account-club' })} /><h4 className="mb-4 mt-10 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Packs de Fortnite</h4><EmptyPackSlots /></section></div>;
 }

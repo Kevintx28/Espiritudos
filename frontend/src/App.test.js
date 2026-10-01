@@ -97,7 +97,7 @@ describe('KTXStore flow', () => {
     act(() => { setInputValue('INVALID'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
     expect(container.querySelector('[role="alert"]').textContent).toContain('Código no válido');
     act(() => { setInputValue('KRIS08'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
-    expect(container.querySelector('[role="status"]').textContent).toContain('Chris');
+    expect(container.querySelector('[role="status"]').textContent).toContain('Kristalyz08');
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 46.17');
 
@@ -119,12 +119,40 @@ describe('KTXStore flow', () => {
     expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
   });
 
+  it('shows KRIS08 for Fortnite Club only and preserves fixed V-Bucks top-up pricing', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { shop: { entries: [] } } }) });
+    act(() => root.render(<App />));
+    act(() => container.querySelector('[data-testid="game-fortnite"]').click());
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+    act(() => Array.from(container.querySelectorAll('nav[aria-label="Subcategorías de Fortnite"] button')).find((button) => button.textContent.trim() === 'Vía cuenta').click());
+    act(() => container.querySelector('[data-testid="add-FN-VBUCKS-800"]').click());
+    act(() => container.querySelector('[data-testid="floating-cart"]').click());
+    act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
+    expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
+    act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
+    act(() => container.querySelector('[data-testid="add-FN-CLUB-1M"]').click());
+    act(() => container.querySelector('[data-testid="floating-cart"]').click());
+    act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
+
+    const codeInput = container.querySelector('[data-testid="creator-code-input"]');
+    expect(codeInput).not.toBeNull();
+    const setInputValue = (value) => {
+      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(codeInput, value);
+      codeInput.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    act(() => { setInputValue('KRIS08'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
+    expect(container.querySelector('[role="status"]').textContent).toContain('Kristalyz08');
+    act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
+    expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 37.98');
+  });
+
   it('navigates to Marvel Rivals checkout instructions', () => {
     act(() => root.render(<App />));
     act(() => container.querySelector('[data-testid="game-marvel-rivals"]').click());
     act(() => container.querySelector('[data-testid="add-MR-TEST"]').click());
     act(() => container.querySelector('[data-testid="cart-continue"]').click());
-    expect(container.textContent).not.toContain('UID');
+    expect(container.textContent).toContain('UID');
+    expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
     expect(container.textContent).toContain('Atrás');
     expect(container.textContent).toContain('Datos');
   });

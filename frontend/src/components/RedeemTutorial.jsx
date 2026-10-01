@@ -18,7 +18,7 @@ export default function RedeemTutorial({ onBack, onContinue, showCreatorCode = f
 			</div>
 			{creatorCodeStatus === 'success' && <>
 				<div className="creator-code-celebration" aria-hidden="true"><span>🎃</span><span>🎃</span><span>✨</span><span>🎃</span></div>
-				<p role="status" className="mt-2 text-sm text-emerald-300">Código aplicado. KRIS08 de Chris añade un 10% adicional en artículos de Vía regalo.</p>
+				<p role="status" className="mt-2 text-sm text-emerald-300">Código aplicado. KRIS08 de Kristalyz08 añade un 10% adicional a los productos elegibles.</p>
 			</>}
 			{creatorCodeStatus === 'error' && <p role="alert" className="mt-2 text-sm text-red-300">Código no válido. Verifica e inténtalo otra vez.</p>}
 		</form>}
