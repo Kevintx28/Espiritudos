@@ -38,12 +38,21 @@ function App() {
   const [imageUrl, setImageUrl] = useState(null);
   const [countryOpen, setCountryOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [creatorCodeApplied, setCreatorCodeApplied] = useState(false);
   const game = store.games.find((item) => item.id === gameId) || store.games[0];
   const items = useMemo(() => carts[gameId] || [], [carts, gameId]);
+  const hasCreatorCodeItems = items.some(({ product }) => product.creatorCodeEligible === true);
+  const creatorCodeAvailable = gameId === 'fortnite' && fortniteSubcategory === 'gift-shop' && hasCreatorCodeItems;
+  const creatorCodeActive = creatorCodeApplied && creatorCodeAvailable;
+  const checkoutItems = useMemo(() => creatorCodeActive ? items.map((item) => {
+    const price = Number(item.product.price);
+    if (!item.product.creatorCodeEligible || !Number.isFinite(price)) return item;
+    return { ...item, product: { ...item.product, price: Number((price * 0.9).toFixed(2)) } };
+  }) : items, [items, creatorCodeActive]);
   const products = gameId === 'fortnite'
     ? [...store.products.filter((product) => product.gameId === gameId), ...fortniteManualProducts]
     : store.products.filter((product) => product.gameId === gameId);
-  const calculations = useMemo(() => calculateCartTotals(items), [items]);
+  const calculations = useMemo(() => calculateCartTotals(checkoutItems), [checkoutItems]);
   const { totalMoney: total, totalUnits: itemCount } = calculations;
 
   useEffect(() => { write(keys.carts, carts); }, [carts]);
@@ -51,24 +60,26 @@ function App() {
 
   const selectCountry = (next) => { setCountry(next); write(keys.country, next.code); setCountryOpen(false); };
   const addProduct = (product) => setCarts((current) => { const existing = current[gameId] || []; const found = existing.find((item) => item.product.id === product.id); return { ...current, [gameId]: found ? existing.map((item) => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item) : [...existing, { product, quantity: 1 }] }; });
-  const changeQuantity = (product, quantity) => setCarts((current) => ({ ...current, [gameId]: quantity > 0 ? (current[gameId] || []).map((item) => item.product.id === product.id ? { ...item, quantity } : item) : (current[gameId] || []).filter((item) => item.product.id !== product.id) }));
-  const clearCart = () => setCarts((current) => ({ ...current, [gameId]: [] }));
+  const changeQuantity = (product, quantity) => { if (quantity <= 0 && product.creatorCodeEligible && !items.some((item) => item.product.id !== product.id && item.product.creatorCodeEligible)) setCreatorCodeApplied(false); setCarts((current) => ({ ...current, [gameId]: quantity > 0 ? (current[gameId] || []).map((item) => item.product.id === product.id ? { ...item, quantity } : item) : (current[gameId] || []).filter((item) => item.product.id !== product.id) })); };
+  const clearCart = () => { setCreatorCodeApplied(false); setCarts((current) => ({ ...current, [gameId]: [] })); };
   const saveDraft = (nextForm, nextPayment) => write(keys.draft, { gameId, form: nextForm, payment: nextPayment });
-  const finish = () => { setCarts((current) => ({ ...current, [gameId]: [] })); remove(keys.pending); remove(keys.draft); setOrder(null); setForm(null); setPayment(null); setImageUrl(null); setStep('catalog'); };
-  const makeOrder = (nextPayment) => { const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items, calculations, total, form, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, testOnly: items.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
+  const finish = () => { setCreatorCodeApplied(false); setCarts((current) => ({ ...current, [gameId]: [] })); remove(keys.pending); remove(keys.draft); setOrder(null); setForm(null); setPayment(null); setImageUrl(null); setStep('catalog'); };
+  const makeOrder = (nextPayment) => { const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items: checkoutItems, calculations, total, form, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, testOnly: checkoutItems.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
   const continueCheckout = () => { setCartOpen(false); setStep('tutorial'); };
-  const selectGame = (next) => { setGameId(next); setFortniteSubcategory('gift-shop'); setStep('catalog'); setCartOpen(false); };
+  const applyCreatorCode = (code) => { const isValid = creatorCodeAvailable && code.trim().toUpperCase() === 'KRIS08'; setCreatorCodeApplied(isValid); return isValid; };
+  const selectFortniteSubcategory = (subcategory) => { setFortniteSubcategory(subcategory); setCreatorCodeApplied(false); };
+  const selectGame = (next) => { setCreatorCodeApplied(false); setGameId(next); setFortniteSubcategory('gift-shop'); setStep('catalog'); setCartOpen(false); };
   const goHome = () => { setStep('home'); setCartOpen(false); };
   const fortniteTabs = [{ id: 'passes', label: 'Pases de Fortnite' }, { id: 'account-topups', label: 'Vía cuenta' }];
 
   return <div className="App min-h-screen text-slate-100">
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-[#09090b]/90 px-4 py-4 backdrop-blur-xl"><div className="mx-auto flex max-w-7xl flex-col gap-4"><div className="flex items-center justify-between gap-4"><div><div className="text-2xl font-black tracking-tight text-gradient">{store.identity.name}</div><p className="text-xs text-slate-400">{store.identity.tagline}</p></div><button type="button" onClick={() => setCountryOpen(true)} className="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-sm text-slate-200"><Globe className="h-4 w-4 text-cyan-300" />{country?.flag} {country?.name}</button></div><GameNavigation games={store.games} activeGame={gameId} homeActive={step === 'home'} onHome={goHome} onSelect={selectGame} />{step === 'catalog' && gameId === 'fortnite' && <nav aria-label="Subcategorías de Fortnite" className="flex gap-2 overflow-x-auto pb-2"><button type="button" onClick={() => setFortniteSubcategory('gift-shop')} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === 'gift-shop' ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>Vía regalo</button>{fortniteTabs.map((tab) => <button key={tab.id} type="button" onClick={() => setFortniteSubcategory(tab.id)} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === tab.id ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>{tab.label}</button>)}</nav>}</div></header>
+    <header className="sticky top-0 z-20 border-b border-white/10 bg-[#09090b]/90 px-4 py-4 backdrop-blur-xl"><div className="mx-auto flex max-w-7xl flex-col gap-4"><div className="flex items-center justify-between gap-4"><div><div className="text-2xl font-black tracking-tight text-gradient">{store.identity.name}</div><p className="text-xs text-slate-400">{store.identity.tagline}</p></div><button type="button" onClick={() => setCountryOpen(true)} className="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-sm text-slate-200"><Globe className="h-4 w-4 text-cyan-300" />{country?.flag} {country?.name}</button></div><GameNavigation games={store.games} activeGame={gameId} homeActive={step === 'home'} onHome={goHome} onSelect={selectGame} />{step === 'catalog' && gameId === 'fortnite' && <nav aria-label="Subcategorías de Fortnite" className="flex gap-2 overflow-x-auto pb-2"><button type="button" onClick={() => selectFortniteSubcategory('gift-shop')} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === 'gift-shop' ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>Vía regalo</button>{fortniteTabs.map((tab) => <button key={tab.id} type="button" onClick={() => selectFortniteSubcategory(tab.id)} className={`flex min-w-max items-center rounded-xl border px-4 py-3 text-sm font-bold transition ${fortniteSubcategory === tab.id ? 'border-cyan-400 bg-cyan-400/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300 hover:border-pink-400/60'}`}>{tab.label}</button>)}</nav>}</div></header>
     <main className={`mx-auto max-w-7xl px-4 py-8 ${itemCount ? 'pb-28 sm:pb-8' : ''}`}>
       {step === 'home' && <StoreHome onSelect={selectGame} />}
       {step === 'catalog' && <div className={gameId === 'fortnite' ? '' : 'grid gap-8 lg:grid-cols-[1fr_340px]'}><StoreCatalog key={gameId} game={game} products={products} fortniteSubcategory={fortniteSubcategory} onAdd={addProduct} />{gameId !== 'fortnite' && <GameCart items={items} calculations={calculations} onChange={changeQuantity} onClear={clearCart} onContinue={continueCheckout} />}</div>}
-      {step === 'tutorial' && <RedeemTutorial game={game} onBack={() => setStep('catalog')} onContinue={() => setStep('form')} />}
+      {step === 'tutorial' && <RedeemTutorial game={game} showCreatorCode={creatorCodeAvailable} onApplyCreatorCode={applyCreatorCode} onBack={() => setStep('catalog')} onContinue={() => setStep('form')} />}
       {step === 'form' && <DynamicOrderForm game={game} initialValue={form} onBack={() => setStep('tutorial')} onContinue={(next) => { setForm(next); saveDraft(next, payment); setStep('payment'); }} />}
-      {step === 'payment' && <PaymentVoucher country={country} game={game} items={items} form={form} initialValue={payment} onBack={() => setStep('form')} onContinue={makeOrder} />}
+      {step === 'payment' && <PaymentVoucher country={country} game={game} items={checkoutItems} form={form} initialValue={payment} onBack={() => setStep('form')} onContinue={makeOrder} />}
       {step === 'receipt' && order && <><OrderReceiptGenerator order={order} onGenerated={setImageUrl} /><div className="mx-auto max-w-2xl"><p className="mb-4 text-center text-sm text-slate-400">Generando comprobante local...</p>{imageUrl && <OrderCompletion order={order} imageUrl={imageUrl} onFinish={finish} />}</div></>}
       {step === 'cart' && <GameCart items={items} calculations={calculations} onChange={changeQuantity} onClear={clearCart} onContinue={continueCheckout} />}
     </main>

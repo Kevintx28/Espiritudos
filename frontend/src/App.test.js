@@ -7,6 +7,7 @@ const storeConfig = {
   countries: [{ code: 'PE', name: 'Perú', currency: 'PEN', symbol: 'S/', flag: '🇵🇪' }, { code: 'MX', name: 'México', currency: 'MXN', symbol: '$', flag: '🇲🇽' }],
   games: [
     { id: 'roblox', name: 'Roblox', shortName: 'Roblox', icon: 'Gamepad2', deliveryType: 'redeem_code' },
+    { id: 'fortnite', name: 'Fortnite', shortName: 'Fortnite', icon: 'Gamepad2', deliveryType: 'redeem_code' },
     { id: 'marvel-rivals', name: 'Marvel Rivals', shortName: 'Marvel', icon: 'Shield', deliveryType: 'numeric_uid' },
     { id: 'free-fire', name: 'Free Fire', shortName: 'Free Fire', icon: 'Flame', deliveryType: 'player_id' }
   ],
@@ -23,10 +24,12 @@ const storeConfig = {
 
 let container;
 let root;
+let originalFetch;
 
 describe('KTXStore flow', () => {
   beforeEach(() => {
     globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+    originalFetch = global.fetch;
     localStorage.clear();
     window.KTX_STORE_CONFIG = storeConfig;
     window.APP_CONFIG = { social: { whatsapp: 'https://wa.test', discord: 'https://discord.test' } };
@@ -34,7 +37,7 @@ describe('KTXStore flow', () => {
     document.body.appendChild(container);
     root = createRoot(container);
   });
-  afterEach(() => { act(() => root.unmount()); container.remove(); localStorage.clear(); });
+  afterEach(() => { act(() => root.unmount()); container.remove(); localStorage.clear(); global.fetch = originalFetch; });
 
   it('persists the selected country', () => {
     act(() => root.render(<App />));
@@ -59,6 +62,61 @@ describe('KTXStore flow', () => {
     expect(container.textContent).toContain('Entrega: 300 Robux');
     expect(container.textContent.replace(/\s+/g, ' ')).toContain('Total a pagar:S/ 11.00');
     expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('300 Robux · S/ 11.00');
+  });
+
+  it('applies KRIS08 to gift-shop prices and hides it in Fortnite fixed-price sections', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: { shop: { entries: Array.from({ length: 9 }, (_, index) => ({
+        offerId: `creator-offer-${index + 1}`,
+        finalPrice: 1500,
+        section: { displayName: 'Featured' },
+        items: [{ name: `Traje ${index + 1}`, type: { displayValue: 'Outfit' }, images: { icon: 'https://cdn.test/fortnite.png' } }]
+      })) } } })
+    });
+    act(() => root.render(<App />));
+    act(() => container.querySelector('[data-testid="game-fortnite"]').click());
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+
+    const dailySection = container.querySelector('#fortnite-deals-title').closest('section');
+    const dailyButton = dailySection.querySelector('button[data-testid^="add-"]');
+    const dailyIds = new Set(Array.from(dailySection.querySelectorAll('button[data-testid^="add-"]')).map((button) => button.dataset.testid.replace('add-', '')));
+    const giftSection = container.querySelector('#fortnite-gift-title').closest('section');
+    const regularButton = Array.from(giftSection.querySelectorAll('button[data-testid^="add-"]')).find((button) => !dailyIds.has(button.dataset.testid.replace('add-', '')));
+    expect(regularButton).toBeDefined();
+    act(() => dailyButton.click());
+    act(() => regularButton.click());
+    act(() => container.querySelector('[data-testid="floating-cart"]').click());
+    act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
+
+    const codeInput = container.querySelector('[data-testid="creator-code-input"]');
+    const setInputValue = (value) => {
+      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(codeInput, value);
+      codeInput.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    act(() => { setInputValue('INVALID'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
+    expect(container.querySelector('[role="alert"]').textContent).toContain('Código no válido');
+    act(() => { setInputValue('KRIS08'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
+    expect(container.querySelector('[role="status"]').textContent).toContain('Chris');
+    act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
+    expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 46.17');
+
+    const selectFortniteTab = (label) => {
+      const nav = container.querySelector('[aria-label="Subcategorías de Fortnite"]');
+      act(() => Array.from(nav.querySelectorAll('button')).find((button) => button.textContent.trim() === label).click());
+    };
+    const openCheckout = () => {
+      act(() => container.querySelector('[data-testid="floating-cart"]').click());
+      act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
+    };
+    selectFortniteTab('Vía cuenta');
+    expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 51.30');
+    openCheckout();
+    expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
+    act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
+    selectFortniteTab('Pases de Fortnite');
+    openCheckout();
+    expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
   });
 
   it('navigates to Marvel Rivals checkout instructions', () => {

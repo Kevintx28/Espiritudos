@@ -48,7 +48,8 @@ function ShopRefreshCounter({ nextExpiration, status }) {
 }
 
 function DynamicGrid({ products, onAdd, isFeatured = false }) {
-  return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={product} isFortnite isFeatured={isFeatured} isBundle={product.isBundle} onAdd={onAdd} />)}</div>;
+  const addGiftProduct = (product) => onAdd({ ...product, creatorCodeEligible: true });
+  return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={product} isFortnite isFeatured={isFeatured} isBundle={product.isBundle} onAdd={addGiftProduct} />)}</div>;
 }
 
 function ManualGrid({ products, onAdd }) {
