@@ -80,6 +80,10 @@ export function normalizeEntry(entry, index) {
     section: sectionName,
     sourceId: entry.offerId,
     layoutId: entry.layoutId || entry.layout?.id,
+    layoutName: displayValue(entry.layout?.name) || entry.layoutId || sectionName,
+    layoutRank: entry.layout?.rank !== null && entry.layout?.rank !== undefined && entry.layout?.rank !== '' && Number.isFinite(Number(entry.layout.rank)) ? Number(entry.layout.rank) : null,
+    sortPriority: entry.sortPriority ?? entry.layout?.sortPriority ?? null,
+    sourceOrder: index,
     endDate: entry.endDate || entry.availableUntil || entry.shopEndDate || entry.outDate || items[0]?.endDate || items[0]?.availableUntil,
     note: 'Entrega manual por sistema de regalos de Fortnite'
   };
@@ -96,6 +100,48 @@ export function normalizeFortniteCategory(item) {
   if (type.includes('wrap') || type.includes('envoltorio') || type.includes('envoltorios')) return 'Envoltorios';
   if (type.includes('vehicle') || type.includes('carro') || type.includes('vehículo') || type.includes('vehiculo')) return 'Vehículos';
   return 'Destacados / Otros';
+}
+
+export function groupFortniteLayoutProducts(products) {
+  const groups = new Map();
+  products.forEach((product, index) => {
+    const name = product.layoutName || product.layoutId || product.section || product.category || 'Destacados / Otros';
+    if (!groups.has(name)) {
+      groups.set(name, {
+        rank: null,
+        sourceOrder: Number.isFinite(product.sourceOrder) ? product.sourceOrder : index,
+        products: []
+      });
+    }
+
+    const group = groups.get(name);
+    const rank = product.layoutRank === null || product.layoutRank === undefined || product.layoutRank === '' ? NaN : Number(product.layoutRank);
+    if (Number.isFinite(rank) && (!Number.isFinite(group.rank) || rank > group.rank)) group.rank = rank;
+    group.products.push({ product, index });
+  });
+
+  const groupsByRank = [...groups.entries()].map(([name, group]) => {
+    const orderedProducts = group.products.sort((left, right) => {
+      const bundleDifference = Number(Boolean(right.product.isBundle)) - Number(Boolean(left.product.isBundle));
+      if (bundleDifference) return bundleDifference;
+
+      const leftPriority = left.product.sortPriority === null || left.product.sortPriority === undefined || left.product.sortPriority === '' ? NaN : Number(left.product.sortPriority);
+      const rightPriority = right.product.sortPriority === null || right.product.sortPriority === undefined || right.product.sortPriority === '' ? NaN : Number(right.product.sortPriority);
+      if (Number.isFinite(leftPriority) && Number.isFinite(rightPriority) && leftPriority !== rightPriority) return leftPriority - rightPriority;
+      if (Number.isFinite(leftPriority) !== Number.isFinite(rightPriority)) return Number.isFinite(leftPriority) ? -1 : 1;
+      return left.index - right.index;
+    }).map(({ product }) => product);
+
+    return [name, orderedProducts, group.rank, group.sourceOrder];
+  });
+
+  return groupsByRank
+    .sort((left, right) => {
+      const leftRank = Number.isFinite(left[2]) ? left[2] : Number.NEGATIVE_INFINITY;
+      const rightRank = Number.isFinite(right[2]) ? right[2] : Number.NEGATIVE_INFINITY;
+      return rightRank - leftRank || left[3] - right[3];
+    })
+    .map(([name, groupedProducts]) => [name, groupedProducts]);
 }
 
 export function isExcludedEntry(entry) {

@@ -1,4 +1,4 @@
-import { isExcludedEntry, normalizeEntry, normalizeFortniteCategory } from './FortniteShop';
+import { groupFortniteLayoutProducts, isExcludedEntry, normalizeEntry, normalizeFortniteCategory } from './FortniteShop';
 import { resolveFortniteImage } from './FortniteItemImage';
 
 describe('Fortnite dynamic shop', () => {
@@ -36,6 +36,20 @@ describe('Fortnite dynamic shop', () => {
     expect(isExcludedEntry({ section: { displayName: 'LEGO Fortnite' } })).toBe(true);
     expect(isExcludedEntry({ section: { displayName: 'Juno' } })).toBe(true);
     expect(isExcludedEntry({ section: { displayName: 'Daily Items' } })).toBe(false);
+  });
+
+  it('groups and orders Fortnite offers by layout rank, bundle, and sort priority', () => {
+    const products = [
+      { id: 'low-item', layoutName: 'Low rank', layoutRank: 10, sortPriority: 1, sourceOrder: 0 },
+      { id: 'set-item-late', layoutName: 'New set', layoutRank: 200, sortPriority: 20, sourceOrder: 1 },
+      { id: 'set-bundle', layoutName: 'New set', layoutRank: 200, isBundle: true, sortPriority: 99, sourceOrder: 2 },
+      { id: 'set-item-first', layoutName: 'New set', layoutRank: 200, sortPriority: 10, sourceOrder: 3 }
+    ];
+
+    const groups = groupFortniteLayoutProducts(products);
+
+    expect(groups.map(([name]) => name)).toEqual(['New set', 'Low rank']);
+    expect(groups[0][1].map(({ id }) => id)).toEqual(['set-bundle', 'set-item-first', 'set-item-late']);
   });
 
   it('uses a short bundle title and display asset image', () => {
