@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { Clock, Search, X } from 'lucide-react';
 import ProductCard from './ProductCard';
 import { getFortniteLayoutAnchor, getFortniteProductAnchor, getFortniteSearchResults, groupFortniteLayoutProducts, useFortniteShopProducts } from './FortniteShop';
 import { fortniteCatalog } from '../data/fortniteCatalog';
-import { getTimeRemaining } from '../lib/shopTimeUtils';
+import { formatCountdown, getTimeRemaining, useFortniteShopClock } from '../lib/shopTimeUtils';
 
 function matchesId(product, configuredId) {
   return [product.id, product.sourceId, product.layoutId, product.id?.replace(/^FN-/, '')].includes(configuredId);
@@ -57,8 +57,8 @@ function ManualGrid({ products, onAdd }) {
   return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">{products.map((product) => <ProductCard key={product.id} product={product} onAdd={onAdd} />)}</div>;
 }
 
-function SectionHeading({ eyebrow, title, id }) {
-  return <div className="mb-4 border-b border-yellow-900/40 pb-3"><p className="text-xs font-bold uppercase tracking-[0.2em] text-yellow-500">{eyebrow}</p><h3 id={id} className="text-2xl font-black text-white">{title}</h3></div>;
+function SectionHeading({ eyebrow, title, id, rightContent }) {
+  return <div className="mb-4 border-b border-yellow-900/40 pb-3"><p className="text-xs font-bold uppercase tracking-[0.2em] text-yellow-500">{eyebrow}</p>{rightContent ? <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2"><h3 id={id} className="text-2xl font-black text-white">{title}</h3>{rightContent}</div> : <h3 id={id} className="text-2xl font-black text-white">{title}</h3>}</div>;
 }
 
 function EmptyPackSlots() {
@@ -69,6 +69,7 @@ function GiftShop({ products, onAdd, status, shopHash, nextExpiration }) {
   const deals = useMemo(() => selectDailyDeals(products, shopHash), [products, shopHash]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { remaining: shopResetRemaining } = useFortniteShopClock();
   if (status === 'loading' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">Cargando tienda actual de Fortnite...</div></div>;
   if (status === 'error' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div role="alert" className="rounded-2xl border border-red-500/40 bg-red-950/20 p-8 text-center text-red-200">No se pudo cargar la tienda de Fortnite. Intenta más tarde.</div></div>;
   if (!products.length) return <div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">La tienda de Fortnite no tiene ofertas disponibles ahora.</div>;
@@ -85,7 +86,7 @@ function GiftShop({ products, onAdd, status, shopHash, nextExpiration }) {
   return <div className="space-y-10">
     <ShopRefreshCounter nextExpiration={nextExpiration} status={status} />
     <section aria-labelledby="fortnite-new-title"><SectionHeading eyebrow="Selección de la tienda" title="Lo nuevo de hoy" id="fortnite-new-title" /><DynamicGrid products={newProducts} isFeatured onAdd={onAdd} idPrefix="fortnite-featured-item" /></section>
-    <section id={dealsSectionId} aria-labelledby="fortnite-deals-title"><SectionHeading eyebrow="Promoción diaria" title="Ofertas del día" id="fortnite-deals-title" /><DynamicGrid products={deals} onAdd={onAdd} idPrefix="fortnite-deal-item" /></section>
+    <section id={dealsSectionId} aria-labelledby="fortnite-deals-title"><SectionHeading eyebrow="Promoción diaria" title="Ofertas del día" id="fortnite-deals-title" rightContent={<span data-testid="fortnite-daily-deals-reset-countdown" aria-label={`La tienda se reinicia a las 7:00 p. m., hora de Perú. Faltan ${formatCountdown(shopResetRemaining)}`} title="Reinicio de tienda: 7:00 p. m., hora de Perú" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-yellow-900/70 bg-[#111111]/80 px-2.5 py-1 text-[10px] font-bold tabular-nums text-yellow-200 sm:text-xs"><Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />{formatCountdown(shopResetRemaining)}</span>} /><DynamicGrid products={deals} onAdd={onAdd} idPrefix="fortnite-deal-item" /></section>
     <section aria-labelledby="fortnite-gift-title">
       <SectionHeading eyebrow="Tienda de Fortnite" title="Tienda vía regalo" id="fortnite-gift-title" />
       <div className="space-y-10">{groups.map(([section, sectionProducts]) => <section key={section} id={getFortniteLayoutAnchor(section)} aria-labelledby={`${getFortniteLayoutAnchor(section)}-title`}><h4 id={`${getFortniteLayoutAnchor(section)}-title`} className="mb-4 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">{section} <span className="text-xs font-normal text-slate-500">({sectionProducts.length})</span></h4><DynamicGrid products={sectionProducts} onAdd={onAdd} layoutName={section} /></section>)}</div>
