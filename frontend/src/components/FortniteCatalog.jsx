@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Search, X } from 'lucide-react';
 import ProductCard from './ProductCard';
-import { groupFortniteLayoutProducts, useFortniteShopProducts } from './FortniteShop';
+import { getFortniteLayoutAnchor, getFortniteProductAnchor, getFortniteSearchResults, groupFortniteLayoutProducts, useFortniteShopProducts } from './FortniteShop';
 import { fortniteCatalog } from '../data/fortniteCatalog';
 import { getTimeRemaining } from '../lib/shopTimeUtils';
 
@@ -47,9 +48,9 @@ function ShopRefreshCounter({ nextExpiration, status }) {
   return <section data-testid="fortnite-shop-countdown" className="mb-8 rounded-2xl border border-yellow-900/40 bg-[#15131f] px-4 py-4 text-center"><p className="text-sm font-bold uppercase tracking-[0.15em] text-yellow-500">{label}</p></section>;
 }
 
-function DynamicGrid({ products, onAdd, isFeatured = false }) {
+function DynamicGrid({ products, onAdd, isFeatured = false, layoutName, idPrefix }) {
   const addGiftProduct = (product) => onAdd({ ...product, creatorCodeEligible: true, creatorCodeScope: 'gift-shop' });
-  return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={product} isFortnite isFeatured={isFeatured} isBundle={product.isBundle} onAdd={addGiftProduct} />)}</div>;
+  return <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4">{products.map((product) => <div key={product.id} id={layoutName ? getFortniteProductAnchor(layoutName, product.id) : idPrefix ? `${idPrefix}-${product.id}` : undefined} className="min-w-0"><ProductCard product={product} isFortnite isFeatured={isFeatured} isBundle={product.isBundle} onAdd={addGiftProduct} /></div>)}</div>;
 }
 
 function ManualGrid({ products, onAdd }) {
@@ -66,13 +67,40 @@ function EmptyPackSlots() {
 
 function GiftShop({ products, onAdd, status, shopHash, nextExpiration }) {
   const deals = useMemo(() => selectDailyDeals(products, shopHash), [products, shopHash]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   if (status === 'loading' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">Cargando tienda actual de Fortnite...</div></div>;
   if (status === 'error' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div role="alert" className="rounded-2xl border border-red-500/40 bg-red-950/20 p-8 text-center text-red-200">No se pudo cargar la tienda de Fortnite. Intenta más tarde.</div></div>;
   if (!products.length) return <div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">La tienda de Fortnite no tiene ofertas disponibles ahora.</div>;
   const featured = selectConfiguredProducts(products, fortniteCatalog.featuredApiIds, 8);
   const newProducts = featured.length ? featured : products.slice(0, 4);
   const groups = groupFortniteLayoutProducts(products);
-  return <div className="space-y-10"><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><section aria-labelledby="fortnite-new-title"><SectionHeading eyebrow="Selección de la tienda" title="Lo nuevo de hoy" id="fortnite-new-title" /><DynamicGrid products={newProducts} isFeatured onAdd={onAdd} /></section><section aria-labelledby="fortnite-deals-title"><SectionHeading eyebrow="Promoción diaria" title="Ofertas del día" id="fortnite-deals-title" /><DynamicGrid products={deals} onAdd={onAdd} /></section><section aria-labelledby="fortnite-gift-title"><SectionHeading eyebrow="Tienda de Fortnite" title="Tienda vía regalo" id="fortnite-gift-title" /><nav aria-label="Secciones de la tienda vía regalo" className="mb-6 flex gap-2 overflow-x-auto pb-2">{groups.map(([section]) => <a key={section} href={`#fortnite-api-${section.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="min-w-max rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-slate-300 hover:border-cyan-400/60">{section}</a>)}</nav><div className="space-y-10">{groups.map(([section, sectionProducts]) => <section key={section} id={`fortnite-api-${section.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} aria-labelledby={`fortnite-api-title-${section}`}><h4 id={`fortnite-api-title-${section}`} className="mb-4 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">{section} <span className="text-xs font-normal text-slate-500">({sectionProducts.length})</span></h4><DynamicGrid products={sectionProducts} onAdd={onAdd} /></section>)}</div></section></div>;
+  const searchResults = getFortniteSearchResults(groups, searchQuery);
+  const scrollToTarget = (targetId) => {
+    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setSearchOpen(false);
+  };
+  const dealsSectionId = 'fortnite-offers-of-day';
+
+  return <div className="space-y-10">
+    <ShopRefreshCounter nextExpiration={nextExpiration} status={status} />
+    <section aria-labelledby="fortnite-new-title"><SectionHeading eyebrow="Selección de la tienda" title="Lo nuevo de hoy" id="fortnite-new-title" /><DynamicGrid products={newProducts} isFeatured onAdd={onAdd} idPrefix="fortnite-featured-item" /></section>
+    <section id={dealsSectionId} aria-labelledby="fortnite-deals-title"><SectionHeading eyebrow="Promoción diaria" title="Ofertas del día" id="fortnite-deals-title" /><DynamicGrid products={deals} onAdd={onAdd} idPrefix="fortnite-deal-item" /></section>
+    <section aria-labelledby="fortnite-gift-title">
+      <SectionHeading eyebrow="Tienda de Fortnite" title="Tienda vía regalo" id="fortnite-gift-title" />
+      <div className="space-y-10">{groups.map(([section, sectionProducts]) => <section key={section} id={getFortniteLayoutAnchor(section)} aria-labelledby={`${getFortniteLayoutAnchor(section)}-title`}><h4 id={`${getFortniteLayoutAnchor(section)}-title`} className="mb-4 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">{section} <span className="text-xs font-normal text-slate-500">({sectionProducts.length})</span></h4><DynamicGrid products={sectionProducts} onAdd={onAdd} layoutName={section} /></section>)}</div>
+    </section>
+    <button type="button" aria-label={searchOpen ? 'Cerrar búsqueda' : 'Buscar ítems o sets'} aria-expanded={searchOpen} onClick={() => { setSearchOpen((open) => !open); setSearchQuery(''); }} className="fixed right-4 top-1/2 z-40 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-[#15131f]/95 text-white shadow-xl backdrop-blur hover:border-cyan-400/60"><Search className="h-5 w-5" aria-hidden="true" /></button>
+    {searchOpen && <div className="fixed bottom-5 left-1/2 z-50 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-xl border border-white/10 bg-[#15131f]/95 p-3 shadow-2xl backdrop-blur sm:bottom-8 sm:p-4">
+      <div className="relative">
+        <input type="search" autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Buscar ítem o set..." aria-label="Buscar por nombre de ítem o set" className="h-11 w-full rounded-lg border border-white/10 bg-black/30 px-3 pr-10 text-sm text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/60" />
+        <button type="button" aria-label="Cerrar búsqueda" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center text-slate-400 hover:text-white"><X className="h-4 w-4" aria-hidden="true" /></button>
+      </div>
+      {searchQuery.trim() && <div className="mt-2 max-h-64 overflow-y-auto rounded-lg border border-white/10 bg-black/20 p-1" role="listbox" aria-label="Resultados de búsqueda">
+        {searchResults.length ? searchResults.map((result) => <button key={`${result.type}-${result.targetId}`} type="button" role="option" aria-selected="false" onClick={() => scrollToTarget(result.targetId)} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-white/10"><span className="block truncate text-sm font-semibold text-white">{result.label}</span><span className="block truncate text-xs text-slate-400">{result.detail}</span></button>) : <p className="px-3 py-2 text-sm text-slate-400">Sin resultados</p>}
+      </div>}
+    </div>}
+  </div>;
 }
 
 export default function FortniteCatalog({ products, subcategory, onAdd }) {

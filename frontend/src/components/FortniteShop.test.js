@@ -1,4 +1,4 @@
-import { groupFortniteLayoutProducts, isExcludedEntry, normalizeEntry, normalizeFortniteCategory } from './FortniteShop';
+import { getFortniteLayoutAnchor, getFortniteProductAnchor, getFortniteSearchResults, groupFortniteLayoutProducts, isExcludedEntry, normalizeEntry, normalizeFortniteCategory } from './FortniteShop';
 import { resolveFortniteImage } from './FortniteItemImage';
 
 describe('Fortnite dynamic shop', () => {
@@ -50,6 +50,17 @@ describe('Fortnite dynamic shop', () => {
 
     expect(groups.map(([name]) => name)).toEqual(['New set', 'Low rank']);
     expect(groups[0][1].map(({ id }) => id)).toEqual(['set-bundle', 'set-item-first', 'set-item-late']);
+  });
+
+  it('builds stable anchors and search results for layouts and items', () => {
+    const groups = [["Five Nights at Freddy's", [{ id: 'FN-Freddy', name: 'Freddy Fazbear' }]]];
+
+    expect(getFortniteLayoutAnchor("Five Nights at Freddy's")).toBe('fortnite-layout-five-nights-at-freddy-s');
+    expect(getFortniteProductAnchor("Five Nights at Freddy's", 'FN-Freddy')).toBe('fortnite-layout-five-nights-at-freddy-s-item-fn-freddy');
+    expect(getFortniteSearchResults(groups, 'freddy')).toEqual([
+      { type: 'layout', label: "Five Nights at Freddy's", detail: 'Set', targetId: 'fortnite-layout-five-nights-at-freddy-s' },
+      { type: 'product', label: 'Freddy Fazbear', detail: "Five Nights at Freddy's", targetId: 'fortnite-layout-five-nights-at-freddy-s-item-fn-freddy' }
+    ]);
   });
 
   it('uses a short bundle title and display asset image', () => {

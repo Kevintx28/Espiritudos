@@ -144,6 +144,43 @@ export function groupFortniteLayoutProducts(products) {
     .map(([name, groupedProducts]) => [name, groupedProducts]);
 }
 
+function navigationSlug(value) {
+  return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+export function getFortniteLayoutAnchor(layoutName) {
+  return `fortnite-layout-${navigationSlug(layoutName)}`;
+}
+
+export function getFortniteProductAnchor(layoutName, productId) {
+  return `${getFortniteLayoutAnchor(layoutName)}-item-${navigationSlug(productId)}`;
+}
+
+export function getFortniteSearchResults(groups, query, limit = 8) {
+  const normalizedQuery = String(query || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (!normalizedQuery) return [];
+
+  const results = [];
+  groups.forEach(([layoutName, products]) => {
+    const normalizedLayoutName = layoutName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (normalizedLayoutName.includes(normalizedQuery)) {
+      results.push({ type: 'layout', label: layoutName, detail: 'Set', targetId: getFortniteLayoutAnchor(layoutName) });
+    }
+    products.forEach((product) => {
+      const normalizedProductName = String(product.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (normalizedProductName.includes(normalizedQuery)) {
+        results.push({
+          type: 'product',
+          label: product.name,
+          detail: layoutName,
+          targetId: getFortniteProductAnchor(layoutName, product.id)
+        });
+      }
+    });
+  });
+  return results.slice(0, limit);
+}
+
 export function isExcludedEntry(entry) {
   const section = entry.section || {};
   const categoryText = [
