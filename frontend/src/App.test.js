@@ -1,6 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import OrderReceiptGenerator from './components/OrderReceiptGenerator';
 
 const storeConfig = {
   identity: { name: 'KTXStore', tagline: 'Tienda' },
@@ -44,6 +45,31 @@ describe('KTXStore flow', () => {
     act(() => container.querySelector('header button').click());
     act(() => container.querySelector('[data-testid="country-MX"]')?.click());
     expect(localStorage.getItem('ktxstore:selectedCountry')).toBe('"MX"');
+  });
+
+  it('includes selected V-Bucks accounts, Epic ID, payment, discount and country currency in the order image', () => {
+    const order = {
+      id: 'KTX-TEST',
+      date: '12/10/2026',
+      country: { name: 'México', currency: 'MXN' },
+      game: { id: 'fortnite', name: 'Fortnite' },
+      items: [],
+      calculations: { lines: [], totalUnits: 0, totalMoney: 120, fulfillmentLabel: null },
+      total: 108,
+      creatorDiscountAmount: 12,
+      creatorCodeApplied: true,
+      form: { epicId: 'EpicPlayer', vbucksAccounts: ['gatozz1', 'gatozz3'] },
+      paymentMethod: 'Yape',
+      voucher: null
+    };
+    act(() => root.render(<OrderReceiptGenerator order={order} onGenerated={() => {}} />));
+
+    const receipt = container.querySelector('.ktx-halloween-receipt').textContent;
+    expect(receipt).toContain('gatozz1, gatozz3');
+    expect(receipt).toContain('Usuario de Fortnite: EpicPlayer');
+    expect(receipt).toContain('Método de pago: Yape');
+    expect(receipt).toContain('$ 108.00 MXN');
+    expect(receipt).toContain('Código de creador KRIS08 aplicado: -10% ($ 12.00 MXN)');
   });
 
   it('shows Mexican Fortnite prices in MXN through the product and cart', async () => {
@@ -107,6 +133,11 @@ describe('KTXStore flow', () => {
     act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
 
     const codeInput = container.querySelector('[data-testid="creator-code-input"]');
+    expect(container.querySelector('[data-testid="vbucks-account-gatozz1"]')).not.toBeNull();
+    act(() => container.querySelector('[data-testid="vbucks-account-gatozz1"]').click());
+    act(() => container.querySelector('[data-testid="vbucks-account-gatozz3"]').click());
+    expect(container.querySelector('[data-testid="vbucks-account-gatozz1"]').getAttribute('aria-pressed')).toBe('true');
+    expect(container.querySelector('[data-testid="vbucks-account-gatozz3"]').getAttribute('aria-pressed')).toBe('true');
     const setInputValue = (value) => {
       Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(codeInput, value);
       codeInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -114,7 +145,8 @@ describe('KTXStore flow', () => {
     act(() => { setInputValue('INVALID'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
     expect(container.querySelector('[role="alert"]').textContent).toContain('Código no válido');
     act(() => { setInputValue('KRIS08'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
-    expect(container.querySelector('[role="status"]').textContent).toContain('Kristalyz08');
+    expect(container.querySelector('[role="status"]').textContent).toContain('KRIS08 aplicado');
+    expect(container.querySelector('[data-testid="fortnite-checkout-total-value"]').textContent).toContain('S/ 46.17');
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 46.17');
 
@@ -130,10 +162,17 @@ describe('KTXStore flow', () => {
     expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 51.30');
     openCheckout();
     expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
+    expect(container.querySelector('[data-testid="vbucks-account-gatozz1"]')).toBeNull();
+    act(() => container.querySelector('[data-testid="checkout-payment-yape"]').click());
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('Yape');
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('siguiente actualización');
+    act(() => container.querySelector('[role="dialog"] button').click());
+    expect(container.querySelector('[data-testid="fortnite-epic-id"]')).not.toBeNull();
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     selectFortniteTab('Pases de Fortnite');
     openCheckout();
     expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
+    expect(container.querySelectorAll('[data-testid^="vbucks-account-"]')).toHaveLength(5);
   });
 
   it('shows KRIS08 for Fortnite Club only and preserves fixed V-Bucks top-up pricing', async () => {
@@ -146,6 +185,7 @@ describe('KTXStore flow', () => {
     act(() => container.querySelector('[data-testid="floating-cart"]').click());
     act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
     expect(container.querySelector('[data-testid="creator-code-input"]')).toBeNull();
+    expect(container.querySelector('[data-testid="vbucks-account-gatozz1"]')).toBeNull();
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     act(() => container.querySelector('[data-testid="add-FN-CLUB-1M"]').click());
     act(() => container.querySelector('[data-testid="floating-cart"]').click());
@@ -158,7 +198,7 @@ describe('KTXStore flow', () => {
       codeInput.dispatchEvent(new Event('input', { bubbles: true }));
     };
     act(() => { setInputValue('KRIS08'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
-    expect(container.querySelector('[role="status"]').textContent).toContain('Kristalyz08');
+    expect(container.querySelector('[role="status"]').textContent).toContain('KRIS08 aplicado');
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 37.98');
   });

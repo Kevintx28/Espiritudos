@@ -7,6 +7,7 @@ import StoreCatalog from './components/StoreCatalog';
 import GameCart from './components/GameCart';
 import RedeemTutorial from './components/RedeemTutorial';
 import DynamicOrderForm from './components/DynamicOrderForm';
+import FortniteCheckout from './components/FortniteCheckout';
 import PaymentVoucher from './components/PaymentVoucher';
 import OrderReceiptGenerator from './components/OrderReceiptGenerator';
 import OrderCompletion from './components/OrderCompletion';
@@ -73,8 +74,8 @@ function App() {
   const clearCart = () => { setCreatorCodeApplied(false); setCarts((current) => ({ ...current, [gameId]: [] })); };
   const saveDraft = (nextForm, nextPayment) => write(keys.draft, { gameId, form: nextForm, payment: nextPayment });
   const finish = () => { setCreatorCodeApplied(false); setCarts((current) => ({ ...current, [gameId]: [] })); remove(keys.pending); remove(keys.draft); setOrder(null); setForm(null); setPayment(null); setImageUrl(null); setStep('catalog'); };
-  const makeOrder = (nextPayment) => { const baseCalculations = calculateCartTotals(displayItems); const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items: displayItems, calculations: baseCalculations, total, creatorDiscountAmount: baseCalculations.totalMoney - total, form, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, creatorCodeApplied: creatorCodeActive, testOnly: checkoutItems.some(({ product }) => product.testOnly) }; setPayment(nextPayment); setOrder(nextOrder); saveDraft(form, nextPayment); setStep('receipt'); };
-  const continueCheckout = () => { setCartOpen(false); setStep(creatorCodeAvailable ? 'tutorial' : 'form'); };
+  const makeOrder = (nextPayment, nextForm = form) => { const baseCalculations = calculateCartTotals(displayItems); const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items: displayItems, calculations: baseCalculations, total, creatorDiscountAmount: baseCalculations.totalMoney - total, form: nextForm, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, creatorCodeApplied: creatorCodeActive, testOnly: checkoutItems.some(({ product }) => product.testOnly) }; setForm(nextForm); setPayment(nextPayment); setOrder(nextOrder); saveDraft(nextForm, nextPayment); setStep('receipt'); };
+  const continueCheckout = () => { setCartOpen(false); setStep(gameId === 'fortnite' ? 'fortnite-checkout' : creatorCodeAvailable ? 'tutorial' : 'form'); };
   const applyCreatorCode = (code) => { const isValid = creatorCodeAvailable && code.trim().toUpperCase() === 'KRIS08'; setCreatorCodeApplied(isValid); return isValid; };
   const selectFortniteSubcategory = (subcategory) => { setFortniteSubcategory(subcategory); setCreatorCodeApplied(false); };
   const selectGame = (next) => { setCreatorCodeApplied(false); setGameId(next); setFortniteSubcategory('gift-shop'); setStep('catalog'); setCartOpen(false); };
@@ -88,6 +89,7 @@ function App() {
       {step === 'home' && <StoreHome onSelect={selectGame} />}
       {step === 'catalog' && <div className={gameId === 'fortnite' ? '' : 'grid gap-8 lg:grid-cols-[1fr_340px]'}><StoreCatalog key={gameId} game={game} products={catalogProducts} country={country} fortniteSubcategory={fortniteSubcategory} onAdd={addProduct} />{gameId !== 'fortnite' && <GameCart items={items} calculations={calculations} onChange={changeQuantity} onClear={clearCart} onContinue={continueCheckout} />}</div>}
       {step === 'tutorial' && <RedeemTutorial game={game} showCreatorCode={creatorCodeAvailable} onApplyCreatorCode={applyCreatorCode} onBack={() => setStep('catalog')} onContinue={() => setStep('form')} />}
+      {step === 'fortnite-checkout' && <FortniteCheckout country={country} hasTestProducts={checkoutItems.some(({ product }) => product.testOnly)} subtotal={calculateCartTotals(displayItems).totalMoney} total={calculations.totalMoney} creatorDiscountAmount={calculateCartTotals(displayItems).totalMoney - calculations.totalMoney} initialForm={form} initialPayment={payment} showVbucksAccounts={fortniteSubcategory === 'gift-shop' || fortniteSubcategory === 'passes'} creatorCodeAvailable={creatorCodeAvailable} creatorCodeApplied={creatorCodeActive} onApplyCreatorCode={applyCreatorCode} onBack={() => setStep('catalog')} onContinue={(nextForm, nextPayment) => makeOrder(nextPayment, nextForm)} />}
       {step === 'form' && <DynamicOrderForm game={game} initialValue={form} onBack={() => setStep(creatorCodeAvailable ? 'tutorial' : 'catalog')} onContinue={(next) => { setForm(next); saveDraft(next, payment); setStep('payment'); }} />}
       {step === 'payment' && <PaymentVoucher country={country} game={game} items={checkoutItems} form={form} initialValue={payment} onBack={() => setStep('form')} onContinue={makeOrder} />}
       {step === 'receipt' && order && <><OrderReceiptGenerator order={order} onGenerated={setImageUrl} /><div className="mx-auto max-w-2xl"><p className="mb-4 text-center text-sm text-slate-400">Generando comprobante local...</p>{imageUrl && <OrderCompletion order={order} imageUrl={imageUrl} onFinish={finish} />}</div></>}
