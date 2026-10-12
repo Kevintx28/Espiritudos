@@ -3,7 +3,7 @@ import ProductCard from './ProductCard';
 import { Clock } from 'lucide-react';
 import FortniteCatalog from './FortniteCatalog';
 
-export default function StoreCatalog({ game, products, onAdd, fortniteSubcategory = 'gift-shop' }) {
+export default function StoreCatalog({ game, products, onAdd, fortniteSubcategory = 'gift-shop', country }) {
   if (game.comingSoon) return <div className="rounded-2xl border border-dashed border-pink-400/40 bg-pink-400/5 p-10 text-center"><Clock className="mx-auto mb-4 h-10 w-10 text-pink-300" /><h2 className="text-2xl font-bold text-white">League of Legends RP</h2><p className="mt-2 text-slate-400">Próximamente, visible sin opción de compra.</p></div>;
-  return <section aria-labelledby="catalog-title">{game.id === 'fortnite' ? <FortniteCatalog products={products} subcategory={fortniteSubcategory} onAdd={onAdd} /> : <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">{products.map((product) => <ProductCard key={product.id} product={product} onAdd={onAdd} />)}</div>}</section>;
+  return <section aria-labelledby="catalog-title">{game.id === 'fortnite' ? <FortniteCatalog products={products} subcategory={fortniteSubcategory} onAdd={onAdd} country={country} /> : <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">{products.map((product) => <ProductCard key={product.id} product={product} onAdd={onAdd} />)}</div>}</section>;
 }

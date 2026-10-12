@@ -2,9 +2,11 @@ import React from 'react';
 import { Plus, Clock } from 'lucide-react';
 import FortniteItemImage from './FortniteItemImage';
 import { formatCompactCountdown, formatLimaDate, getFortniteItemCountdown } from '../lib/shopTimeUtils';
+import { formatFortniteMoney } from '../lib/fortnite-pricing';
 
 export default function ProductCard({ product, isFortnite = false, isFeatured = false, isBundle = false, isDailyDeal = false, shopNow, nextReset, onAdd }) {
   const testOnly = product.testOnly;
+  const priceCurrency = product.gameId === 'fortnite' ? product.currency || 'PEN' : 'PEN';
   const isClubFortnite = product.gameId === 'club-fortnite' || product.subcategory === 'club';
   const itemCountdown = isFortnite ? getFortniteItemCountdown(product, shopNow, nextReset) : null;
   const countdownLabel = itemCountdown ? (itemCountdown.hasIndividualEnd ? `Disponible hasta: ${formatLimaDate(itemCountdown.endDate)}` : `Próx. cambio: ${formatCompactCountdown(itemCountdown.remaining)}`) : '';
@@ -21,9 +23,9 @@ export default function ProductCard({ product, isFortnite = false, isFeatured = 
       {product.originalVbucks !== undefined && <p className="mt-2 text-sm font-bold text-white">{product.originalVbucks} V-Bucks{product.type ? ` · ${product.type}` : ''}</p>}
       {isFortnite && product.type && <p className="mt-2 text-sm text-slate-300">{product.type}</p>}
       {!isFortnite && product.rarity && <p className="mt-1 text-xs text-slate-400">Rareza: {product.rarity}</p>}
-      {product.oldPrice && <p className="mt-3 text-sm text-slate-500 line-through">S/ {product.oldPrice.toFixed(2)}</p>}
-      {product.originalPrice !== undefined && <p className="mt-3 text-sm font-semibold text-slate-300 line-through decoration-slate-400">Precio normal: S/ {product.originalPrice.toFixed(2)}</p>}
-      <p className={`mt-1 text-lg font-black sm:text-2xl ${isDailyDeal ? 'daily-deal-price' : product.discountPercent ? 'text-yellow-300' : 'text-cyan-300'}`}>{product.price === null ? 'Precio por definir' : `S/ ${product.price.toFixed(2)}`} </p>
+      {product.oldPrice && <p className="mt-3 text-sm text-slate-500 line-through">{formatFortniteMoney(product.oldPrice, priceCurrency)}</p>}
+      {product.originalPrice !== undefined && <p className="mt-3 text-sm font-semibold text-slate-300 line-through decoration-slate-400">Precio normal: {formatFortniteMoney(product.originalPrice, priceCurrency)}</p>}
+      <p className={`mt-1 text-lg font-black sm:text-2xl ${isDailyDeal ? 'daily-deal-price' : product.discountPercent ? 'text-yellow-300' : 'text-cyan-300'}`}>{product.price === null ? 'Precio por definir' : formatFortniteMoney(product.price, priceCurrency)} </p>
       {product.note && !isFortnite && <p className="mt-3 text-xs text-amber-200">{product.note}</p>}
     </div>
     <button type="button" data-testid={`add-${product.id}`} onClick={() => onAdd(product)} className="btn-gaming mt-4 flex items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-2 py-2 text-xs font-bold text-white sm:mt-5 sm:gap-2 sm:px-4 sm:py-3 sm:text-base"><Plus className="h-4 w-4" />Añadir</button>

@@ -4,6 +4,7 @@ import ProductCard from './ProductCard';
 import { getFortniteLayoutAnchor, getFortniteProductAnchor, getFortniteSearchResults, groupFortniteLayoutProducts, useFortniteShopProducts } from './FortniteShop';
 import { fortniteCatalog } from '../data/fortniteCatalog';
 import { formatCountdown, getTimeRemaining, useFortniteShopClock } from '../lib/shopTimeUtils';
+import { resolveFortniteProduct, roundFortnitePrice } from '../lib/fortnite-pricing';
 
 function matchesId(product, configuredId) {
   return [product.id, product.sourceId, product.layoutId, product.id?.replace(/^FN-/, '')].includes(configuredId);
@@ -13,7 +14,7 @@ function selectConfiguredProducts(products, ids, limit) {
   return ids.map((id) => products.find((product) => matchesId(product, id))).filter(Boolean).filter((product, index, all) => all.findIndex((candidate) => candidate.id === product.id) === index).slice(0, limit);
 }
 
-function selectDailyDeals(products, currentShopHash) {
+function selectDailyDeals(products, currentShopHash, country) {
   const storageKey = 'ktxstore:fortnite:daily-deals';
   let storedIds = fortniteCatalog.dailyDealApiIds;
   try {
@@ -33,7 +34,15 @@ function selectDailyDeals(products, currentShopHash) {
     localStorage.setItem(storageKey, JSON.stringify({ shopHash: currentShopHash, ids: selected.map((product) => product.id) }));
   } catch {
   }
-  return selected.map((product) => ({ ...product, originalPrice: product.price, price: Number((product.price * (1 - fortniteCatalog.dailyDealDiscount)).toFixed(2)), discountPercent: fortniteCatalog.dailyDealDiscount * 100 }));
+  return selected.map((product) => {
+    const pricedProduct = resolveFortniteProduct(product, country);
+    return {
+      ...pricedProduct,
+      originalPrice: pricedProduct.price,
+      price: roundFortnitePrice(pricedProduct.price * (1 - fortniteCatalog.dailyDealDiscount), pricedProduct.currency),
+      discountPercent: fortniteCatalog.dailyDealDiscount * 100
+    };
+  });
 }
 
 function ShopRefreshCounter({ nextExpiration, status }) {
@@ -65,17 +74,18 @@ function EmptyPackSlots() {
   return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{fortniteCatalog.packSlots.map((slot) => <div key={slot} className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] text-sm font-bold uppercase tracking-[0.2em] text-slate-500">Próximamente</div>)}</div>;
 }
 
-function GiftShop({ products, onAdd, status, shopHash, nextExpiration }) {
-  const deals = useMemo(() => selectDailyDeals(products, shopHash), [products, shopHash]);
+function GiftShop({ products, onAdd, status, shopHash, nextExpiration, country }) {
+  const pricedProducts = useMemo(() => products.map((product) => resolveFortniteProduct(product, country)), [products, country]);
+  const deals = useMemo(() => selectDailyDeals(products, shopHash, country), [products, shopHash, country]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { remaining: shopResetRemaining } = useFortniteShopClock();
   if (status === 'loading' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">Cargando tienda actual de Fortnite...</div></div>;
   if (status === 'error' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div role="alert" className="rounded-2xl border border-red-500/40 bg-red-950/20 p-8 text-center text-red-200">No se pudo cargar la tienda de Fortnite. Intenta más tarde.</div></div>;
   if (!products.length) return <div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">La tienda de Fortnite no tiene ofertas disponibles ahora.</div>;
-  const featured = selectConfiguredProducts(products, fortniteCatalog.featuredApiIds, 8);
-  const newProducts = featured.length ? featured : products.slice(0, 4);
-  const groups = groupFortniteLayoutProducts(products);
+  const featured = selectConfiguredProducts(pricedProducts, fortniteCatalog.featuredApiIds, 8);
+  const newProducts = featured.length ? featured : pricedProducts.slice(0, 4);
+  const groups = groupFortniteLayoutProducts(pricedProducts);
   const searchResults = getFortniteSearchResults(groups, searchQuery);
   const scrollToTarget = (targetId) => {
     document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -104,12 +114,12 @@ function GiftShop({ products, onAdd, status, shopHash, nextExpiration }) {
   </div>;
 }
 
-export default function FortniteCatalog({ products, subcategory, onAdd }) {
+export default function FortniteCatalog({ products, subcategory, onAdd, country }) {
   const { products: apiProducts, status, shopHash, nextExpiration } = useFortniteShopProducts();
   const passes = products.filter((product) => product.subcategory === 'passes');
   const accountTopups = products.filter((product) => product.subcategory === 'account-topups');
   const club = products.filter((product) => product.subcategory === 'club');
-  if (subcategory === 'gift-shop') return <GiftShop products={apiProducts} status={status} shopHash={shopHash} nextExpiration={nextExpiration} onAdd={onAdd} />;
+  if (subcategory === 'gift-shop') return <GiftShop products={apiProducts} status={status} shopHash={shopHash} nextExpiration={nextExpiration} onAdd={onAdd} country={country} />;
   if (subcategory === 'passes') return <section aria-labelledby="fortnite-passes-title"><SectionHeading eyebrow="Fortnite" title="Pases de Fortnite" id="fortnite-passes-title" /><ManualGrid products={passes} onAdd={onAdd} /></section>;
   return <div className="space-y-10"><section aria-labelledby="fortnite-account-title"><SectionHeading eyebrow="Fortnite" title="Vía cuenta" id="fortnite-account-title" /><h4 className="mb-4 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Recargas de pavos</h4><ManualGrid products={accountTopups} onAdd={onAdd} /><h4 className="mb-4 mt-10 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Club de Fortnite</h4><ManualGrid products={club} onAdd={(product) => onAdd({ ...product, creatorCodeEligible: true, creatorCodeScope: 'account-club' })} /><h4 className="mb-4 mt-10 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Packs de Fortnite</h4><EmptyPackSlots /></section></div>;
 }

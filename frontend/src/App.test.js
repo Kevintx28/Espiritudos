@@ -46,6 +46,23 @@ describe('KTXStore flow', () => {
     expect(localStorage.getItem('ktxstore:selectedCountry')).toBe('"MX"');
   });
 
+  it('shows Mexican Fortnite prices in MXN through the product and cart', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { shop: { entries: [] } } }) });
+    act(() => root.render(<App />));
+    act(() => container.querySelector('header button').click());
+    act(() => container.querySelector('[data-testid="country-MX"]').click());
+    act(() => container.querySelector('[data-testid="game-fortnite"]').click());
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+    act(() => Array.from(container.querySelectorAll('nav[aria-label="Subcategorías de Fortnite"] button')).find((button) => button.textContent.trim() === 'Pases de Fortnite').click());
+
+    expect(container.textContent).toContain('$ 108.00 MXN');
+    act(() => container.querySelector('[data-testid="add-FN-PASS-BATTLE"]').click());
+    expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('$ 108.00 MXN');
+    act(() => container.querySelector('[data-testid="floating-cart"]').click());
+    expect(container.querySelector('[data-testid="cart-drawer"]').textContent).toContain('Moneda: MXN');
+    expect(container.querySelector('[data-testid="cart-drawer"]').textContent).toContain('$ 108.00 MXN');
+  });
+
   it('selects Roblox and adds RBX-100 to its independent cart', () => {
     act(() => root.render(<App />));
     act(() => container.querySelector('[data-testid="game-roblox"]').click());
