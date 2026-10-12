@@ -89,6 +89,32 @@ describe('KTXStore flow', () => {
     expect(container.querySelector('[data-testid="cart-drawer"]').textContent).toContain('$ 108.00 MXN');
   });
 
+  it('generates a Fortnite order without a voucher when payment has not been made', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { shop: { entries: [] } } }) });
+    act(() => root.render(<App />));
+    act(() => container.querySelector('[data-testid="game-fortnite"]').click());
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+    act(() => Array.from(container.querySelectorAll('nav[aria-label="Subcategorías de Fortnite"] button')).find((button) => button.textContent.trim() === 'Pases de Fortnite').click());
+    act(() => container.querySelector('[data-testid="add-FN-PASS-BATTLE"]').click());
+    act(() => container.querySelector('[data-testid="floating-cart"]').click());
+    act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
+    act(() => container.querySelector('[data-testid="checkout-payment-yape"]').click());
+    act(() => container.querySelector('[role="dialog"] button').click());
+
+    const epicIdInput = container.querySelector('[data-testid="fortnite-epic-id"]');
+    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(epicIdInput, 'EpicPlayer');
+    act(() => epicIdInput.dispatchEvent(new Event('input', { bubbles: true })));
+    act(() => container.querySelector('[data-testid="vbucks-account-gatozz2"]').click());
+    act(() => container.querySelector('[data-testid="continue-without-voucher"]').click());
+
+    const savedOrder = JSON.parse(localStorage.getItem('ktxstore:pendingOrder'));
+    expect(savedOrder.voucher).toBeNull();
+    expect(savedOrder.paymentMethod).toBe('Yape');
+    expect(savedOrder.form.epicId).toBe('EpicPlayer');
+    expect(savedOrder.form.vbucksAccounts).toEqual(['gatozz2']);
+    expect(container.querySelector('.ktx-halloween-receipt').textContent).toContain('No se adjuntó comprobante.');
+  });
+
   it('selects Roblox and adds RBX-100 to its independent cart', () => {
     act(() => root.render(<App />));
     act(() => container.querySelector('[data-testid="game-roblox"]').click());

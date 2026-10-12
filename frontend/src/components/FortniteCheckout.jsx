@@ -64,11 +64,10 @@ export default function FortniteCheckout({
     setError('');
   };
 
-  const submit = (event) => {
-    event.preventDefault();
+  const completeOrder = (skipVoucher = false) => {
     if (!form.epicId.trim()) return setError('Escribe el usuario de Fortnite (Epic ID).');
     if (!paymentMethod) return setError('Selecciona un método de pago.');
-    if (!voucher) return setError('Sube tu comprobante para continuar.');
+    if (!voucher && !skipVoucher) return setError('Sube tu comprobante para continuar.');
     if (hasTestProducts) {
       return setError('Este producto es de prueba: no permite un pago real.');
     }
@@ -77,8 +76,13 @@ export default function FortniteCheckout({
     const submittedForm = showVbucksAccounts ? form : { ...form, vbucksAccounts: [] };
     onContinue(
       { ...submittedForm, epicId: form.epicId.trim() },
-      { paymentMethod: selectedMethod.name, paymentMethodId: selectedMethod.id, voucher }
+      { paymentMethod: selectedMethod.name, paymentMethodId: selectedMethod.id, voucher: skipVoucher ? null : voucher }
     );
+  };
+
+  const submit = (event) => {
+    event.preventDefault();
+    completeOrder();
   };
 
   return <>
@@ -159,6 +163,7 @@ export default function FortniteCheckout({
           {voucher ? voucher.name : 'Seleccionar imagen'}
         </span>
       </label>
+      <button type="button" data-testid="continue-without-voucher" onClick={() => completeOrder(true)} disabled={hasTestProducts} className="w-full rounded-xl border border-white/15 px-4 py-3 font-semibold text-slate-200 transition hover:border-cyan-400/60 hover:text-cyan-200 disabled:cursor-not-allowed disabled:opacity-50">Aún no realicé el pago</button>
 
       {error && <p role="alert" className="rounded-xl bg-red-500/10 p-3 text-sm text-red-200">{error}</p>}
       <div className="flex justify-between gap-3 border-t border-white/10 pt-5">
