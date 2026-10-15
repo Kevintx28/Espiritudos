@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ImagePlus } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ImagePlus, Twitch, XCircle } from 'lucide-react';
 import { formatFortniteMoney } from '../lib/fortnite-pricing';
 import PaymentMethodDialog from './PaymentMethodDialog';
 
@@ -7,6 +7,7 @@ const VBUCKS_ACCOUNTS = ['gatozz1', 'gatozz2', 'gatozz3', 'gatozz4', 'gatozz5'];
 
 export default function FortniteCheckout({
   country,
+  social = {},
   hasTestProducts,
   subtotal,
   total,
@@ -94,23 +95,36 @@ export default function FortniteCheckout({
         <h2 id="fortnite-checkout-total" className="mt-2 text-2xl font-bold text-white">Total a pagar</h2>
         {creatorCodeApplied && <p className="mt-2 text-sm text-slate-400">Subtotal: {formatFortniteMoney(subtotal, country.currency)}</p>}
         <p data-testid="fortnite-checkout-total-value" className="mt-2 text-3xl font-black text-cyan-300">{formatFortniteMoney(total, country.currency)}</p>
-        {creatorCodeApplied && <p role="status" className="mt-2 text-sm font-semibold text-emerald-300">{appliedCreatorCode} aplicado: -{formatFortniteMoney(creatorDiscountAmount, country.currency)} en productos elegibles.</p>}
+        {creatorCodeApplied && <div role="status" className="coupon-success mt-3 rounded-xl border border-emerald-400/40 bg-emerald-400/10 p-4 text-emerald-200">
+          <p className="flex items-center gap-2 text-base font-black"><CheckCircle2 className="h-5 w-5 shrink-0" />¡Cupón aplicado!</p>
+          <p className="mt-1 text-sm">{appliedCreatorCode} aplicado: ahorras <strong>{formatFortniteMoney(creatorDiscountAmount, country.currency)}</strong> (10%).</p>
+          <p className="mt-2 text-xs text-emerald-100/80">Este cupón solo aplica en artículos de <strong>Vía regalo</strong> y <strong>Club de Fortnite</strong>.</p>
+        </div>}
       </section>
 
       {creatorCodeAvailable && <section aria-labelledby="fortnite-checkout-code" className="border-t border-white/10 pt-5">
-        <h3 id="fortnite-checkout-code" className="font-bold text-white">Código de descuento</h3>
+        <h3 id="fortnite-checkout-code" className="font-bold text-white">Cupón de descuento</h3>
         <div className="mt-3 flex gap-2">
           <input
             data-testid="creator-code-input"
-            aria-label="Código de descuento"
+            aria-label="Cupón de descuento"
             value={creatorCode}
             onChange={(event) => { setCreatorCode(event.target.value); setCreatorCodeStatus(null); }}
             disabled={creatorCodeApplied}
-            className="min-w-0 flex-1 rounded-xl border border-white/15 bg-black/20 px-3 py-2 text-white disabled:opacity-60"
+            aria-invalid={creatorCodeStatus === 'error'}
+            className={`min-w-0 flex-1 rounded-xl border bg-black/20 px-3 py-2 text-white disabled:opacity-60 ${creatorCodeStatus === 'error' ? 'coupon-error-shake border-red-400 ring-2 ring-red-400/30' : 'border-white/15'}`}
           />
           <button type="button" data-testid="creator-code-apply" onClick={applyCode} disabled={creatorCodeApplied} className="rounded-xl bg-cyan-400 px-4 py-2 font-bold text-slate-950 disabled:opacity-60">Aplicar</button>
         </div>
-        {creatorCodeStatus === 'error' && <p role="alert" className="mt-2 text-sm text-red-300">Código no válido. Verifica e inténtalo otra vez.</p>}
+        {creatorCodeStatus === 'error' && <p role="alert" className="mt-2 flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-sm font-semibold text-red-200"><XCircle className="h-5 w-5 shrink-0" />Cupón no válido. Verifica el código e inténtalo otra vez.</p>}
+        <div className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4">
+          <p className="text-sm font-bold text-white">¿Dónde consigo cupones de descuento?</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-300">En los streams de Twitch se regalan cupones a los seguidores, o también en nuestro Discord.</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <a href="https://www.twitch.tv/kristalyz08" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-purple-500"><Twitch className="h-4 w-4" />Twitch</a>
+            <a href={social.discord || 'https://discord.gg/We2N7EADfY'} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-indigo-500"><img src="https://static.vecteezy.com/system/resources/thumbnails/023/741/066/small/discord-logo-icon-social-media-icon-free-png.png" alt="" className="h-4 w-4 object-contain" />Discord</a>
+          </div>
+        </div>
       </section>}
 
       <fieldset className="border-t border-white/10 pt-5">

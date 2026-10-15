@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import OrderReceiptGenerator from './components/OrderReceiptGenerator';
 import PaymentVoucher from './components/PaymentVoucher';
+import ContactFloaters from './components/ContactFloaters';
 
 const peruPaymentMethods = [
   { id: 'yape', name: 'Yape', icon: 'Y', brandColor: '#6C3B9B', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHjgVIwiC-m-NzaYDBHXHaJxrwXeLg4Vl1Nsk5D8QuBTfpyYhxoEI62gY&s=10', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/hWGfhvX.png' } },
@@ -15,6 +16,7 @@ const peruPaymentMethods = [
 
 const storeConfig = {
   identity: { name: 'KTXStore', tagline: 'Tienda' },
+  social: { discord: 'https://discord.test' },
   countries: [{ code: 'PE', name: 'Perú', currency: 'PEN', symbol: 'S/', flag: '🇵🇪' }, { code: 'MX', name: 'México', currency: 'MXN', symbol: '$', flag: '🇲🇽' }],
   games: [
     { id: 'roblox', name: 'Roblox', shortName: 'Roblox', icon: 'Gamepad2', deliveryType: 'redeem_code' },
@@ -145,6 +147,14 @@ describe('KTXStore flow', () => {
     expect(container.querySelector('[role="dialog"]')).toBeNull();
   });
 
+  it('shows branded WhatsApp and Discord logos in the floating contact buttons', () => {
+    act(() => root.render(<ContactFloaters social={{ whatsapp: 'https://wa.test', discord: 'https://discord.test' }} />));
+    expect(container.querySelector('[aria-label="Escribir por WhatsApp a KTXStore"] img').getAttribute('src')).toContain('img.magnific.com');
+    expect(container.querySelector('[aria-label="Unirse al Discord de KTXStore"] img').getAttribute('src')).toContain('vecteezy.com');
+    expect(container.querySelector('[aria-label="Escribir por WhatsApp a KTXStore"]').getAttribute('href')).toBe('https://wa.test');
+    expect(container.querySelector('[aria-label="Unirse al Discord de KTXStore"]').getAttribute('href')).toBe('https://discord.test');
+  });
+
   it('shows Mexican Fortnite prices in MXN through the product and cart', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { shop: { entries: [] } } }) });
     act(() => root.render(<App />));
@@ -242,9 +252,17 @@ describe('KTXStore flow', () => {
       codeInput.dispatchEvent(new Event('input', { bubbles: true }));
     };
     act(() => { setInputValue('INVALID'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
-    expect(container.querySelector('[role="alert"]').textContent).toContain('Código no válido');
+    expect(container.querySelector('[role="alert"]').textContent).toContain('Cupón no válido');
+    expect(container.querySelector('[data-testid="creator-code-input"]').getAttribute('aria-invalid')).toBe('true');
+    expect(container.querySelector('h3#fortnite-checkout-code').textContent).toBe('Cupón de descuento');
+    expect(Array.from(container.querySelectorAll('[href]')).some((link) => link.href === 'https://www.twitch.tv/kristalyz08')).toBe(true);
+    expect(Array.from(container.querySelectorAll('[href]')).some((link) => link.href.startsWith('https://discord.test'))).toBe(true);
     act(() => { setInputValue('KRIS08'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
     expect(container.querySelector('[role="status"]').textContent).toContain('KRIS08 aplicado');
+    expect(container.querySelector('[role="status"]').textContent).toContain('¡Cupón aplicado!');
+    expect(container.querySelector('[role="status"]').textContent).toContain('ahorras S/ 5.13');
+    expect(container.querySelector('[role="status"]').textContent).toContain('Vía regalo');
+    expect(container.querySelector('[role="status"]').textContent).toContain('Club de Fortnite');
     expect(container.querySelector('[data-testid="fortnite-checkout-total-value"]').textContent).toContain('S/ 46.17');
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 46.17');
