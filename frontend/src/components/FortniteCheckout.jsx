@@ -15,6 +15,7 @@ export default function FortniteCheckout({
   showVbucksAccounts,
   creatorCodeAvailable,
   creatorCodeApplied,
+  appliedCreatorCode,
   onApplyCreatorCode,
   onBack,
   onContinue
@@ -25,7 +26,7 @@ export default function FortniteCheckout({
   });
   const [paymentMethod, setPaymentMethod] = useState(initialPayment?.paymentMethodId || '');
   const [voucher, setVoucher] = useState(initialPayment?.voucher || null);
-  const [creatorCode, setCreatorCode] = useState(creatorCodeApplied ? 'KRIS08' : '');
+  const [creatorCode, setCreatorCode] = useState(creatorCodeApplied ? appliedCreatorCode : '');
   const [creatorCodeStatus, setCreatorCodeStatus] = useState(creatorCodeApplied ? 'success' : null);
   const [modalMethod, setModalMethod] = useState(null);
   const [error, setError] = useState('');
@@ -92,7 +93,7 @@ export default function FortniteCheckout({
         <h2 id="fortnite-checkout-total" className="mt-2 text-2xl font-bold text-white">Total a pagar</h2>
         {creatorCodeApplied && <p className="mt-2 text-sm text-slate-400">Subtotal: {formatFortniteMoney(subtotal, country.currency)}</p>}
         <p data-testid="fortnite-checkout-total-value" className="mt-2 text-3xl font-black text-cyan-300">{formatFortniteMoney(total, country.currency)}</p>
-        {creatorCodeApplied && <p role="status" className="mt-2 text-sm font-semibold text-emerald-300">KRIS08 aplicado: -{formatFortniteMoney(creatorDiscountAmount, country.currency)} en productos elegibles.</p>}
+        {creatorCodeApplied && <p role="status" className="mt-2 text-sm font-semibold text-emerald-300">{appliedCreatorCode} aplicado: -{formatFortniteMoney(creatorDiscountAmount, country.currency)} en productos elegibles.</p>}
       </section>
 
       {creatorCodeAvailable && <section aria-labelledby="fortnite-checkout-code" className="border-t border-white/10 pt-5">

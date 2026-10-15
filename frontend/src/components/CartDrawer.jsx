@@ -4,7 +4,7 @@ import { calculateCartTotals, formatFulfillmentSummary } from '../lib/cart-calcu
 import { formatFortniteMoney } from '../lib/fortnite-pricing';
 import FortniteItemImage from './FortniteItemImage';
 
-export default function CartDrawer({ items, calculations, onChange, onClear, onContinue, onClose, currency = 'PEN', creatorCodeApplied = false }) {
+export default function CartDrawer({ items, calculations, onChange, onClear, onContinue, onClose, currency = 'PEN', creatorCodeApplied = false, appliedCreatorCode = 'KRIS08' }) {
   const totals = calculations || calculateCartTotals(items);
   const subtotal = calculateCartTotals(items).totalMoney;
   const creatorDiscount = Math.max(0, subtotal - totals.totalMoney);
@@ -60,7 +60,7 @@ export default function CartDrawer({ items, calculations, onChange, onClear, onC
           <div className="flex justify-between text-slate-300"><span>Unidades seleccionadas:</span><span className="font-bold text-white">{totals.totalUnits}</span></div>
           <div className="flex justify-between text-slate-300"><span>Total a recibir:</span><span className="font-bold text-cyan-300">{formatFulfillmentSummary(totals)}</span></div>
           {isFortniteCart && <div className="flex justify-between text-slate-300"><span>Subtotal:</span><span>{formatFortniteMoney(subtotal, currency)}</span></div>}
-          {isFortniteCart && creatorCodeApplied && <div className="flex justify-between text-emerald-300"><span>KRIS08 (-10%):</span><span>-{formatFortniteMoney(creatorDiscount, currency)}</span></div>}
+          {isFortniteCart && creatorCodeApplied && <div className="flex justify-between text-emerald-300"><span>{appliedCreatorCode} (-10%):</span><span>-{formatFortniteMoney(creatorDiscount, currency)}</span></div>}
           <div className="flex justify-between pt-2 text-lg font-black text-white"><span>Total a pagar:</span><span className="text-cyan-300">{formatFortniteMoney(totals.totalMoney, currency)}</span></div>
         </div>
         <p className="mt-1 text-xs text-slate-500">Moneda: {currency} ({currency === 'PEN' ? 'S/' : currency === 'EUR' ? '€' : '$'})</p>

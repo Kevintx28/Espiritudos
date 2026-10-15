@@ -58,6 +58,7 @@ describe('KTXStore flow', () => {
       total: 108,
       creatorDiscountAmount: 12,
       creatorCodeApplied: true,
+      creatorCode: 'OMARS4',
       form: { epicId: 'EpicPlayer', vbucksAccounts: ['gatozz1', 'gatozz3'] },
       paymentMethod: 'Yape',
       voucher: null
@@ -69,7 +70,7 @@ describe('KTXStore flow', () => {
     expect(receipt).toContain('Usuario de Fortnite: EpicPlayer');
     expect(receipt).toContain('Método de pago: Yape');
     expect(receipt).toContain('$ 108.00 MXN');
-    expect(receipt).toContain('Código de creador KRIS08 aplicado: -10% ($ 12.00 MXN)');
+    expect(receipt).toContain('Código de creador OMARS4 aplicado: -10% ($ 12.00 MXN)');
   });
 
   it('shows Mexican Fortnite prices in MXN through the product and cart', async () => {
@@ -201,7 +202,7 @@ describe('KTXStore flow', () => {
     expect(container.querySelectorAll('[data-testid^="vbucks-account-"]')).toHaveLength(5);
   });
 
-  it('shows KRIS08 for Fortnite Club only and preserves fixed V-Bucks top-up pricing', async () => {
+  it('applies OMARS4 to Fortnite Club only and preserves fixed V-Bucks top-up pricing', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { shop: { entries: [] } } }) });
     act(() => root.render(<App />));
     act(() => container.querySelector('[data-testid="game-fortnite"]').click());
@@ -223,10 +224,12 @@ describe('KTXStore flow', () => {
       Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(codeInput, value);
       codeInput.dispatchEvent(new Event('input', { bubbles: true }));
     };
-    act(() => { setInputValue('KRIS08'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
-    expect(container.querySelector('[role="status"]').textContent).toContain('KRIS08 aplicado');
+    act(() => { setInputValue('OMARS4'); container.querySelector('[data-testid="creator-code-apply"]').click(); });
+    expect(container.querySelector('[role="status"]').textContent).toContain('OMARS4 aplicado');
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('S/ 37.98');
+    act(() => container.querySelector('[data-testid="floating-cart"]').click());
+    expect(container.querySelector('[data-testid="cart-drawer"]').textContent).toContain('OMARS4 (-10%)');
   });
 
   it('navigates to Marvel Rivals checkout instructions', () => {
