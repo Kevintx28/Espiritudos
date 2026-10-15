@@ -5,12 +5,12 @@ import OrderReceiptGenerator from './components/OrderReceiptGenerator';
 import PaymentVoucher from './components/PaymentVoucher';
 
 const peruPaymentMethods = [
-  { id: 'yape', name: 'Yape', icon: 'Y', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/hWGfhvX.png' } },
-  { id: 'plin', name: 'Plin', icon: 'P', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/aZx3gTj.png' } },
-  { id: 'lemon-cash', name: 'Lemon Cash', icon: 'L', paymentDetails: { number: '917 039 670', lemontag: 'kevintx28', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/zKIItla.png' } },
-  { id: 'prexpe', name: 'Prexpe', icon: 'P', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/j5QisZ7.png' } },
-  { id: 'pago-efectivo', name: 'Pago Efectivo', icon: 'E', paymentDetails: { qr: 'https://i.imgur.com/riUjunw.png', instructions: 'Puedes pagar en efectivo en agentes y bodegas', cip: true } },
-  { id: 'binance-pay', name: 'Binance Pay', icon: 'B', paymentDetails: { user: 'User-e5319', qr: 'https://i.imgur.com/yIhJ8Da.jpeg' } }
+  { id: 'yape', name: 'Yape', icon: 'Y', brandColor: '#6C3B9B', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHjgVIwiC-m-NzaYDBHXHaJxrwXeLg4Vl1Nsk5D8QuBTfpyYhxoEI62gY&s=10', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/hWGfhvX.png' } },
+  { id: 'plin', name: 'Plin', icon: 'P', brandColor: '#00A86B', iconUrl: 'https://images.seeklogo.com/logo-png/38/2/plin-logo-png_seeklogo-386806.png', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/aZx3gTj.png' } },
+  { id: 'lemon-cash', name: 'Lemon Cash', icon: 'L', brandColor: '#F5C518', textColor: '#171717', iconUrl: 'https://play-lh.googleusercontent.com/Wyrfg68_89zjJFajzuLeVwS1ULlISOzlQA-85Sfd2kJNkxOxVmppVgLdPF1Ov12cVF78CTRLHko8XTMEVbRf=w240-h480-rw', paymentDetails: { number: '917 039 670', lemontag: 'kevintx28', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/zKIItla.png' } },
+  { id: 'prexpe', name: 'Prexpe', icon: 'P', brandColor: '#0057FF', iconUrl: 'https://play-lh.googleusercontent.com/47BLMND75NlvL_ujHFt1O8ZhqYOfSoOxewC2EF11AUZRnM5_5v8XYMXNbc1gbi35ZhuuyPk_Fn8Chx0hgRx7', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/j5QisZ7.png' } },
+  { id: 'pago-efectivo', name: 'Pago Efectivo', icon: 'E', brandColor: '#E31C25', iconUrl: 'https://mir-s3-cdn-cf.behance.net/projects/404/96c17b70532225.Y3JvcCw4MDgsNjMyLDAsMA.jpg', paymentDetails: { qr: 'https://i.imgur.com/riUjunw.png', instructions: 'Puedes pagar en efectivo en agentes y bodegas', cip: true } },
+  { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxIAt0R1AQ14RAAEgcJL9JW6zUDYYWVU9Icu87B62Y_mS5c5Y9LiPIRFpx&s=10', paymentDetails: { user: 'User-e5319', qr: 'https://i.imgur.com/yIhJ8Da.jpeg' } }
 ];
 
 const storeConfig = {
@@ -98,14 +98,19 @@ describe('KTXStore flow', () => {
     expect(Array.from(container.querySelectorAll('input[name="payment"]')).map((input) => input.value)).toEqual([
       'yape', 'plin', 'lemon-cash', 'prexpe', 'pago-efectivo', 'binance-pay'
     ]);
+    const peruMethods = Array.from(container.querySelectorAll('input[name="payment"]')).map((input) => input.closest('label'));
+    expect(peruMethods.every((method) => method.querySelector('img') && method.style.backgroundColor)).toBe(true);
 
     act(() => container.querySelector('input[value="lemon-cash"]').click());
     expect(container.querySelector('[role="dialog"]').textContent).toContain('Lemon Cash');
     expect(container.querySelector('[role="dialog"]').textContent).toContain('917 039 670');
     expect(container.querySelector('[role="dialog"]').textContent).toContain('kevintx28');
     expect(container.querySelector('[role="dialog"]').textContent).toContain('Kevin Naiyel. T. C.');
-    expect(container.querySelector('[role="dialog"] img').getAttribute('src')).toBe('https://i.imgur.com/zKIItla.png');
-    expect(container.querySelectorAll('[role="dialog"] button')).toHaveLength(6);
+    expect(Array.from(container.querySelectorAll('[role="dialog"] button')).filter((button) => button.textContent === 'Copiar')).toHaveLength(2);
+    expect(container.querySelector('[role="dialog"] img[alt=""]').getAttribute('src')).toBe(peruPaymentMethods[2].iconUrl);
+    expect(container.querySelector('[role="dialog"] [class*="select-none"]').style.userSelect).toBe('none');
+    expect(container.querySelector('[role="dialog"] img[alt^="QR de pago"]').getAttribute('src')).toBe('https://i.imgur.com/zKIItla.png');
+    expect(container.querySelectorAll('[role="dialog"] button')).toHaveLength(5);
 
     await act(async () => {
       Array.from(container.querySelectorAll('[role="dialog"] button')).find((button) => button.textContent === 'Copiar').click();
@@ -119,7 +124,7 @@ describe('KTXStore flow', () => {
     act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
     act(() => container.querySelector('input[value="pago-efectivo"]').click());
     expect(container.querySelector('[role="dialog"]').textContent).toContain('Puedes pagar en efectivo en agentes y bodegas');
-    expect(container.querySelector('[role="dialog"] img').getAttribute('src')).toBe('https://i.imgur.com/riUjunw.png');
+    expect(container.querySelector('[role="dialog"] img[alt^="QR de pago"]').getAttribute('src')).toBe('https://i.imgur.com/riUjunw.png');
     const cipLink = container.querySelector('[data-testid="payment-cip-whatsapp"]');
     expect(cipLink.textContent).toBe('Solicitar código CIP por WhatsApp');
     expect(cipLink.getAttribute('target')).toBe('_blank');
@@ -260,7 +265,7 @@ describe('KTXStore flow', () => {
     act(() => container.querySelector('[data-testid="checkout-payment-yape"]').click());
     expect(container.querySelector('[role="dialog"]').textContent).toContain('Yape');
     expect(container.querySelector('[role="dialog"]').textContent).toContain('917 039 670');
-    expect(container.querySelector('[role="dialog"] img').getAttribute('src')).toBe('https://i.imgur.com/hWGfhvX.png');
+    expect(container.querySelector('[role="dialog"] img[alt^="QR de pago"]').getAttribute('src')).toBe('https://i.imgur.com/hWGfhvX.png');
     act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
     expect(container.querySelector('[data-testid="fortnite-epic-id"]')).not.toBeNull();
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());

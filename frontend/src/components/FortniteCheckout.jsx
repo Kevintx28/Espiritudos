@@ -122,8 +122,11 @@ export default function FortniteCheckout({
             data-testid={`checkout-payment-${method.id}`}
             aria-pressed={paymentMethod === method.id}
             onClick={() => { setPaymentMethod(method.id); setModalMethod(method); }}
-            className={`rounded-xl border p-4 text-left font-semibold transition ${paymentMethod === method.id ? 'border-cyan-400 bg-cyan-400/10 text-cyan-200' : 'border-white/10 bg-black/20 text-white hover:border-cyan-400/50'}`}
-          >{method.icon && <span className="mr-2">{method.icon}</span>}{method.name}</button>)}
+            className="flex items-center gap-3 rounded-xl border border-white/15 p-4 text-left font-semibold shadow-sm transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+            style={country.code === 'PE' && method.brandColor ? { backgroundColor: method.brandColor, color: method.textColor || '#FFFFFF', borderColor: method.brandColor } : undefined}
+          >{country.code === 'PE' && method.iconUrl
+            ? <img src={method.iconUrl} alt="" className="h-10 w-10 rounded-lg bg-white p-1 object-contain" />
+            : method.icon && <span className="mr-1">{method.icon}</span>}{method.name}</button>)}
           {methods.length === 0 && <p className="text-sm text-slate-400">No hay métodos de pago disponibles para este país.</p>}
         </div>
       </fieldset>

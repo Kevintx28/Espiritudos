@@ -64,8 +64,7 @@ export default function PaymentMethodDialog({ method, onClose, countryCode, cart
   const fields = [
     details.number && { label: 'Número', value: details.number },
     details.lemontag && { label: '$lemontag', value: details.lemontag },
-    details.user && { label: 'User', value: details.user },
-    details.holder && { label: 'Titular', value: details.holder }
+    details.user && { label: 'User', value: details.user }
   ].filter(Boolean);
   const cipMessage = [
     'Hola, acabo de solicitar un pago con Pago Efectivo.',
@@ -79,13 +78,17 @@ export default function PaymentMethodDialog({ method, onClose, countryCode, cart
     <div role="presentation" className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={onClose}>
       <section role="dialog" aria-modal="true" aria-labelledby="payment-method-dialog-title" className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/10 bg-[#15131f] p-6 shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <button type="button" aria-label="Cerrar modal de pago" onClick={onClose} className="absolute right-4 top-4 rounded-lg p-2 text-slate-300 hover:bg-white/10 hover:text-white"><X className="h-5 w-5" /></button>
-        <h2 id="payment-method-dialog-title" className="pr-10 text-xl font-bold text-white">Pago con {method.name}</h2>
+        <div className="flex items-center gap-3 pr-10">
+          {method.iconUrl && <img src={method.iconUrl} alt="" className="h-11 w-11 rounded-lg bg-white p-1 object-contain" />}
+          <h2 id="payment-method-dialog-title" className="text-xl font-bold text-white">Pago con {method.name}</h2>
+        </div>
         <div className="mt-5 space-y-3">
           {fields.map(({ label, value }) => <div key={label} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 p-3">
             <div className="min-w-0"><p className="text-xs text-slate-400">{label}</p><p className="break-all font-semibold text-white">{value}</p></div>
             <button type="button" onClick={() => copyField(label, value)} className="shrink-0 rounded-lg bg-cyan-400 px-3 py-2 text-sm font-bold text-slate-950">Copiar</button>
           </div>)}
           {details.instructions && <p className="text-sm text-slate-300">{details.instructions}</p>}
+          {details.holder && <p onCopy={(event) => event.preventDefault()} className="select-none text-sm text-slate-300" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}><span className="font-semibold text-white">Titular:</span> {details.holder}</p>}
           {details.qr && <div className="text-center">
             {qrError
               ? <p role="alert" className="rounded-xl border border-red-400/30 p-4 text-sm text-red-200">No se pudo cargar el QR. Comprueba tu conexión e inténtalo de nuevo.</p>

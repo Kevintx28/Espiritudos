@@ -41,8 +41,12 @@ export default function PaymentVoucher({ country, game, items, form, initialValu
     <fieldset className="mt-6">
       <legend className="mb-3 text-sm font-bold text-white">Método de pago</legend>
       <div className="grid gap-3 sm:grid-cols-2">
-        {methods.map((method) => <label key={method.id} className={`cursor-pointer rounded-xl border p-3 ${paymentMethod === method.id ? 'border-cyan-400 bg-cyan-400/10' : 'border-white/10'}`}>
-          <input type="radio" name="payment" value={method.id} checked={paymentMethod === method.id} onChange={(event) => { setPaymentMethod(event.target.value); if (country.code === 'PE' && method.paymentDetails) setModalMethod(method); }} className="mr-2" />{method.name}
+        {methods.map((method) => <label key={method.id} className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition hover:brightness-110 ${paymentMethod === method.id ? 'border-cyan-400 ring-2 ring-cyan-400/50' : 'border-white/10'}`} style={country.code === 'PE' && method.brandColor ? { backgroundColor: method.brandColor, color: method.textColor || '#FFFFFF', borderColor: method.brandColor } : undefined}>
+          <input type="radio" name="payment" value={method.id} checked={paymentMethod === method.id} onChange={(event) => { setPaymentMethod(event.target.value); if (country.code === 'PE' && method.paymentDetails) setModalMethod(method); }} />
+          {country.code === 'PE' && method.iconUrl
+            ? <img src={method.iconUrl} alt="" className="h-10 w-10 rounded-lg bg-white p-1 object-contain" />
+            : method.icon && <span>{method.icon}</span>}
+          <span className="font-semibold">{method.name}</span>
         </label>)}
         <div className="rounded-xl border border-dashed border-white/15 p-3 text-sm text-slate-500"><Lock className="mr-2 inline h-4 w-4" />dLocal Go — próximamente</div>
       </div>
