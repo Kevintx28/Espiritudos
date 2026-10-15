@@ -70,7 +70,14 @@ const KTX_STORE_CONFIG = {
     numeric_uid: { title: 'Recarga por UID', steps: ['Copia tu UID de Marvel Rivals.', 'Escribe únicamente números.', 'Validaremos el pedido antes de cualquier entrega.'], note: 'Este producto está en prueba y no debe pagarse.' }
   },
   paymentMethods: {
-    PE: [{ id: 'yape', name: 'Yape', icon: 'Y' }, { id: 'plin', name: 'Plin', icon: 'P' }, { id: 'paypal', name: 'PayPal', icon: 'P' }, { id: 'binance', name: 'Binance Pay', icon: 'B' }],
+    PE: [
+      { id: 'yape', name: 'Yape', icon: 'Y', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/hWGfhvX.png' } },
+      { id: 'plin', name: 'Plin', icon: 'P', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/aZx3gTj.png' } },
+      { id: 'lemon-cash', name: 'Lemon Cash', icon: 'L', paymentDetails: { number: '917 039 670', lemontag: 'kevintx28', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/zKIItla.png' } },
+      { id: 'prexpe', name: 'Prexpe', icon: 'P', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/j5QisZ7.png' } },
+      { id: 'pago-efectivo', name: 'Pago Efectivo', icon: 'E', paymentDetails: { qr: 'https://i.imgur.com/riUjunw.png', instructions: 'Puedes pagar en efectivo en agentes y bodegas', cip: true } },
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', paymentDetails: { user: 'User-e5319', qr: 'https://i.imgur.com/yIhJ8Da.jpeg' } }
+    ],
     MX: [{ id: 'mercadopago', name: 'Mercado Pago', icon: 'M' }, { id: 'paypal', name: 'PayPal', icon: 'P' }],
     US: [{ id: 'paypal', name: 'PayPal', icon: 'P' }, { id: 'binance', name: 'Binance Pay', icon: 'B' }],
     ES: [{ id: 'paypal', name: 'PayPal', icon: 'P' }, { id: 'bizum', name: 'Bizum', icon: 'B' }],

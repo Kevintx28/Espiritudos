@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ImagePlus } from 'lucide-react';
 import { formatFortniteMoney } from '../lib/fortnite-pricing';
+import PaymentMethodDialog from './PaymentMethodDialog';
 
 const VBUCKS_ACCOUNTS = ['gatozz1', 'gatozz2', 'gatozz3', 'gatozz4', 'gatozz5'];
 
@@ -173,12 +174,6 @@ export default function FortniteCheckout({
       </div>
     </form>
 
-    {modalMethod && <div role="presentation" className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setModalMethod(null)}>
-      <section role="dialog" aria-modal="true" aria-labelledby="payment-method-dialog-title" className="w-full max-w-md rounded-2xl border border-white/10 bg-[#15131f] p-6 shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <h2 id="payment-method-dialog-title" className="text-xl font-bold text-white">Pago con {modalMethod.name}</h2>
-        <p className="mt-3 text-sm text-slate-300">Los datos de pago de este método se añadirán en la siguiente actualización.</p>
-        <button type="button" autoFocus onClick={() => setModalMethod(null)} className="mt-5 w-full rounded-xl bg-cyan-400 px-4 py-3 font-bold text-slate-950">Entendido</button>
-      </section>
-    </div>}
+    <PaymentMethodDialog method={modalMethod} onClose={() => setModalMethod(null)} countryCode={country.code} cartTotal={total} currency={country.currency} />
   </>;
 }

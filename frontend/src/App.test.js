@@ -2,6 +2,16 @@ import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import OrderReceiptGenerator from './components/OrderReceiptGenerator';
+import PaymentVoucher from './components/PaymentVoucher';
+
+const peruPaymentMethods = [
+  { id: 'yape', name: 'Yape', icon: 'Y', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/hWGfhvX.png' } },
+  { id: 'plin', name: 'Plin', icon: 'P', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/aZx3gTj.png' } },
+  { id: 'lemon-cash', name: 'Lemon Cash', icon: 'L', paymentDetails: { number: '917 039 670', lemontag: 'kevintx28', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/zKIItla.png' } },
+  { id: 'prexpe', name: 'Prexpe', icon: 'P', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/j5QisZ7.png' } },
+  { id: 'pago-efectivo', name: 'Pago Efectivo', icon: 'E', paymentDetails: { qr: 'https://i.imgur.com/riUjunw.png', instructions: 'Puedes pagar en efectivo en agentes y bodegas', cip: true } },
+  { id: 'binance-pay', name: 'Binance Pay', icon: 'B', paymentDetails: { user: 'User-e5319', qr: 'https://i.imgur.com/yIhJ8Da.jpeg' } }
+];
 
 const storeConfig = {
   identity: { name: 'KTXStore', tagline: 'Tienda' },
@@ -19,18 +29,20 @@ const storeConfig = {
     { id: 'FF-TEST', gameId: 'free-fire', name: 'Diamantes Free Fire — precio por definir', price: null, currency: 'PEN', testOnly: true }
   ],
   deliveryInstructions: { redeem_code: { title: 'Canjea tu código', steps: [], note: 'Nota' }, numeric_uid: { title: 'UID', steps: [], note: 'Nota' }, player_id: { title: 'ID', steps: [], note: 'Nota' } },
-  paymentMethods: { PE: [{ id: 'yape', name: 'Yape', icon: 'Y' }], MX: [] },
+  paymentMethods: { PE: peruPaymentMethods, MX: [{ id: 'mercadopago', name: 'Mercado Pago', icon: 'M' }, { id: 'paypal', name: 'PayPal', icon: 'P' }] },
   dLocalGo: { enabled: false }
 };
 
 let container;
 let root;
 let originalFetch;
+let originalClipboard;
 
 describe('KTXStore flow', () => {
   beforeEach(() => {
     globalThis.IS_REACT_ACT_ENVIRONMENT = true;
     originalFetch = global.fetch;
+    originalClipboard = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
     localStorage.clear();
     window.KTX_STORE_CONFIG = storeConfig;
     window.APP_CONFIG = { social: { whatsapp: 'https://wa.test', discord: 'https://discord.test' } };
@@ -38,7 +50,14 @@ describe('KTXStore flow', () => {
     document.body.appendChild(container);
     root = createRoot(container);
   });
-  afterEach(() => { act(() => root.unmount()); container.remove(); localStorage.clear(); global.fetch = originalFetch; });
+  afterEach(() => {
+    act(() => root.unmount());
+    container.remove();
+    localStorage.clear();
+    global.fetch = originalFetch;
+    if (originalClipboard) Object.defineProperty(navigator, 'clipboard', originalClipboard);
+    else delete navigator.clipboard;
+  });
 
   it('persists the selected country', () => {
     act(() => root.render(<App />));
@@ -71,6 +90,54 @@ describe('KTXStore flow', () => {
     expect(receipt).toContain('Método de pago: Yape');
     expect(receipt).toContain('$ 108.00 MXN');
     expect(receipt).toContain('Código de creador OMARS4 aplicado: -10% ($ 12.00 MXN)');
+  });
+
+  it('shows Peruvian payment details, copy actions and an expandable QR', async () => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: jest.fn().mockResolvedValue(undefined) } });
+    act(() => root.render(<PaymentVoucher country={storeConfig.countries[0]} game={{ id: 'roblox' }} items={[{ product: { price: 25 }, quantity: 1 }, { product: { price: 10 }, quantity: 2 }]} onBack={() => {}} onContinue={() => {}} />));
+    expect(Array.from(container.querySelectorAll('input[name="payment"]')).map((input) => input.value)).toEqual([
+      'yape', 'plin', 'lemon-cash', 'prexpe', 'pago-efectivo', 'binance-pay'
+    ]);
+
+    act(() => container.querySelector('input[value="lemon-cash"]').click());
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('Lemon Cash');
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('917 039 670');
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('kevintx28');
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('Kevin Naiyel. T. C.');
+    expect(container.querySelector('[role="dialog"] img').getAttribute('src')).toBe('https://i.imgur.com/zKIItla.png');
+    expect(container.querySelectorAll('[role="dialog"] button')).toHaveLength(6);
+
+    await act(async () => {
+      Array.from(container.querySelectorAll('[role="dialog"] button')).find((button) => button.textContent === 'Copiar').click();
+      await Promise.resolve();
+    });
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('917 039 670');
+    expect(container.querySelector('[role="status"]').textContent).toContain('copiado');
+    act(() => container.querySelector('[aria-label="Ampliar QR de Lemon Cash"]').click());
+    expect(container.querySelector('[aria-label="QR ampliado de Lemon Cash"]')).not.toBeNull();
+    act(() => container.querySelector('[aria-label="Cerrar QR ampliado"]').click());
+    act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
+    act(() => container.querySelector('input[value="pago-efectivo"]').click());
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('Puedes pagar en efectivo en agentes y bodegas');
+    expect(container.querySelector('[role="dialog"] img').getAttribute('src')).toBe('https://i.imgur.com/riUjunw.png');
+    const cipLink = container.querySelector('[data-testid="payment-cip-whatsapp"]');
+    expect(cipLink.textContent).toBe('Solicitar código CIP por WhatsApp');
+    expect(cipLink.getAttribute('target')).toBe('_blank');
+    const [whatsappNumber, encodedMessage] = cipLink.href.split('?text=');
+    expect(whatsappNumber).toBe('https://wa.me/51968788328');
+    expect(decodeURIComponent(encodedMessage)).toBe([
+      'Hola, acabo de solicitar un pago con Pago Efectivo.',
+      'Monto a pagar: S/ 45.00',
+      'Por favor envíame el código CIP. Gracias.',
+      'Aqui tambien adjunto la imagen generada en la pagina con los articulos que deseo.'
+    ].join('\n'));
+  });
+
+  it('keeps non-Peru payment methods and does not expose Peru payment data there', () => {
+    act(() => root.render(<PaymentVoucher country={storeConfig.countries[1]} game={{ id: 'roblox' }} items={[]} onBack={() => {}} onContinue={() => {}} />));
+    expect(Array.from(container.querySelectorAll('input[name="payment"]')).map((input) => input.value)).toEqual(['mercadopago', 'paypal']);
+    expect(container.querySelector('[data-testid="checkout-payment-yape"]')).toBeNull();
+    expect(container.querySelector('[role="dialog"]')).toBeNull();
   });
 
   it('shows Mexican Fortnite prices in MXN through the product and cart', async () => {
@@ -192,8 +259,9 @@ describe('KTXStore flow', () => {
     expect(container.querySelector('[data-testid="vbucks-account-gatozz1"]')).toBeNull();
     act(() => container.querySelector('[data-testid="checkout-payment-yape"]').click());
     expect(container.querySelector('[role="dialog"]').textContent).toContain('Yape');
-    expect(container.querySelector('[role="dialog"]').textContent).toContain('siguiente actualización');
-    act(() => container.querySelector('[role="dialog"] button').click());
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('917 039 670');
+    expect(container.querySelector('[role="dialog"] img').getAttribute('src')).toBe('https://i.imgur.com/hWGfhvX.png');
+    act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
     expect(container.querySelector('[data-testid="fortnite-epic-id"]')).not.toBeNull();
     act(() => Array.from(container.querySelectorAll('button')).find((button) => button.textContent.includes('Atrás')).click());
     selectFortniteTab('Pases de Fortnite');

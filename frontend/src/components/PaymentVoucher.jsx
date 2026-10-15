@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ImagePlus, Lock } from 'lucide-react';
 import { formatFortniteMoney } from '../lib/fortnite-pricing';
+import PaymentMethodDialog from './PaymentMethodDialog';
 
 export default function PaymentVoucher({ country, game, items, form, initialValue, onBack, onContinue }) {
   const methods = window.KTX_STORE_CONFIG.paymentMethods[country.code] || [];
   const [paymentMethod, setPaymentMethod] = useState(initialValue?.paymentMethod || '');
   const [voucher, setVoucher] = useState(initialValue?.voucher || null);
+  const [modalMethod, setModalMethod] = useState(null);
   const [error, setError] = useState('');
   const hasTest = items.some(({ product }) => product.testOnly);
   const total = items.reduce((sum, { product, quantity }) => sum + (product.price || 0) * quantity, 0);
@@ -26,6 +28,7 @@ export default function PaymentVoucher({ country, game, items, form, initialValu
     event.preventDefault();
     if (hasTest) return setError('Este producto es de prueba: no permite un pago real.');
     if (!paymentMethod) return setError('Selecciona un método de pago.');
+    if (!methods.some((method) => method.id === paymentMethod)) return setError('El método seleccionado no está disponible para este país.');
     if (!voucher) return setError('Sube tu comprobante para continuar.');
     onContinue({ paymentMethod, voucher });
   };
@@ -39,7 +42,7 @@ export default function PaymentVoucher({ country, game, items, form, initialValu
       <legend className="mb-3 text-sm font-bold text-white">Método de pago</legend>
       <div className="grid gap-3 sm:grid-cols-2">
         {methods.map((method) => <label key={method.id} className={`cursor-pointer rounded-xl border p-3 ${paymentMethod === method.id ? 'border-cyan-400 bg-cyan-400/10' : 'border-white/10'}`}>
-          <input type="radio" name="payment" value={method.id} checked={paymentMethod === method.id} onChange={(event) => setPaymentMethod(event.target.value)} className="mr-2" />{method.name}
+          <input type="radio" name="payment" value={method.id} checked={paymentMethod === method.id} onChange={(event) => { setPaymentMethod(event.target.value); if (country.code === 'PE' && method.paymentDetails) setModalMethod(method); }} className="mr-2" />{method.name}
         </label>)}
         <div className="rounded-xl border border-dashed border-white/15 p-3 text-sm text-slate-500"><Lock className="mr-2 inline h-4 w-4" />dLocal Go — próximamente</div>
       </div>
@@ -56,5 +59,6 @@ export default function PaymentVoucher({ country, game, items, form, initialValu
       <button type="button" onClick={onBack} className="flex items-center gap-2 rounded-xl border border-white/15 px-4 py-3 text-slate-200"><ArrowLeft className="h-4 w-4" />Atrás</button>
       <button disabled={hasTest} type="submit" className="rounded-xl bg-cyan-400 px-4 py-3 font-bold text-slate-950 disabled:cursor-not-allowed disabled:opacity-50">Generar pedido</button>
     </div>
+    <PaymentMethodDialog method={modalMethod} onClose={() => setModalMethod(null)} countryCode={country.code} cartTotal={total} currency={currency} />
   </form>;
 }
