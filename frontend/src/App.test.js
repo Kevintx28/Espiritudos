@@ -1,6 +1,7 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import FortniteCheckout from './components/FortniteCheckout';
 import OrderReceiptGenerator from './components/OrderReceiptGenerator';
 import PaymentVoucher from './components/PaymentVoucher';
 import ContactFloaters from './components/ContactFloaters';
@@ -92,6 +93,84 @@ describe('KTXStore flow', () => {
     expect(receipt).toContain('Método de pago: Yape');
     expect(receipt).toContain('$ 108.00 MXN');
     expect(receipt).toContain('Código de creador OMARS4 aplicado: -10% ($ 12.00 MXN)');
+  });
+
+  it('prints daily deal sale price and regular price distinctly in the generated order image', () => {
+    const product = {
+      id: 'FN-daily-test',
+      gameId: 'fortnite',
+      name: 'Artículo diario',
+      price: 24.3,
+      originalPrice: 27,
+      discountPercent: 10,
+      currency: 'PEN',
+      fulfillmentAmount: 1500,
+      fulfillmentLabel: 'V-Bucks'
+    };
+    const order = {
+      id: 'KTX-DAILY',
+      date: '15/10/2026',
+      country: storeConfig.countries[0],
+      game: { id: 'fortnite', name: 'Fortnite' },
+      items: [{ product, quantity: 1 }],
+      calculations: {
+        lines: [{ product, quantity: 1, fulfillmentTotal: 1500, fulfillmentLabel: 'V-Bucks', subtotal: 24.3 }],
+        totalUnits: 1,
+        totalMoney: 24.3,
+        fulfillmentTotal: 1500,
+        fulfillmentLabel: 'V-Bucks'
+      },
+      total: 24.3,
+      form: { epicId: 'EpicPlayer', vbucksAccounts: ['gatozz1'] },
+      paymentMethod: 'Yape',
+      voucher: null
+    };
+
+    act(() => root.render(<OrderReceiptGenerator order={order} onGenerated={() => {}} />));
+    const receipt = container.querySelector('.ktx-halloween-receipt').textContent;
+    expect(receipt).toContain('Precio diario (-10%): S/ 24.30');
+    expect(receipt).toContain('Precio normal: S/ 27.00');
+    expect(receipt).toContain('Subtotal: S/ 24.30');
+  });
+
+  it('requires at least one V-Bucks account only when the account selector is enabled', () => {
+    const onContinue = jest.fn();
+    const checkoutProps = {
+      country: storeConfig.countries[0],
+      hasTestProducts: false,
+      subtotal: 19.99,
+      total: 19.99,
+      creatorDiscountAmount: 0,
+      initialForm: { epicId: 'EpicPlayer', vbucksAccounts: [] },
+      initialPayment: null,
+      showVbucksAccounts: true,
+      creatorCodeAvailable: false,
+      creatorCodeApplied: false,
+      appliedCreatorCode: '',
+      onApplyCreatorCode: () => false,
+      onBack: () => {},
+      onContinue
+    };
+    act(() => root.render(<FortniteCheckout {...checkoutProps} />));
+    expect(container.textContent).toContain('al menos 48 horas antes');
+    expect(container.textContent).toContain('máximo 5 artículos por cuenta');
+    expect(container.textContent).toContain('a las 5 cuentas');
+    act(() => container.querySelector('[data-testid="checkout-payment-yape"]').click());
+    expect(container.querySelector('[data-testid="checkout-payment-yape"]').getAttribute('aria-pressed')).toBe('true');
+    expect(container.querySelector('[data-testid="checkout-payment-yape"]').textContent).toContain('Seleccionado');
+    act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
+    act(() => container.querySelector('[data-testid="continue-without-voucher"]').click());
+    expect(container.querySelector('[role="alert"]').textContent).toContain('Debes seleccionar al menos una cuenta de V-Bucks');
+    expect(container.querySelector('[role="alert"]').textContent).toContain('48 horas');
+    expect(onContinue).not.toHaveBeenCalled();
+
+    act(() => container.querySelector('[data-testid="vbucks-account-gatozz1"]').click());
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+    act(() => container.querySelector('[data-testid="continue-without-voucher"]').click());
+    expect(onContinue).toHaveBeenCalledWith(
+      { epicId: 'EpicPlayer', vbucksAccounts: ['gatozz1'] },
+      { paymentMethod: 'Yape', paymentMethodId: 'yape', voucher: null }
+    );
   });
 
   it('shows Peruvian payment details, copy actions and an expandable QR', async () => {

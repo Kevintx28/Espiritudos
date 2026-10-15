@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, CheckCircle2, ImagePlus, Twitch, XCircle } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, CheckCircle2, ImagePlus, Twitch, XCircle } from 'lucide-react';
 import { formatFortniteMoney } from '../lib/fortnite-pricing';
 import PaymentMethodDialog from './PaymentMethodDialog';
 
@@ -34,6 +34,7 @@ export default function FortniteCheckout({
   const [error, setError] = useState('');
   const methods = window.KTX_STORE_CONFIG?.paymentMethods?.[country.code] || [];
   const toggleAccount = (account) => {
+    setError('');
     setForm((current) => ({
       ...current,
       vbucksAccounts: current.vbucksAccounts.includes(account)
@@ -68,6 +69,9 @@ export default function FortniteCheckout({
   };
 
   const completeOrder = (skipVoucher = false) => {
+    if (showVbucksAccounts && form.vbucksAccounts.length === 0) {
+      return setError('Debes seleccionar al menos una cuenta de V-Bucks a la que tienes agregado. Sin esto no podemos enviarte los artículos por Vía regalo. Recuerda que debes tener agregadas las cuentas un mínimo de 48 horas antes de poder recibir regalos.');
+    }
     if (!form.epicId.trim()) return setError('Escribe el usuario de Fortnite (Epic ID).');
     if (!paymentMethod) return setError('Selecciona un método de pago.');
     if (!voucher && !skipVoucher) return setError('Sube tu comprobante para continuar.');
@@ -136,11 +140,14 @@ export default function FortniteCheckout({
             data-testid={`checkout-payment-${method.id}`}
             aria-pressed={paymentMethod === method.id}
             onClick={() => { setPaymentMethod(method.id); setModalMethod(method); }}
-            className="flex items-center gap-3 rounded-xl border border-white/15 p-4 text-left font-semibold shadow-sm transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
-            style={country.code === 'PE' && method.brandColor ? { backgroundColor: method.brandColor, color: method.textColor || '#FFFFFF', borderColor: method.brandColor } : undefined}
+            className={`flex items-center gap-3 rounded-xl border p-4 text-left font-semibold shadow-sm transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${paymentMethod === method.id ? 'border-2 ring-2 ring-white/70 shadow-lg' : 'border-white/15'}`}
+            style={country.code === 'PE' && method.brandColor ? { backgroundColor: method.brandColor, color: method.textColor || '#FFFFFF', borderColor: paymentMethod === method.id ? '#FFFFFF' : method.brandColor } : undefined}
           >{country.code === 'PE' && method.iconUrl
             ? <img src={method.iconUrl} alt="" className="h-10 w-10 rounded-lg bg-white p-1 object-contain" />
-            : method.icon && <span className="mr-1">{method.icon}</span>}{method.name}</button>)}
+            : method.icon && <span className="mr-1">{method.icon}</span>}
+            <span className="flex-1">{method.name}</span>
+            {paymentMethod === method.id && <span className="inline-flex items-center gap-1 text-sm font-black"><CheckCircle2 className="h-5 w-5" />Seleccionado</span>}
+          </button>)}
           {methods.length === 0 && <p className="text-sm text-slate-400">No hay métodos de pago disponibles para este país.</p>}
         </div>
       </fieldset>
@@ -148,6 +155,10 @@ export default function FortniteCheckout({
       {showVbucksAccounts && <section aria-labelledby="vbucks-accounts-title" className="border-t border-white/10 pt-5">
         <h3 id="vbucks-accounts-title" className="font-bold text-white">Cuentas de V-Bucks agregadas</h3>
         <p className="mt-1 text-sm text-slate-400">Selecciona las cuentas de V-Bucks que tienes agregadas</p>
+        <div className="mt-3 flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" aria-hidden="true" />
+          <p><strong>Importante:</strong> Debes tener agregadas las cuentas al menos <strong>48 horas</strong> antes. Se pueden enviar máximo <strong>5 artículos por cuenta</strong>. Te recomendamos enviar solicitud a las <strong>5 cuentas</strong> (gatozz1 a gatozz5) porque a veces se agota el stock de envíos.</p>
+        </div>
         <div className="mt-3 flex flex-wrap gap-2">
           {VBUCKS_ACCOUNTS.map((account) => {
             const selected = form.vbucksAccounts.includes(account);
