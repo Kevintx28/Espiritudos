@@ -33,7 +33,8 @@ const CURRENCY_BY_COUNTRY = {
   EU: 'EUR',
   AR: 'ARS',
   EC: 'USD',
-  CL: 'CLP'
+  CL: 'CLP',
+  OTHER: 'USDT'
 };
 
 const CURRENCY_SYMBOLS = {
@@ -41,6 +42,7 @@ const CURRENCY_SYMBOLS = {
   COP: '$',
   MXN: '$',
   USD: '$',
+  USDT: '$',
   EUR: '€',
   ARS: '$',
   CLP: '$'

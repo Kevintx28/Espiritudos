@@ -18,12 +18,11 @@ const KTX_STORE_CONFIG = {
     { code: 'CO', name: 'Colombia', currency: 'COP', symbol: '$', flag: '🇨🇴' },
     { code: 'MX', name: 'México', currency: 'MXN', symbol: '$', flag: '🇲🇽' },
     { code: 'US', name: 'Estados Unidos', currency: 'USD', symbol: '$', flag: '🇺🇸' },
-    { code: 'ES', name: 'España', currency: 'EUR', symbol: '€', flag: '🇪🇸' },
     { code: 'EU', name: 'Europa (zona euro)', currency: 'EUR', symbol: '€', flag: '🇪🇺' },
     { code: 'AR', name: 'Argentina', currency: 'ARS', symbol: '$', flag: '🇦🇷' },
     { code: 'EC', name: 'Ecuador', currency: 'USD', symbol: '$', flag: '🇪🇨' },
     { code: 'CL', name: 'Chile', currency: 'CLP', symbol: '$', flag: '🇨🇱' },
-    { code: 'OTHER', name: 'Otros países', currency: 'USD', symbol: '$', flag: '🌎' }
+    { code: 'OTHER', name: 'Otros países', currency: 'USDT', symbol: '$', flag: '🌎' }
   ],
   games: [
     { id: 'roblox', name: 'Roblox', shortName: 'Roblox', icon: 'Gamepad2', deliveryType: 'redeem_code' },

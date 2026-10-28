@@ -10,7 +10,7 @@ const countries = {
   AR: { code: 'AR', currency: 'ARS' },
   EC: { code: 'EC', currency: 'USD' },
   CL: { code: 'CL', currency: 'CLP' },
-  OTHER: { code: 'OTHER', currency: 'USD' }
+  OTHER: { code: 'OTHER', currency: 'USDT' }
 };
 
 const fixedPrices = {
@@ -40,8 +40,8 @@ describe('Fortnite country pricing', () => {
     });
   });
 
-  it('uses US fixed prices in USD for the Other Countries option', () => {
-    expect(resolveFortniteProduct({ id: 'FN-PASS-BATTLE', gameId: 'fortnite', price: 19.99 }, countries.OTHER)).toMatchObject({ price: 5.9, currency: 'USD' });
+  it('uses US fixed prices in USDT for the Other Countries option', () => {
+    expect(resolveFortniteProduct({ id: 'FN-PASS-BATTLE', gameId: 'fortnite', price: 19.99 }, countries.OTHER)).toMatchObject({ price: 5.9, currency: 'USDT' });
   });
 
   it('uses the country V-Bucks reference rate for 100 V-Bucks', () => {
@@ -50,7 +50,7 @@ describe('Fortnite country pricing', () => {
     expect(resolveFortniteProduct(reference, countries.CO).price).toBe(1700);
     expect(resolveFortniteProduct(reference, countries.MX).price).toBe(10);
     expect(resolveFortniteProduct(reference, countries.US).price).toBe(0.55);
-    expect(resolveFortniteProduct(reference, countries.OTHER)).toMatchObject({ price: 0.55, currency: 'USD' });
+    expect(resolveFortniteProduct(reference, countries.OTHER)).toMatchObject({ price: 0.55, currency: 'USDT' });
   });
 
   it('prices gift shop V-Bucks from each country rate and reapplies the daily discount in that currency', () => {
@@ -68,6 +68,7 @@ describe('Fortnite country pricing', () => {
     expect(formatFortniteMoney(19.99, 'PEN')).toBe('S/ 19.99');
     expect(formatFortniteMoney(18750.5, 'COP')).toBe('$ 18.750,50 COP');
     expect(formatFortniteMoney(108, 'MXN')).toBe('$ 108.00 MXN');
+    expect(formatFortniteMoney(2.75, 'USDT')).toBe('$ 2.75 USDT');
     expect(formatFortniteMoney(5.2, 'EUR')).toBe('€ 5.20 EUR');
     expect(formatFortniteMoney(5700, 'CLP')).toBe('$ 5.700 CLP');
   });

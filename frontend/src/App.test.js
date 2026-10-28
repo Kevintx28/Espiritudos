@@ -18,7 +18,7 @@ const peruPaymentMethods = [
 const storeConfig = {
   identity: { name: 'KTXStore', tagline: 'Tienda' },
   social: { discord: 'https://discord.test' },
-  countries: [{ code: 'PE', name: 'Perú', currency: 'PEN', symbol: 'S/', flag: '🇵🇪' }, { code: 'MX', name: 'México', currency: 'MXN', symbol: '$', flag: '🇲🇽' }],
+  countries: [{ code: 'PE', name: 'Perú', currency: 'PEN', symbol: 'S/', flag: '🇵🇪' }, { code: 'MX', name: 'México', currency: 'MXN', symbol: '$', flag: '🇲🇽' }, { code: 'OTHER', name: 'Otros países', currency: 'USDT', symbol: '$', flag: '🌎' }],
   games: [
     { id: 'roblox', name: 'Roblox', shortName: 'Roblox', icon: 'Gamepad2', deliveryType: 'redeem_code' },
     { id: 'fortnite', name: 'Fortnite', shortName: 'Fortnite', icon: 'Gamepad2', deliveryType: 'redeem_code' },
@@ -93,6 +93,49 @@ describe('KTXStore flow', () => {
     expect(receipt).toContain('Método de pago: Yape');
     expect(receipt).toContain('$ 108.00 MXN');
     expect(receipt).toContain('Código de creador OMARS4 aplicado: -10% ($ 12.00 MXN)');
+  });
+
+  it('shows USDT for Other Countries in the product catalog, cart and checkout', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ data: { shop: { entries: [] } } }) });
+    act(() => root.render(<App />));
+    act(() => container.querySelector('header button').click());
+    act(() => container.querySelector('[data-testid="country-OTHER"]').click());
+    act(() => container.querySelector('[data-testid="game-fortnite"]').click());
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+    act(() => Array.from(container.querySelectorAll('nav[aria-label="Subcategorías de Fortnite"] button')).find((button) => button.textContent.trim() === 'Pases de Fortnite').click());
+
+    expect(container.textContent).toContain('$ 5.90 USDT');
+    act(() => container.querySelector('[data-testid="add-FN-PASS-BATTLE"]').click());
+    expect(container.querySelector('[data-testid="floating-cart-total"]').textContent).toContain('$ 5.90 USDT');
+    act(() => container.querySelector('[data-testid="floating-cart"]').click());
+    expect(container.querySelector('[data-testid="cart-drawer"]').textContent).toContain('Moneda: USDT');
+    expect(container.querySelector('[data-testid="cart-drawer"]').textContent).toContain('$ 5.90 USDT');
+    act(() => container.querySelector('[data-testid="cart-drawer-checkout"]').click());
+    expect(container.querySelector('[data-testid="fortnite-checkout-total-value"]').textContent).toContain('$ 5.90 USDT');
+  });
+
+  it('prints USDT prices in the generated Fortnite order image for Other Countries', () => {
+    const product = { id: 'FN-PASS-BATTLE', gameId: 'fortnite', name: 'Pase de batalla', price: 5.9, currency: 'USDT' };
+    const order = {
+      id: 'KTX-USDT',
+      date: '28/10/2026',
+      country: { name: 'Otros países', currency: 'USDT' },
+      game: { id: 'fortnite', name: 'Fortnite' },
+      items: [{ product, quantity: 1 }],
+      calculations: {
+        lines: [{ product, quantity: 1, fulfillmentTotal: null, fulfillmentLabel: null, subtotal: 5.9 }],
+        totalUnits: 1,
+        totalMoney: 5.9
+      },
+      total: 5.9,
+      form: { epicId: 'EpicPlayer', vbucksAccounts: [] },
+      paymentMethod: 'Yape',
+      voucher: null
+    };
+    act(() => root.render(<OrderReceiptGenerator order={order} onGenerated={() => {}} />));
+    const receipt = container.querySelector('.ktx-halloween-receipt').textContent;
+    expect(receipt).toContain('Precio unitario: $ 5.90 USDT · Subtotal: $ 5.90 USDT');
+    expect(receipt).toContain('Total a pagar: $ 5.90 USDT');
   });
 
   it('prints daily deal sale price and regular price distinctly in the generated order image', () => {
