@@ -41,16 +41,18 @@ export default function PaymentVoucher({ country, game, items, form, initialValu
     <fieldset className="mt-6">
       <legend className="mb-3 text-sm font-bold text-white">Método de pago</legend>
       <div className="grid gap-3 sm:grid-cols-2">
-        {methods.map((method) => <label key={method.id} className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition hover:brightness-110 ${paymentMethod === method.id ? 'border-cyan-400 ring-2 ring-cyan-400/50' : 'border-white/10'}`} style={country.code === 'PE' && method.brandColor ? { backgroundColor: method.brandColor, color: method.textColor || '#FFFFFF', borderColor: method.brandColor } : undefined}>
-          <input type="radio" name="payment" value={method.id} checked={paymentMethod === method.id} onChange={(event) => { setPaymentMethod(event.target.value); if (country.code === 'PE' && method.paymentDetails) setModalMethod(method); }} />
-          {country.code === 'PE' && method.iconUrl
+        {methods.map((method) => <label key={method.id} className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition hover:brightness-110 ${paymentMethod === method.id ? 'border-cyan-400 ring-2 ring-cyan-400/50' : 'border-white/10'}`} style={method.brandColor ? { backgroundColor: method.brandColor, color: method.textColor || '#FFFFFF', borderColor: method.brandColor } : undefined}>
+          <input type="radio" name="payment" value={method.id} checked={paymentMethod === method.id} onChange={(event) => { setPaymentMethod(event.target.value); if (method.paymentDetails) setModalMethod(method); }} />
+          {method.iconUrl
             ? <img src={method.iconUrl} alt="" className="h-10 w-10 rounded-lg bg-white p-1 object-contain" />
-            : method.icon && <span>{method.icon}</span>}
-          <span className="font-semibold">{method.name}</span>
+            : method.icon && <span className={country.code === 'PE' ? undefined : 'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/15 text-lg font-black'}>{method.icon}</span>}
+          <span className="flex-1 font-semibold">{method.name}</span>
+          {method.recommended && <span className="rounded-full bg-emerald-300 px-2 py-1 text-[10px] font-black uppercase text-emerald-950">Recomendado</span>}
         </label>)}
-        <div className="rounded-xl border border-dashed border-white/15 p-3 text-sm text-slate-500"><Lock className="mr-2 inline h-4 w-4" />dLocal Go — próximamente</div>
+        {country.code === 'PE' && <div className="rounded-xl border border-dashed border-white/15 p-3 text-sm text-slate-500"><Lock className="mr-2 inline h-4 w-4" />dLocal Go — próximamente</div>}
       </div>
     </fieldset>
+    {country.code === 'OTHER' && <p className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">Escríbenos por WhatsApp y te indicamos la mejor forma de pago según tu país</p>}
     <label className="mt-6 block text-sm font-bold text-white">Voucher JPG, PNG o WEBP (máx. 2 MB)
       <span className="mt-2 flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-pink-400/50 p-4 text-slate-300">
         <ImagePlus className="h-5 w-5 text-pink-300" />

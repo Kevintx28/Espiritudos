@@ -5,6 +5,7 @@ import FortniteCheckout from './components/FortniteCheckout';
 import OrderReceiptGenerator from './components/OrderReceiptGenerator';
 import PaymentVoucher from './components/PaymentVoucher';
 import ContactFloaters from './components/ContactFloaters';
+const configuredPaymentMethods = require('../public/js/store-data').paymentMethods;
 
 const peruPaymentMethods = [
   { id: 'yape', name: 'Yape', icon: 'Y', brandColor: '#6C3B9B', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHjgVIwiC-m-NzaYDBHXHaJxrwXeLg4Vl1Nsk5D8QuBTfpyYhxoEI62gY&s=10', paymentDetails: { number: '917 039 670', holder: 'Kevin Naiyel. T. C.', qr: 'https://i.imgur.com/hWGfhvX.png' } },
@@ -32,7 +33,7 @@ const storeConfig = {
     { id: 'FF-TEST', gameId: 'free-fire', name: 'Diamantes Free Fire — precio por definir', price: null, currency: 'PEN', testOnly: true }
   ],
   deliveryInstructions: { redeem_code: { title: 'Canjea tu código', steps: [], note: 'Nota' }, numeric_uid: { title: 'UID', steps: [], note: 'Nota' }, player_id: { title: 'ID', steps: [], note: 'Nota' } },
-  paymentMethods: { PE: peruPaymentMethods, MX: [{ id: 'mercadopago', name: 'Mercado Pago', icon: 'M' }, { id: 'paypal', name: 'PayPal', icon: 'P' }] },
+  paymentMethods: configuredPaymentMethods,
   dLocalGo: { enabled: false }
 };
 
@@ -264,9 +265,65 @@ describe('KTXStore flow', () => {
 
   it('keeps non-Peru payment methods and does not expose Peru payment data there', () => {
     act(() => root.render(<PaymentVoucher country={storeConfig.countries[1]} game={{ id: 'roblox' }} items={[]} onBack={() => {}} onContinue={() => {}} />));
-    expect(Array.from(container.querySelectorAll('input[name="payment"]')).map((input) => input.value)).toEqual(['mercadopago', 'paypal']);
+    expect(Array.from(container.querySelectorAll('input[name="payment"]')).map((input) => input.value)).toEqual(['binance-pay', 'astropay', 'paypal']);
     expect(container.querySelector('[data-testid="checkout-payment-yape"]')).toBeNull();
     expect(container.querySelector('[role="dialog"]')).toBeNull();
+  });
+
+  it('preserves the Peru payment configuration and sets up the requested methods for each other country', () => {
+    expect(configuredPaymentMethods.PE).toEqual(peruPaymentMethods);
+    expect(Object.fromEntries(Object.entries(configuredPaymentMethods).map(([code, methods]) => [code, methods.map(({ name }) => name)]))).toEqual({
+      PE: ['Yape', 'Plin', 'Lemon Cash', 'Prexpe', 'Pago Efectivo', 'Binance Pay'],
+      CO: ['Nequi', 'Transferencia Bancolombia', 'Binance Pay', 'AstroPay'],
+      MX: ['Binance Pay', 'AstroPay', 'PayPal'],
+      US: ['PayPal', 'Transferencia ACH', 'Binance Pay', 'AstroPay'],
+      EU: ['PayPal', 'Binance Pay', 'IBAN (SEPA)', 'AstroPay'],
+      AR: ['Mercado Pago', 'Binance Pay', 'AstroPay', 'PayPal', 'Lemon Cash'],
+      EC: ['Binance Pay', 'AstroPay', 'PayPal', 'Lemon Cash'],
+      CL: ['Binance Pay', 'AstroPay', 'PayPal', 'Lemon Cash'],
+      OTHER: ['Binance Pay', 'PayPal', 'AstroPay']
+    });
+    Object.entries(configuredPaymentMethods).filter(([code]) => code !== 'PE').forEach(([, methods]) => {
+      methods.forEach((method) => {
+        expect(method.brandColor).toBeTruthy();
+        expect(method.icon || method.iconUrl).toBeTruthy();
+        expect(method.paymentDetails).toBeTruthy();
+      });
+    });
+  });
+
+  it('opens non-Peru payment modals with copyable details and expandable QR codes', async () => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: jest.fn().mockResolvedValue(undefined) } });
+    act(() => root.render(<PaymentVoucher country={{ code: 'CO', currency: 'COP' }} game={{ id: 'roblox' }} items={[]} onBack={() => {}} onContinue={() => {}} />));
+
+    act(() => container.querySelector('input[value="nequi"]').click());
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('Datos de Nequi del amigo (próximamente)');
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('QR próximamente');
+    act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
+
+    act(() => container.querySelector('input[value="bancolombia"]').click());
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('143274234324');
+    expect(container.querySelector('[role="dialog"]').textContent).toContain('Cuenta...');
+    await act(async () => { Array.from(container.querySelectorAll('[role="dialog"] button')).find((button) => button.textContent.trim() === 'Copiar').click(); });
+    expect(container.querySelector('[role="status"]').textContent).toContain('Número copiado');
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('143274234324');
+    act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
+
+    act(() => container.querySelector('input[value="binance-pay"]').click());
+    expect(container.querySelector('[role="dialog"] img[alt^="QR de pago"]').getAttribute('src')).toBe('https://i.imgur.com/w13LB9k.png');
+    act(() => container.querySelector('[aria-label="Ampliar QR de Binance Pay"]').click());
+    expect(container.querySelector('[aria-label="QR ampliado de Binance Pay"]')).not.toBeNull();
+  });
+
+  it('shows the direct PayPal link and Other Countries recommendation and guidance', () => {
+    act(() => root.render(<PaymentVoucher country={{ code: 'MX', currency: 'MXN' }} game={{ id: 'roblox' }} items={[]} onBack={() => {}} onContinue={() => {}} />));
+    act(() => container.querySelector('input[value="paypal"]').click());
+    expect(container.querySelector('[role="dialog"] a').getAttribute('href')).toBe('https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC');
+    act(() => container.querySelector('[aria-label="Cerrar modal de pago"]').click());
+
+    act(() => root.render(<PaymentVoucher country={{ code: 'OTHER', currency: 'USDT' }} game={{ id: 'roblox' }} items={[]} onBack={() => {}} onContinue={() => {}} />));
+    expect(container.textContent).toContain('Recomendado');
+    expect(container.textContent).toContain('Escríbenos por WhatsApp y te indicamos la mejor forma de pago según tu país');
   });
 
   it('shows branded WhatsApp and Discord logos in the floating contact buttons', () => {

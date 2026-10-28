@@ -77,11 +77,53 @@ const KTX_STORE_CONFIG = {
       { id: 'pago-efectivo', name: 'Pago Efectivo', icon: 'E', brandColor: '#E31C25', iconUrl: 'https://mir-s3-cdn-cf.behance.net/projects/404/96c17b70532225.Y3JvcCw4MDgsNjMyLDAsMA.jpg', paymentDetails: { qr: 'https://i.imgur.com/riUjunw.png', instructions: 'Puedes pagar en efectivo en agentes y bodegas', cip: true } },
       { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxIAt0R1AQ14RAAEgcJL9JW6zUDYYWVU9Icu87B62Y_mS5c5Y9LiPIRFpx&s=10', paymentDetails: { user: 'User-e5319', qr: 'https://i.imgur.com/yIhJ8Da.jpeg' } }
     ],
-    MX: [{ id: 'mercadopago', name: 'Mercado Pago', icon: 'M' }, { id: 'paypal', name: 'PayPal', icon: 'P' }],
-    US: [{ id: 'paypal', name: 'PayPal', icon: 'P' }, { id: 'binance', name: 'Binance Pay', icon: 'B' }],
-    ES: [{ id: 'paypal', name: 'PayPal', icon: 'P' }, { id: 'bizum', name: 'Bizum', icon: 'B' }],
-    AR: [{ id: 'mercadopago', name: 'Mercado Pago', icon: 'M' }, { id: 'paypal', name: 'PayPal', icon: 'P' }],
-    CL: [{ id: 'cuentarut', name: 'Cuenta RUT', icon: 'C' }, { id: 'paypal', name: 'PayPal', icon: 'P' }]
+    CO: [
+      { id: 'nequi', name: 'Nequi', icon: 'N', brandColor: '#2000BF', iconUrl: 'https://i.pinimg.com/1200x/c9/9d/14/c99d1437635da2d96561a8e37f0d4d4e.jpg', paymentDetails: { instructions: 'Datos de Nequi del amigo (próximamente)', qrPlaceholder: 'QR próximamente' } },
+      { id: 'bancolombia', name: 'Transferencia Bancolombia', icon: 'B', brandColor: '#FDDA24', textColor: '#111827', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9hmoA58oNjGlRDRqV5GU8AOom3RMGKl6b6HUh-8DAqqbQftn2Ban3GuM&s=10', paymentDetails: { fields: [{ label: 'Número', value: '143274234324' }], instructions: 'Cuenta...' } },
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } }
+    ],
+    MX: [
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } },
+      { id: 'paypal', name: 'PayPal', icon: 'P', brandColor: '#003087', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png', paymentDetails: { link: 'https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC', linkLabel: 'Abrir PayPal.me' } }
+    ],
+    US: [
+      { id: 'paypal', name: 'PayPal', icon: 'P', brandColor: '#003087', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png', paymentDetails: { link: 'https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC', linkLabel: 'Abrir PayPal.me' } },
+      { id: 'ach', name: 'Transferencia ACH', icon: 'A', brandColor: '#1E3A8A', iconUrl: 'https://cdn.prod.website-files.com/69bbe852f53519cb6c8930fa/69bbe852f53519cb6c894217_6491bef5e293f8b37b445032_ACH.webp', paymentDetails: { fields: [{ label: 'Account Holder', value: 'Kevin Naiyel T. C.' }, { label: 'Account Number', value: '8339236491' }, { label: 'ACH Routing Number', value: '026073150' }] } },
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } }
+    ],
+    EU: [
+      { id: 'paypal', name: 'PayPal', icon: 'P', brandColor: '#003087', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png', paymentDetails: { link: 'https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC', linkLabel: 'Abrir PayPal.me' } },
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'sepa-iban', name: 'IBAN (SEPA)', icon: '€', brandColor: '#003399', iconUrl: 'https://as1.ftcdn.net/jpg/01/98/24/94/1000_F_198249448_DQba6aLGUFPIp39K9CGDEGSMYQqJ3Kz7.jpg', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin Naiyel T.' }, { label: 'IBAN', value: 'MT74CFTE28004000000000006617910' }, { label: 'BIC', value: 'CFTEMTM1XXX' }] } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } }
+    ],
+    AR: [
+      { id: 'mercadopago', name: 'Mercado Pago', icon: 'M', brandColor: '#009EE3', paymentDetails: { fields: [{ label: 'Número', value: '12414125215' }], qrPlaceholder: 'QR próximamente' } },
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } },
+      { id: 'paypal', name: 'PayPal', icon: 'P', brandColor: '#003087', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png', paymentDetails: { link: 'https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC', linkLabel: 'Abrir PayPal.me' } },
+      { id: 'lemon-cash', name: 'Lemon Cash', icon: 'L', brandColor: '#F5C518', textColor: '#171717', iconUrl: 'https://play-lh.googleusercontent.com/Wyrfg68_89zjJFajzuLeVwS1ULlISOzlQA-85Sfd2kJNkxOxVmppVgLdPF1Ov12cVF78CTRLHko8XTMEVbRf=w240-h480-rw', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin Naiyel T.' }, { label: 'Tag', value: '#kevintx28' }], qr: 'https://i.imgur.com/zKIItla.png' } }
+    ],
+    EC: [
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } },
+      { id: 'paypal', name: 'PayPal', icon: 'P', brandColor: '#003087', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png', paymentDetails: { link: 'https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC', linkLabel: 'Abrir PayPal.me' } },
+      { id: 'lemon-cash', name: 'Lemon Cash', icon: 'L', brandColor: '#F5C518', textColor: '#171717', iconUrl: 'https://play-lh.googleusercontent.com/Wyrfg68_89zjJFajzuLeVwS1ULlISOzlQA-85Sfd2kJNkxOxVmppVgLdPF1Ov12cVF78CTRLHko8XTMEVbRf=w240-h480-rw', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin Naiyel T.' }, { label: 'Tag', value: '#kevintx28' }], qr: 'https://i.imgur.com/zKIItla.png' } }
+    ],
+    CL: [
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } },
+      { id: 'paypal', name: 'PayPal', icon: 'P', brandColor: '#003087', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png', paymentDetails: { link: 'https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC', linkLabel: 'Abrir PayPal.me' } },
+      { id: 'lemon-cash', name: 'Lemon Cash', icon: 'L', brandColor: '#F5C518', textColor: '#171717', iconUrl: 'https://play-lh.googleusercontent.com/Wyrfg68_89zjJFajzuLeVwS1ULlISOzlQA-85Sfd2kJNkxOxVmppVgLdPF1Ov12cVF78CTRLHko8XTMEVbRf=w240-h480-rw', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin Naiyel T.' }, { label: 'Tag', value: '#kevintx28' }], qr: 'https://i.imgur.com/zKIItla.png' } }
+    ],
+    OTHER: [
+      { id: 'binance-pay', name: 'Binance Pay', icon: 'B', brandColor: '#F0B90B', textColor: '#171717', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5UfqDHZxy_jD_HNI2HXmAe93bJvIXFK0SxEejBct0VUlUjaGa9P_uPxk&s=10', recommended: true, paymentDetails: { fields: [{ label: 'User', value: 'kevintx28' }], qr: 'https://i.imgur.com/w13LB9k.png' } },
+      { id: 'paypal', name: 'PayPal', icon: 'P', brandColor: '#003087', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png', paymentDetails: { link: 'https://www.paypal.com/paypalme/kevintx28?country.x=PE&locale.x=es_XC', linkLabel: 'Abrir PayPal.me' } },
+      { id: 'astropay', name: 'AstroPay', icon: 'A', brandColor: '#673AB7', paymentDetails: { fields: [{ label: 'Titular', value: 'Kevin N. T.' }], qr: 'https://i.imgur.com/qt5DTSE.png' } }
+    ]
   }
 };
 
