@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, CheckCircle2, Twitch, XCircle } from 'lucide-react';
+import { getDiscountCouponPercent } from '../lib/discount-coupons';
 
 export default function RedeemTutorial({ onBack, onContinue, showCreatorCode = false, onApplyCreatorCode, social = {} }) {
 	const [creatorCode, setCreatorCode] = useState('');
 	const [creatorCodeStatus, setCreatorCodeStatus] = useState(null);
 	const [appliedCreatorCode, setAppliedCreatorCode] = useState('');
+	const appliedDiscountPercent = getDiscountCouponPercent(appliedCreatorCode);
 	const applyCreatorCode = (event) => {
 		event.preventDefault();
 		const applied = onApplyCreatorCode(creatorCode);
@@ -23,7 +25,7 @@ export default function RedeemTutorial({ onBack, onContinue, showCreatorCode = f
 				<div className="creator-code-celebration" aria-hidden="true"><span>🎃</span><span>🎃</span><span>✨</span><span>🎃</span></div>
 				<div role="status" className="coupon-success mt-3 rounded-xl border border-emerald-400/40 bg-emerald-400/10 p-4 text-emerald-200">
 					<p className="flex items-center gap-2 font-black"><CheckCircle2 className="h-5 w-5" />¡Cupón aplicado!</p>
-					<p className="mt-1 text-sm">{appliedCreatorCode} aplicado: añade un 10% de descuento en productos elegibles.</p>
+					<p className="mt-1 text-sm">{appliedCreatorCode} aplicado: añade un {appliedDiscountPercent}% de descuento en productos elegibles.</p>
 					<p className="mt-2 text-xs text-emerald-100/80">Este cupón solo aplica en artículos de <strong>Vía regalo</strong> y <strong>Club de Fortnite</strong>.</p>
 				</div>
 			</>}

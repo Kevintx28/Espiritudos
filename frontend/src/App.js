@@ -19,6 +19,7 @@ import { calculateCartTotals } from './lib/cart-calculations';
 import { fortniteManualProducts } from './data/fortniteCatalog';
 import { resolveFortniteProduct, roundFortnitePrice } from './lib/fortnite-pricing';
 import StoreHome from './components/StoreHome';
+import { getDiscountCoupon, getDiscountCouponPercent } from './lib/discount-coupons';
 
 const keys = { country: 'ktxstore:selectedCountry', carts: 'ktxstore:cartByGame', draft: 'ktxstore:checkoutDraft', pending: 'ktxstore:pendingOrder' };
 const config = () => window.KTX_STORE_CONFIG || { identity: { name: 'KTXStore', tagline: '' }, games: [], products: [], countries: [] };
@@ -56,8 +57,10 @@ function App() {
   const checkoutItems = useMemo(() => creatorCodeActive ? displayItems.map((item) => {
     const price = Number(item.product.price);
     if (!item.product.creatorCodeEligible || !Number.isFinite(price)) return item;
-    return { ...item, product: { ...item.product, price: gameId === 'fortnite' ? roundFortnitePrice(price * 0.9, item.product.currency) : Number((price * 0.9).toFixed(2)) } };
-  }) : displayItems, [displayItems, creatorCodeActive, gameId]);
+    const discountPercent = getDiscountCouponPercent(appliedCreatorCode);
+    const discountedPrice = price * (1 - discountPercent / 100);
+    return { ...item, product: { ...item.product, price: gameId === 'fortnite' ? roundFortnitePrice(discountedPrice, item.product.currency) : Number(discountedPrice.toFixed(2)) } };
+  }) : displayItems, [displayItems, creatorCodeActive, gameId, appliedCreatorCode]);
   const products = gameId === 'fortnite'
     ? [...store.products.filter((product) => product.gameId === gameId), ...fortniteManualProducts]
     : store.products.filter((product) => product.gameId === gameId);
@@ -76,7 +79,7 @@ function App() {
   const finish = () => { setAppliedCreatorCode(''); setCarts((current) => ({ ...current, [gameId]: [] })); remove(keys.pending); remove(keys.draft); setOrder(null); setForm(null); setPayment(null); setImageUrl(null); setStep('catalog'); };
   const makeOrder = (nextPayment, nextForm = form) => { const baseCalculations = calculateCartTotals(displayItems); const nextOrder = { id: orderCode(), date: new Date().toLocaleString('es-PE'), country, game, items: displayItems, calculations: baseCalculations, total, creatorDiscountAmount: baseCalculations.totalMoney - total, form: nextForm, paymentMethod: nextPayment.paymentMethod, voucher: nextPayment.voucher, creatorCodeApplied: creatorCodeActive, creatorCode: appliedCreatorCode, testOnly: checkoutItems.some(({ product }) => product.testOnly) }; setForm(nextForm); setPayment(nextPayment); setOrder(nextOrder); saveDraft(nextForm, nextPayment); setStep('receipt'); };
   const continueCheckout = () => { setCartOpen(false); setStep(gameId === 'fortnite' ? 'fortnite-checkout' : creatorCodeAvailable ? 'tutorial' : 'form'); };
-  const applyCreatorCode = (code) => { const normalizedCode = code.trim().toUpperCase(); const isValid = creatorCodeAvailable && ['KRIS08', 'OMARS4'].includes(normalizedCode); setAppliedCreatorCode(isValid ? normalizedCode : ''); return isValid; };
+  const applyCreatorCode = (code) => { const coupon = getDiscountCoupon(code); const isValid = Boolean(creatorCodeAvailable && coupon); setAppliedCreatorCode(isValid ? coupon.code : ''); return isValid; };
   const selectFortniteSubcategory = (subcategory) => { setFortniteSubcategory(subcategory); setAppliedCreatorCode(''); };
   const selectGame = (next) => { setAppliedCreatorCode(''); setGameId(next); setFortniteSubcategory('gift-shop'); setStep('catalog'); setCartOpen(false); };
   const goHome = () => { setStep('home'); setCartOpen(false); };

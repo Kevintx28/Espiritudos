@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AlertTriangle, ArrowLeft, CheckCircle2, ImagePlus, Twitch, XCircle } from 'lucide-react';
 import { formatFortniteMoney } from '../lib/fortnite-pricing';
+import { getDiscountCouponPercent } from '../lib/discount-coupons';
 import PaymentMethodDialog from './PaymentMethodDialog';
 
 const VBUCKS_ACCOUNTS = ['gatozz1', 'gatozz2', 'gatozz3', 'gatozz4', 'gatozz5'];
@@ -22,6 +23,7 @@ export default function FortniteCheckout({
   onBack,
   onContinue
 }) {
+  const discountPercent = getDiscountCouponPercent(appliedCreatorCode);
   const [form, setForm] = useState({
     epicId: initialForm?.epicId || '',
     vbucksAccounts: initialForm?.vbucksAccounts || []
@@ -101,7 +103,7 @@ export default function FortniteCheckout({
         <p data-testid="fortnite-checkout-total-value" className="mt-2 text-3xl font-black text-cyan-300">{formatFortniteMoney(total, country.currency)}</p>
         {creatorCodeApplied && <div role="status" className="coupon-success mt-3 rounded-xl border border-emerald-400/40 bg-emerald-400/10 p-4 text-emerald-200">
           <p className="flex items-center gap-2 text-base font-black"><CheckCircle2 className="h-5 w-5 shrink-0" />¡Cupón aplicado!</p>
-          <p className="mt-1 text-sm">{appliedCreatorCode} aplicado: ahorras <strong>{formatFortniteMoney(creatorDiscountAmount, country.currency)}</strong> (10%).</p>
+          <p className="mt-1 text-sm">{appliedCreatorCode} aplicado: ahorras <strong>{formatFortniteMoney(creatorDiscountAmount, country.currency)}</strong> ({discountPercent}%).</p>
           <p className="mt-2 text-xs text-emerald-100/80">Este cupón solo aplica en artículos de <strong>Vía regalo</strong> y <strong>Club de Fortnite</strong>.</p>
         </div>}
       </section>
