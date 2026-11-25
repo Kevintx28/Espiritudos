@@ -1,5 +1,7 @@
 import { getFortniteLayoutAnchor, getFortniteProductAnchor, getFortniteSearchResults, groupFortniteLayoutProducts, isExcludedEntry, normalizeEntry, normalizeFortniteCategory } from './FortniteShop';
+import { selectDailyDeals } from './FortniteCatalog';
 import { resolveFortniteImage } from './FortniteItemImage';
+import { isBlackFridayEventActive } from '../lib/blackFridayEvent';
 
 describe('Fortnite dynamic shop', () => {
   it('normalizes an API offer to the existing cart product format', () => {
@@ -116,5 +118,29 @@ describe('Fortnite dynamic shop', () => {
       brItems: [{ name: 'Artículo con fecha', type: { displayValue: 'Outfit' } }]
     }, 0);
     expect(product.endDate).toBe('2026-09-10T00:00:00.000Z');
+  });
+
+  it('selects 28 discounted products during Black Friday and returns to 8 outside the event', () => {
+    const products = Array.from({ length: 35 }, (_, index) => ({
+      id: `FN-black-friday-${index}`,
+      gameId: 'fortnite',
+      name: `Artículo ${index + 1}`,
+      price: 10,
+      currency: 'PEN'
+    }));
+
+    const activeDeals = selectDailyDeals(products, 'black-friday-shop', { code: 'PE', currency: 'PEN' }, new Date('2026-11-26T17:00:00.000Z'));
+    const regularDeals = selectDailyDeals(products, 'black-friday-shop', { code: 'PE', currency: 'PEN' }, new Date('2026-12-06T01:01:00.000Z'));
+
+    expect(activeDeals).toHaveLength(28);
+    expect(activeDeals[0]).toMatchObject({ originalPrice: 10, price: 9, discountPercent: 10 });
+    expect(regularDeals).toHaveLength(8);
+  });
+
+  it('activates at 7:01 PM Peru time and ends at 8 PM on December 5', () => {
+    expect(isBlackFridayEventActive(new Date('2026-11-26T00:00:59.000Z'))).toBe(false);
+    expect(isBlackFridayEventActive(new Date('2026-11-26T00:01:00.000Z'))).toBe(true);
+    expect(isBlackFridayEventActive(new Date('2026-12-06T00:59:59.000Z'))).toBe(true);
+    expect(isBlackFridayEventActive(new Date('2026-12-06T01:00:00.000Z'))).toBe(false);
   });
 });

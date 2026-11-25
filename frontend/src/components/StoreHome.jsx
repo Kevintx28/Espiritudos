@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowRight, Gamepad2 } from 'lucide-react';
 import { storeFeaturedGames, storeMoreGames } from '../data/storeCatalog';
+import BlackFridayBanner from './BlackFridayBanner';
+import { useBlackFridayEventActive } from '../lib/blackFridayEvent';
 
 function GameTile({ game, onSelect, featured = false }) {
   return <button type="button" onClick={() => onSelect(game.id)} className={`group min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#15131f] text-left shadow-lg shadow-black/20 transition hover:-translate-y-1 hover:border-yellow-400/70 focus:outline-none focus:ring-2 focus:ring-cyan-300 ${featured ? 'sm:aspect-[16/10]' : ''}`}>
@@ -10,5 +12,6 @@ function GameTile({ game, onSelect, featured = false }) {
 }
 
 export default function StoreHome({ onSelect }) {
-  return <section aria-labelledby="store-home-title" className="space-y-10"><div className="max-w-2xl"><p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-yellow-500">Tienda</p><h1 id="store-home-title" className="text-4xl font-black text-white md:text-6xl">Explora KTXStore</h1><p className="mt-4 text-slate-400">Elige tu juego y encuentra recargas, códigos y entregas disponibles.</p></div><section aria-labelledby="featured-games-title"><h2 id="featured-games-title" className="mb-5 text-2xl font-black text-white">Juegos destacados</h2><div className="grid gap-4 md:grid-cols-3">{storeFeaturedGames.map((game) => <GameTile key={game.id} game={game} featured onSelect={onSelect} />)}</div></section><section aria-labelledby="more-games-title"><h2 id="more-games-title" className="mb-5 text-2xl font-black text-white">Más juegos</h2><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{storeMoreGames.map((game) => <GameTile key={game.id} game={game} onSelect={onSelect} />)}</div></section></section>;
+  const blackFridayActive = useBlackFridayEventActive();
+  return <section aria-labelledby="store-home-title" className="space-y-10">{blackFridayActive && <BlackFridayBanner onAction={() => onSelect('fortnite')} actionLabel="Explorar las 28 ofertas" />}<div className="max-w-2xl"><p className="mb-3 text-sm font-bold uppercase tracking-[0.25em] text-yellow-500">Tienda</p><h1 id="store-home-title" className="text-4xl font-black text-white md:text-6xl">Explora KTXStore</h1><p className="mt-4 text-slate-400">Elige tu juego y encuentra recargas, códigos y entregas disponibles.</p></div><section aria-labelledby="featured-games-title"><h2 id="featured-games-title" className="mb-5 text-2xl font-black text-white">Juegos destacados</h2><div className="grid gap-4 md:grid-cols-3">{storeFeaturedGames.map((game) => <GameTile key={game.id} game={game} featured onSelect={onSelect} />)}</div></section><section aria-labelledby="more-games-title"><h2 id="more-games-title" className="mb-5 text-2xl font-black text-white">Más juegos</h2><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{storeMoreGames.map((game) => <GameTile key={game.id} game={game} onSelect={onSelect} />)}</div></section></section>;
 }

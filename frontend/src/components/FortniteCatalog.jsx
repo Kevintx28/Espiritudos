@@ -1,10 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Clock, Search, X } from 'lucide-react';
 import ProductCard from './ProductCard';
+import BlackFridayBanner from './BlackFridayBanner';
+import BlackFridayDealsModal from './BlackFridayDealsModal';
 import { getFortniteLayoutAnchor, getFortniteProductAnchor, getFortniteSearchResults, groupFortniteLayoutProducts, useFortniteShopProducts } from './FortniteShop';
 import { fortniteCatalog } from '../data/fortniteCatalog';
-import { formatCountdown, getTimeRemaining, useFortniteShopClock } from '../lib/shopTimeUtils';
+import { formatCountdown, getFortniteShopCycleKey, getTimeRemaining, useFortniteShopClock } from '../lib/shopTimeUtils';
 import { resolveFortniteProduct, roundFortnitePrice } from '../lib/fortnite-pricing';
+import { isBlackFridayEventActive, useBlackFridayEventActive } from '../lib/blackFridayEvent';
 
 function matchesId(product, configuredId) {
   return [product.id, product.sourceId, product.layoutId, product.id?.replace(/^FN-/, '')].includes(configuredId);
@@ -14,24 +17,26 @@ function selectConfiguredProducts(products, ids, limit) {
   return ids.map((id) => products.find((product) => matchesId(product, id))).filter(Boolean).filter((product, index, all) => all.findIndex((candidate) => candidate.id === product.id) === index).slice(0, limit);
 }
 
-function selectDailyDeals(products, currentShopHash, country) {
+export function selectDailyDeals(products, currentShopHash, country, now = new Date(), blackFridayActive = isBlackFridayEventActive(now)) {
   const storageKey = 'ktxstore:fortnite:daily-deals';
+  const dealCount = blackFridayActive ? fortniteCatalog.blackFridayEvent.dailyDealCount : 8;
+  const cycleKey = getFortniteShopCycleKey(now);
   let storedIds = fortniteCatalog.dailyDealApiIds;
   try {
     const stored = JSON.parse(localStorage.getItem(storageKey) || 'null');
-    if (stored?.shopHash === currentShopHash && Array.isArray(stored.ids)) storedIds = stored.ids;
+    if (stored?.shopHash === currentShopHash && stored?.cycleKey === cycleKey && stored?.dealCount === dealCount && Array.isArray(stored.ids)) storedIds = stored.ids;
   } catch {
     storedIds = fortniteCatalog.dailyDealApiIds;
   }
-  const configured = selectConfiguredProducts(products, storedIds, 8);
-  const target = Math.min(8, products.length);
+  const configured = selectConfiguredProducts(products, storedIds, dealCount);
+  const target = Math.min(dealCount, products.length);
   const remaining = products.filter((product) => !configured.some((selected) => selected.id === product.id));
-  const dayNumber = Math.floor(Date.now() / 86400000);
+  const dayNumber = Math.floor(Date.parse(`${cycleKey}T00:00:00Z`) / 86400000);
   const offset = remaining.length ? dayNumber % remaining.length : 0;
   const rotated = remaining.slice(offset).concat(remaining.slice(0, offset));
   const selected = configured.concat(rotated).slice(0, target);
   try {
-    localStorage.setItem(storageKey, JSON.stringify({ shopHash: currentShopHash, ids: selected.map((product) => product.id) }));
+    localStorage.setItem(storageKey, JSON.stringify({ shopHash: currentShopHash, cycleKey, dealCount, ids: selected.map((product) => product.id) }));
   } catch {
   }
   return selected.map((product) => {
@@ -76,10 +81,13 @@ function EmptyPackSlots() {
 
 function GiftShop({ products, onAdd, status, shopHash, nextExpiration, country }) {
   const pricedProducts = useMemo(() => products.map((product) => resolveFortniteProduct(product, country)), [products, country]);
-  const deals = useMemo(() => selectDailyDeals(products, shopHash, country), [products, shopHash, country]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { remaining: shopResetRemaining } = useFortniteShopClock();
+  const [blackFridayModalOpen, setBlackFridayModalOpen] = useState(false);
+  const blackFridayActive = useBlackFridayEventActive();
+  const { now, remaining: shopResetRemaining } = useFortniteShopClock();
+  const shopCycleKey = getFortniteShopCycleKey(now);
+  const deals = useMemo(() => selectDailyDeals(products, shopHash, country, new Date(`${shopCycleKey}T19:01:00-05:00`), blackFridayActive), [products, shopHash, country, shopCycleKey, blackFridayActive]);
   if (status === 'loading' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">Cargando tienda actual de Fortnite...</div></div>;
   if (status === 'error' && !products.length) return <div><ShopRefreshCounter nextExpiration={nextExpiration} status={status} /><div role="alert" className="rounded-2xl border border-red-500/40 bg-red-950/20 p-8 text-center text-red-200">No se pudo cargar la tienda de Fortnite. Intenta más tarde.</div></div>;
   if (!products.length) return <div className="rounded-2xl border border-white/10 bg-[#15131f] p-8 text-center text-slate-300">La tienda de Fortnite no tiene ofertas disponibles ahora.</div>;
@@ -94,9 +102,10 @@ function GiftShop({ products, onAdd, status, shopHash, nextExpiration, country }
   const dealsSectionId = 'fortnite-offers-of-day';
 
   return <div className="space-y-10">
+    {blackFridayActive && <BlackFridayBanner offerCount={deals.length} onAction={() => setBlackFridayModalOpen(true)} actionLabel={`Ver las ${deals.length} ofertas del día`} />}
     <ShopRefreshCounter nextExpiration={nextExpiration} status={status} />
     <section aria-labelledby="fortnite-new-title"><SectionHeading eyebrow="Selección de la tienda" title="Lo nuevo de hoy" id="fortnite-new-title" /><DynamicGrid products={newProducts} isFeatured onAdd={onAdd} idPrefix="fortnite-featured-item" /></section>
-    <section id={dealsSectionId} aria-labelledby="fortnite-deals-title" className="rounded-xl bg-yellow-400/[0.025] ring-1 ring-inset ring-yellow-500/30"><SectionHeading eyebrow="Promoción diaria" title="Ofertas del día" id="fortnite-deals-title" highlighted rightContent={<span data-testid="fortnite-daily-deals-reset-countdown" aria-label={`La tienda se reinicia a las 7:00 p. m., hora de Perú. Faltan ${formatCountdown(shopResetRemaining)}`} title="Reinicio de tienda: 7:00 p. m., hora de Perú" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-yellow-900/70 bg-[#111111]/80 px-2.5 py-1 text-[10px] font-bold tabular-nums text-yellow-200 sm:text-xs"><Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />{formatCountdown(shopResetRemaining)}</span>} /><DynamicGrid products={deals} onAdd={onAdd} idPrefix="fortnite-deal-item" isDailyDeal /></section>
+    <section id={dealsSectionId} aria-labelledby="fortnite-deals-title" className="rounded-xl bg-yellow-400/[0.025] ring-1 ring-inset ring-yellow-500/30"><SectionHeading eyebrow={blackFridayActive ? `Black Friday · ${deals.length} ofertas` : 'Promoción diaria'} title={blackFridayActive ? 'Ofertas de Black Friday!' : 'Ofertas del día'} id="fortnite-deals-title" highlighted rightContent={<span data-testid="fortnite-daily-deals-reset-countdown" aria-label={`La tienda se reinicia a las 7:01 p. m., hora de Perú. Faltan ${formatCountdown(shopResetRemaining)}`} title="Reinicio de tienda: 7:01 p. m., hora de Perú" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-yellow-900/70 bg-[#111111]/80 px-2.5 py-1 text-[10px] font-bold tabular-nums text-yellow-200 sm:text-xs"><Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />{formatCountdown(shopResetRemaining)}</span>} /><DynamicGrid products={deals} onAdd={onAdd} idPrefix="fortnite-deal-item" isDailyDeal /></section>
     <section aria-labelledby="fortnite-gift-title">
       <SectionHeading eyebrow="Tienda de Fortnite" title="Tienda vía regalo" id="fortnite-gift-title" />
       <div className="space-y-10">{groups.map(([section, sectionProducts]) => <section key={section} id={getFortniteLayoutAnchor(section)} aria-labelledby={`${getFortniteLayoutAnchor(section)}-title`}><h4 id={`${getFortniteLayoutAnchor(section)}-title`} className="mb-4 border-b border-yellow-900/40 pb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-400">{section} <span className="text-xs font-normal text-slate-500">({sectionProducts.length})</span></h4><DynamicGrid products={sectionProducts} onAdd={onAdd} layoutName={section} /></section>)}</div>
@@ -111,6 +120,7 @@ function GiftShop({ products, onAdd, status, shopHash, nextExpiration, country }
         {searchResults.length ? searchResults.map((result) => <button key={`${result.type}-${result.targetId}`} type="button" role="option" aria-selected="false" onClick={() => scrollToTarget(result.targetId)} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-white/10"><span className="block truncate text-sm font-semibold text-white">{result.label}</span><span className="block truncate text-xs text-slate-400">{result.detail}</span></button>) : <p className="px-3 py-2 text-sm text-slate-400">Sin resultados</p>}
       </div>}
     </div>}
+    {blackFridayModalOpen && <BlackFridayDealsModal products={deals} onAdd={(product) => onAdd({ ...product, creatorCodeEligible: true, creatorCodeScope: 'gift-shop' })} onClose={() => setBlackFridayModalOpen(false)} />}
   </div>;
 }
 

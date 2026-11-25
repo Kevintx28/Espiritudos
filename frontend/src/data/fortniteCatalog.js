@@ -11,6 +11,11 @@ export const fortniteCatalog = {
   featuredApiIds: ['GodzillaxKong.98', 'Revolver.99', 'Unvaulted.98'],
   dailyDealApiIds: ['GodzillaxKong.98', 'Revolver.99', 'Unvaulted.98', 'FN-offer-4'],
   dailyDealDiscount: 0.10,
+  blackFridayEvent: {
+    startsAt: '2026-11-25T19:01:00-05:00',
+    endsAt: '2026-12-05T20:00:00-05:00',
+    dailyDealCount: 28
+  },
   sectionOrder: ['Destacados', 'Featured', 'Nuevos', 'New', 'Skins', 'Trajes', 'Lotes', 'Bundles', 'Gestos', 'Emotes', 'Mochilas retro', 'Picos', 'Planeadores', 'Envoltorios', 'Vehículos'],
   packSlots: ['pack-1', 'pack-2', 'pack-3', 'pack-4'],
   manualProducts: [

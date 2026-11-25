@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 const LIMA_TIME_ZONE = 'America/Lima';
 const RESET_HOUR = 19;
+const RESET_MINUTE = 1;
 
 function getLimaParts(date) {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -30,14 +31,23 @@ function limaLocalToDate(parts) {
 
 export function getNextFortniteShopReset(now = new Date()) {
   const lima = getLimaParts(now);
-  const reset = { ...lima, hour: RESET_HOUR, minute: 0, second: 0 };
+  const reset = { ...lima, hour: RESET_HOUR, minute: RESET_MINUTE, second: 0 };
   const resetDate = limaLocalToDate(reset);
   if (resetDate.getTime() <= now.getTime()) {
-    const tomorrow = new Date(Date.UTC(lima.year, lima.month - 1, lima.day + 1));
+    const tomorrow = new Date(Date.UTC(lima.year, lima.month - 1, lima.day + 1, 12));
     const tomorrowParts = getLimaParts(tomorrow);
-    return limaLocalToDate({ ...tomorrowParts, hour: RESET_HOUR, minute: 0, second: 0 });
+    return limaLocalToDate({ ...tomorrowParts, hour: RESET_HOUR, minute: RESET_MINUTE, second: 0 });
   }
   return resetDate;
+}
+
+export function getFortniteShopCycleKey(now = new Date()) {
+  const lima = getLimaParts(new Date(now));
+  if (lima.hour > RESET_HOUR || (lima.hour === RESET_HOUR && lima.minute >= RESET_MINUTE)) {
+    return `${lima.year}-${String(lima.month).padStart(2, '0')}-${String(lima.day).padStart(2, '0')}`;
+  }
+  const previousDay = getLimaParts(new Date(Date.UTC(lima.year, lima.month - 1, lima.day - 1, 12)));
+  return `${previousDay.year}-${String(previousDay.month).padStart(2, '0')}-${String(previousDay.day).padStart(2, '0')}`;
 }
 
 export function getTimeRemaining(target, now = new Date()) {
