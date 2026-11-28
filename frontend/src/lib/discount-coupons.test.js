@@ -4,6 +4,7 @@ describe('discount coupons', () => {
   it('keeps existing coupon percentages and adds the new coupons', () => {
     expect(getDiscountCouponPercent('OMARS4')).toBe(10);
     expect(getDiscountCouponPercent('KRIS08')).toBe(10);
+    expect(getDiscountCouponPercent('BF28')).toBe(10);
     expect(getDiscountCouponPercent('TAYLER')).toBe(10);
     expect(getDiscountCouponPercent('LUCASPRO')).toBe(10);
     expect(getDiscountCouponPercent('TOKEN')).toBe(8);
@@ -13,6 +14,7 @@ describe('discount coupons', () => {
 
   it('normalizes coupon names without changing existing behavior', () => {
     expect(normalizeDiscountCoupon('  tayler  ')).toBe('TAYLER');
+    expect(getDiscountCoupon(' bf28 ')).toEqual({ code: 'BF28', percent: 10 });
     expect(getDiscountCoupon('lucaspro')).toEqual({ code: 'LUCASPRO', percent: 10 });
     expect(getDiscountCoupon('Token')).toEqual({ code: 'TOKEN', percent: 8 });
     expect(getDiscountCoupon('holaholapasapasa')).toEqual({ code: 'HOLAHOLAPASAPASA', percent: 5 });

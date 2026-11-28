@@ -1,6 +1,7 @@
 export const DISCOUNT_COUPONS = Object.freeze({
   OMARS4: 10,
   KRIS08: 10,
+  BF28: 10,
   TAYLER: 10,
   LUCASPRO: 10,
   TOKEN: 8,
